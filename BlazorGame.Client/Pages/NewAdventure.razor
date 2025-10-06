@@ -1,0 +1,15 @@
+﻿@page "/new-adventure"
+
+<div class="container-narrow">
+    <div class="card p-4">
+        <h1 class="display-5 mb-1">Nouvelle Aventure</h1>
+        <p class="lead mb-4">Préparez-vous à affronter votre premier donjon !</p>
+
+        <button class="btn btn-success btn-lg" @onclick="StartAdventure">Commencer</button>
+    </div>
+
+    @if (isStarted)
+    {
+        <RoomComponent />
+    }
+</div>

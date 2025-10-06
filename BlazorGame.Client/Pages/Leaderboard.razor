@@ -1,0 +1,14 @@
+﻿@page "/leaderboard"
+<h3>Classement des aventuriers</h3>
+
+<table class="table table-striped mt-3">
+    <thead>
+        <tr><th>#</th><th>Nom</th><th>Score</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var p in players)
+        {
+            <tr><td>@p.Id</td><td>@p.Name</td><td>@p.Score</td></tr>
+        }
+    </tbody>
+</table>
