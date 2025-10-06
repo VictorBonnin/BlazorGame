@@ -37,8 +37,10 @@ dotnet add GameServices/GameServices.csproj package Swashbuckle.AspNetCore
 ## Lancement de l'application 
 
 #### Nettoyer & compiler
+```bash 
 dotnet clean
 dotnet build
+```
 
 #### Terminal 1 : API sur 5001
 dotnet watch run --project .\GameServices\GameServices.csproj
