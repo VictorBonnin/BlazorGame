@@ -107,6 +107,7 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\BlazorGa
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\BlazorGame.Tests\obj\Debug\net9.0\BlazorGame.Tests.AssemblyInfoInputs.cache
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\BlazorGame.Tests\obj\Debug\net9.0\BlazorGame.Tests.AssemblyInfo.cs
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\BlazorGame.Tests\obj\Debug\net9.0\BlazorGame.Tests.csproj.CoreCompileInputs.cache
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\BlazorGame.Tests\obj\Debug\net9.0\BlazorGame.Tests.sourcelink.json
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\BlazorGame.Tests\obj\Debug\net9.0\BlazorGa.4EB76FFC.Up2Date
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\BlazorGame.Tests\obj\Debug\net9.0\BlazorGame.Tests.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\BlazorGame.Tests\obj\Debug\net9.0\refint\BlazorGame.Tests.dll

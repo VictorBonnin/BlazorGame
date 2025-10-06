@@ -18,6 +18,7 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\Authenti
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\AuthenticationServices\obj\Debug\net9.0\AuthenticationServices.csproj.CoreCompileInputs.cache
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\AuthenticationServices\obj\Debug\net9.0\AuthenticationServices.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\AuthenticationServices\obj\Debug\net9.0\AuthenticationServices.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\AuthenticationServices\obj\Debug\net9.0\AuthenticationServices.sourcelink.json
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\AuthenticationServices\obj\Debug\net9.0\rjimswa.dswa.cache.json
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\AuthenticationServices\obj\Debug\net9.0\rjsmrazor.dswa.cache.json
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\AuthenticationServices\obj\Debug\net9.0\rjsmcshtml.dswa.cache.json

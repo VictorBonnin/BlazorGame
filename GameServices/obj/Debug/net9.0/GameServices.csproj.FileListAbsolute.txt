@@ -21,6 +21,7 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\GameServ
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\GameServices\obj\Debug\net9.0\GameServices.csproj.CoreCompileInputs.cache
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\GameServices\obj\Debug\net9.0\GameServices.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\GameServices\obj\Debug\net9.0\GameServices.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\GameServices\obj\Debug\net9.0\GameServices.sourcelink.json
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\GameServices\obj\Debug\net9.0\rjimswa.dswa.cache.json
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\GameServices\obj\Debug\net9.0\rjsmrazor.dswa.cache.json
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet\BlazorGameQuest\GameServices\obj\Debug\net9.0\rjsmcshtml.dswa.cache.json
