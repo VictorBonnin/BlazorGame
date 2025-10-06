@@ -36,12 +36,12 @@ dotnet add GameServices/GameServices.csproj package Swashbuckle.AspNetCore
 
 ## Lancement de l'application 
 
-### Nettoyer & compiler
+#### Nettoyer & compiler
 dotnet clean
 dotnet build
 
-### Terminal 1 : API sur 5001
+#### Terminal 1 : API sur 5001
 dotnet watch run --project .\GameServices\GameServices.csproj
 
-### Terminal 2 : Client sur 5000
+#### Terminal 2 : Client sur 5000
 dotnet watch run --project .\BlazorGame.Client\BlazorGame.Client.csproj
