@@ -1,3 +1,6 @@
+## Blazor Game Quest
+### Projet réalisé par Victor BONNIN & Elias DIONYSSOPOULOS
+
 ## Installation de l'application :
 
 ### 1. Dossier & solution
