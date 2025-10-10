@@ -15,46 +15,45 @@
         </div>
       }
 
-      <button class="btn btn-primary btn-lg mt-3" @onclick="StartAdventure" disabled="@(loading)">
+      <!-- ✅ on passe par un wrapper pour rafraîchir l’astuce et éviter les erreurs -->
+      <button class="btn btn-primary btn-lg mt-3" @onclick="StartAndHint" disabled="@(loading)">
         @(loading ? "Chargement..." : "Commencer")
       </button>
     </div>
   }
 
-<!-- Écran de jeu -->
-@if (started)
-{
-  <div class="card p-4 game-panel">
-    <div class="d-flex justify-content-between align-items-center">
-      <div>
-        <div class="hud-label">Salle</div>
-        <div class="hud-value">@((current + 1)) / @(rooms?.Count ?? 0)</div>
+  <!-- Écran de jeu -->
+  @if (started)
+  {
+    <div class="card p-4 game-panel">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <div class="hud-label">Salle</div>
+          <div class="hud-value">@((current + 1)) / @(rooms?.Count ?? 0)</div>
+        </div>
+        <div class="text-end">
+          <div class="hud-label">Score</div>
+          <div class="hud-value hud">⭐ @score</div>
+        </div>
       </div>
-      <div class="text-end">
-        <div class="hud-label">Score</div>
-        <div class="hud-value hud">⭐ @score</div>
-      </div>
-    </div>
 
-    <div class="progress-xeno mt-3">
-      <div class="bar" style="width:@Progress();"></div>
-    </div>
+      <div class="progress-xeno mt-3">
+        <div class="bar" style="width:@Progress();"></div>
+      </div>
 
-    <div class="mt-4">
-      <h3 class="game-section-title">Que faites-vous ?</h3>
-      <div class="btn-group flex-wrap">
-        <button class="btn btn-success btn-lg"   @onclick="ChooseCombattre">⚔️ Combattre</button>
-        <button class="btn btn-secondary btn-lg" @onclick="ChooseFuir">🏃‍♂️ Fuir</button>
-        <button class="btn btn-warning btn-lg"   @onclick="ChooseFouiller">🧭 Fouiller</button>
+      <div class="mt-4">
+        <h3 class="game-section-title">Que faites-vous ?</h3>
+        <div class="btn-group flex-wrap">
+          <button class="btn btn-success btn-lg"   @onclick="ChooseCombattre">⚔️ Combattre</button>
+          <button class="btn btn-secondary btn-lg" @onclick="ChooseFuir">🏃‍♂️ Fuir</button>
+          <button class="btn btn-warning btn-lg"   @onclick="ChooseFouiller">🧭 Fouiller</button>
+        </div>
       </div>
-      <div class="hint-text mt-3">
-          <div class="mt-4">
-            <HintBox />
-          </div>
+      <div class="mt-4">
+        <HintBox @ref="hintRef" Compact="true" class="mt-3" />
       </div>
     </div>
-  </div>
-}
+  }
 
   @if (finished)
   {
@@ -64,7 +63,7 @@
 
       <div class="mt-3">
         <NavLink class="btn btn-outline-primary me-2" href="/leaderboard">Voir le classement</NavLink>
-        <button class="btn btn-primary" @onclick="StartAdventure">Rejouer</button>
+        <button class="btn btn-primary" @onclick="StartAndHint">Rejouer</button>
       </div>
     </div>
   }
@@ -72,6 +71,8 @@
 </div>
 
 @code {
+  private BlazorGame.Client.Shared.HintBox? hintRef;
+
   string Progress()
   {
     var total = rooms?.Count ?? 0;
@@ -80,8 +81,27 @@
     return $"{pct}%";
   }
 
-  void ChooseCombattre() => Choose("combattre");
-  void ChooseFuir()       => Choose("fuir");
-  void ChooseFouiller()   => Choose("fouiller");
+  // ============================
+  // A) WRAPPERS SI TES MÉTHODES .razor.cs SONT SYNCHRONES (void)
+  // ============================
+  void StartAndHint()
+  {
+    StartAdventure();
+    hintRef?.Refresh();
+  }
+  void ChooseCombattre()
+  {
+    Choose("combattre");
+    hintRef?.Refresh();
+  }
+  void ChooseFuir()
+  {
+    Choose("fuir");
+    hintRef?.Refresh();
+  }
+  void ChooseFouiller()
+  {
+    Choose("fouiller");
+    hintRef?.Refresh();
+  }
 }
-
