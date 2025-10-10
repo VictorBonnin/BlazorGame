@@ -9,7 +9,7 @@ public partial class NewAdventure : ComponentBase
     protected bool loading, started, finished;
     protected List<Room> rooms = new();
     protected int current, score;
-    protected string? error;   // <-- affiche l’erreur proprement
+    protected string? error;
 
     [Inject] protected HttpClient Http { get; set; } = default!;
 
@@ -24,7 +24,7 @@ public partial class NewAdventure : ComponentBase
         }
         catch (Exception ex)
         {
-            error = ex.Message;           // évite l’exception non gérée
+            error = ex.Message;
             started = false;
         }
         finally

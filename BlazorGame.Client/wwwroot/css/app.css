@@ -532,7 +532,8 @@ Utilities
   box-shadow: inset 0 0 0 1px rgba(139,92,246,.18);
 }
 
-/* === GAME HUD CONTRAST BOOST === */
+
+/* InGame HUD */
 .game-panel { position: relative; }
 
 .game-panel .hud-label{
@@ -572,7 +573,6 @@ Utilities
   text-shadow: 0 0 4px rgba(139,92,246,.25);
 }
 
-/* Progress bar déjà stylée, on accentue légèrement le “laser” */
 .progress-xeno{
   background: rgba(139,92,246,.18);
   box-shadow: inset 0 0 0 1px rgba(139,92,246,.26);
@@ -582,5 +582,4 @@ Utilities
   box-shadow: 0 0 16px rgba(154,123,255,.6), inset 0 0 40px rgba(91,33,182,.35);
 }
 
-/* Bouton secondaire : texte plus clair pour la lisibilité */
 .btn-secondary{ color:#E7E8F8; }
