@@ -1,10 +1,23 @@
 @page "/"
 
-<section class="container-narrow text-center">
-    <h1 class="display-4 fw-bold gradient-text">BlazorGameQuest</h1>
-    <p class="lead mt-2">Explorez des donjons, faites des choix, grimpez au classement.</p>
+<div class="page container-narrow">
+  <div class="card p-5 text-center">
+    <h1 class="display-4 hero-title">Blazor Game Quest</h1>
+    <p class="lead mt-2">
+      Entrez dans le donjon, récoltez des points et grimpez au classement.
+    </p>
+
     <div class="mt-4">
-        <a class="btn btn-success btn-lg" href="/new-adventure">▶ Commencer l’aventure</a>
-        <a class="btn btn-outline-primary btn-lg ms-2" href="/leaderboard">Voir le classement</a>
+      <NavLink class="btn btn-primary btn-lg me-3" href="/newadventure">
+        🚀 Nouvelle aventure
+      </NavLink>
+      <NavLink class="btn btn-outline-primary btn-lg" href="/leaderboard">
+        🏆 Voir le classement
+      </NavLink>
     </div>
-</section>
+
+    <div class="mt-5 alert alert-info">
+      Conseils&nbsp;: les choix <strong>combattre</strong>, <strong>fuir</strong> et <strong>fouiller</strong> influencent votre score.
+    </div>
+  </div>
+</div>

@@ -1,14 +1,36 @@
 ﻿@page "/leaderboard"
-<h3>Classement des aventuriers</h3>
 
-<table class="table table-striped mt-3">
-    <thead>
-        <tr><th>#</th><th>Nom</th><th>Score</th></tr>
-    </thead>
-    <tbody>
-        @foreach (var p in players)
+<div class="page container-narrow">
+  <div class="d-flex align-items-center mb-3">
+    <h2 class="display-5 m-0">🏆 Classement</h2>
+  </div>
+
+  <div class="card p-3">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Joueur</th>
+          <th class="text-end">Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (var i = 0; i < players.Count; i++)
         {
-            <tr><td>@p.Id</td><td>@p.Name</td><td>@p.Score</td></tr>
+            var p = players[i];
+            <tr>
+              <td>
+                @(i == 0 ? "🥇" : i == 1 ? "🥈" : i == 2 ? "🥉" : (i+1).ToString())
+              </td>
+              <td><strong>@p.Name</strong></td>
+              <td class="text-end">@p.Score</td>
+            </tr>
         }
-    </tbody>
-</table>
+      </tbody>
+    </table>
+
+    <div class="mt-3 text-end">
+      <NavLink class="btn btn-outline-primary" href="/newadventure">Tenter de battre le score</NavLink>
+    </div>
+  </div>
+</div>

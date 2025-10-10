@@ -1,15 +1,16 @@
-﻿<div class="card p-4 section">
-    <h4 class="mb-3">Une salle obscure…</h4>
-    <p class="mb-4">Un gobelin apparaît ! Que voulez-vous faire ?</p>
+﻿<div class="card p-4">
+  <h3 class="mb-3">Une salle mystérieuse…</h3>
 
-    <div class="btn-group flex-wrap">
-        <button class="btn btn-danger"    @onclick='() => ChooseAction("combattre")'>Combattre</button>
-        <button class="btn btn-warning"   @onclick='() => ChooseAction("fuir")'>Fuir</button>
-        <button class="btn btn-secondary" @onclick='() => ChooseAction("fouiller")'>Fouiller</button>
+  <div class="btn-group flex-wrap">
+    <button class="btn btn-success" @onclick="@(()=>ChooseAction("combattre"))">⚔️ Combattre</button>
+    <button class="btn btn-secondary" @onclick="@(()=>ChooseAction("fuir"))">🏃‍♀️ Fuir</button>
+    <button class="btn btn-warning" @onclick="@(()=>ChooseAction("fouiller"))">🧭 Fouiller</button>
+  </div>
+
+  @if (!string.IsNullOrWhiteSpace(result))
+  {
+    <div class="alert alert-info mt-4">
+      @result
     </div>
-
-    @if (!string.IsNullOrWhiteSpace(result))
-    {
-        <div class="alert alert-info mt-4">@result</div>
-    }
+  }
 </div>

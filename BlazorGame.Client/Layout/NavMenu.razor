@@ -1,19 +1,25 @@
-﻿@* BlazorGame.Client/Layout/NavMenu.razor *@
-<nav class="nav flex-column nav-pills">
-    <NavLink href="/" Match="NavLinkMatch.All" class="nav-link">
-        <span class="oi oi-home"></span> Home
-    </NavLink>
+﻿@using Microsoft.AspNetCore.Components.Routing
 
-    <NavLink href="/new-adventure" class="nav-link">
-        <span class="oi oi-flash"></span> Nouvelle aventure
-    </NavLink>
+<nav class="topnav">
+  <div class="topnav-inner">
+    <div class="brand">
+      <NavLink href="/" class="brand-link">Blazor Game Quest</NavLink>
+    </div>
 
-    <NavLink href="/leaderboard" class="nav-link">
-        <span class="oi oi-graph"></span> Classement
-    </NavLink>
+    <button class="hamburger" @onclick="Toggle" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
 
-    <NavLink href="/admin" class="nav-link">
-        <span class="oi oi-cog"></span> Admin
-    </NavLink>
+    <div class="links @(open ? "open" : null)">
+      <NavLink href="/"            class="navlink" Match="NavLinkMatch.All">Accueil</NavLink>
+      <NavLink href="/newadventure" class="navlink">Nouvelle aventure</NavLink>
+      <NavLink href="/leaderboard"  class="navlink">Classement</NavLink>
+      <NavLink href="/admin"        class="navlink">Admin</NavLink>
+    </div>
+  </div>
 </nav>
 
+@code {
+  bool open = false;
+  void Toggle() => open = !open;
+}
