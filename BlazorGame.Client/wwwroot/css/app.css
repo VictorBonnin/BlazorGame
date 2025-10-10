@@ -583,3 +583,21 @@ Utilities
 }
 
 .btn-secondary{ color:#E7E8F8; }
+
+/* Boite à astuces */
+.hint-box {
+  background: linear-gradient(180deg, rgba(42,38,66,.55), rgba(28,26,44,.45));
+  border: 1px solid rgba(139,92,246,.28);
+  box-shadow: 0 12px 36px rgba(88,28,189,.25), inset 0 1px 0 rgba(255,255,255,.05);
+}
+.hint-title{
+  font-family: var(--font-ui);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: #EDEAFF;
+  margin-bottom: .25rem;
+}
+.hint-content{
+  color: rgba(235,232,255,.92);
+  text-shadow: 0 0 6px rgba(139,92,246,.25);
+}

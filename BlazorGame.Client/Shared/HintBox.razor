@@ -1,0 +1,12 @@
+@inject BlazorGame.Client.Services.HintService Hints
+
+<div class="hint-box card p-3">
+  <div class="hint-title">💡 Astuce</div>
+  <div class="hint-content">@text</div>
+</div>
+
+@code {
+  private string text = "";
+  protected override void OnInitialized() => text = Hints.Next();
+  public void Refresh() { text = Hints.Next(); StateHasChanged(); }
+}

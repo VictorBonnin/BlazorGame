@@ -44,6 +44,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUm9vbUNvbXBvbmVudC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/bonni/Documents/Ecole/Efrei/Inge/DotNet/Projet/BlazorGameQuest/BlazorGame.Client/Shared/HintBox.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEhpbnRCb3gucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/bonni/Documents/Ecole/Efrei/Inge/DotNet/Projet/BlazorGameQuest/BlazorGame.Client/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
