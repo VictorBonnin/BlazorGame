@@ -27,8 +27,7 @@
   /* Import Neotriad */
   @font-face{
     font-family:"Neotriad";
-    src: url("/fonts/neotriad/NeotriadFree-1jzAg.woff2") format("woff2"),
-         url("/fonts/neotriad/NeotriadFree-1jzAg.otf")   format("opentype");
+    src: url("/fonts/neotriad/NeotriadFree-1jzAg.otf")   format("opentype");
     font-weight:400; font-style:normal; font-display:swap;
   }
 
