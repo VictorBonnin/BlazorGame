@@ -1,4 +1,6 @@
-﻿@page "/newadventure"
+﻿@using SharedModels.Entities
+
+@page "/newadventure"
 
 <div class="page container-narrow">
 
@@ -21,7 +23,6 @@
     </div>
   }
 
-  <!-- Écran de jeu -->
   @if (started)
   {
     <div class="card p-4 game-panel">
@@ -75,7 +76,7 @@
 @code {
   private BlazorGame.Client.Shared.HintBox? hintRef;
 
-  string Progress()
+  private string Progress()
   {
     var total = rooms?.Count ?? 0;
     if (total <= 0) return "0%";
@@ -83,24 +84,29 @@
     return $"{pct}%";
   }
 
-  void StartAndHint()
+  // --- Handlers UI async/await ---
+
+  private async Task StartAndHint()
   {
-    StartAdventure();
+    await StartAdventure();   // ⚠️ on attend l'appel async
     hintRef?.Refresh();
   }
-  void ChooseCombattre()
+
+  private async Task ChooseCombattre()
   {
-    Choose("combattre");
+    await Choose("combattre");
     hintRef?.Refresh();
   }
-  void ChooseFuir()
+
+  private async Task ChooseFuir()
   {
-    Choose("fuir");
+    await Choose("fuir");
     hintRef?.Refresh();
   }
-  void ChooseFouiller()
+
+  private async Task ChooseFouiller()
   {
-    Choose("fouiller");
+    await Choose("fouiller");
     hintRef?.Refresh();
   }
 }

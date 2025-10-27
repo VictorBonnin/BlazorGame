@@ -2,6 +2,8 @@ using SharedModels;
 
 namespace GameServices.Logic;
 
+using SharedModels.Entities;
+
 public static class DungeonGenerator
 {
     private static readonly Random _rng = new();

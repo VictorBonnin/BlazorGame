@@ -2,6 +2,9 @@ using GameServices.Logic;
 using SharedModels;
 using Xunit;
 
+using SharedModels.Entities;
+
+
 public class DungeonGeneratorTests
 {
     [Theory]
