@@ -5,71 +5,78 @@
 
 @* CORRECTION CS0234 & CS0102: L'injection Session a été retirée et les using sont corrigés *@
 
-<div class="room-container">
-    <h4 class="room-title">Salle @Room.Id</h4> @* CORRECTION CS1061: Index remplacé par Id *@
+<div class="room-container card p-4 game-panel">
+    <h4 class="room-title game-section-title">Salle @Room.Id</h4> @* CORRECTION CS1061: Index remplacé par Id *@
 
-    <p class="room-type">Type : **@Room.Type** (Difficulté : @Room.Difficulty)</p>
+    <p class="room-type hud-label">Type : **@Room.Type** (Difficulté : <span class="hud-value">@Room.Difficulty</span>)</p>
 
-    <div class="room-description alert alert-light">
-        @Room.Description @* CORRECTION CS1061: EventDescription remplacé par Description *@
-    </div>
+    <div class="room-description alert alert-info"> @* J'ai changé alert-light pour alert-info afin d'utiliser la classe subtilement stylisée dans le CSS * /
+        @Room.Description @* CORRECTION CS1061: EventDescription remplacé par Description *@
+    </div>
 
-    @if (Room.Monsters.Any())
-    {
-        <div class="monsters-section">
-            <h5>Monstres à combattre :</h5>
-            <ul>
-                @foreach (var monster in Room.Monsters)
-                {
-                    <li>@monster.Name (PV: @monster.Health, Attaque: @monster.Attack)</li>
-                }
-            </ul>
-        </div>
-    }
+    @if (Room.Monsters.Any())
+    {
+        <div class="monsters-section bg-danger-subtle card p-3 mt-3">
+            <h5>Monstres à combattre :</h5>
+            <ul>
+                @foreach (var monster in Room.Monsters)
+                {
+                    <li>@monster.Name (PV: @monster.Health, Attaque: @monster.Attack)</li>
+                }
+            </ul>
+        </div>
+    }
 
-    @if (Room.Loot.Any())
-    {
-        <div class="loot-section">
-            <h5>Butin dans la salle :</h5>
-            <ul>
-                @foreach (var item in Room.Loot)
-                {
-                    <li>@item.Name (@item.Type, Valeur: @item.Value)</li>
-                }
-            </ul>
-        </div>
-    }
+    @if (Room.Loot.Any())
+    {
+        <div class="loot-section bg-warning-subtle card p-3 mt-3">
+            <h5>Butin dans la salle :</h5>
+            <ul>
+                @foreach (var item in Room.Loot)
+                {
+                    <li>@item.Name (@item.Type, Valeur: @item.Value)</li>
+                }
+            </ul>
+        </div>
+    }
 
-    @* Zone d'actions *@
-    <div class="action-buttons mt-3">
-        @if (!IsLoading)
-        {
-            <button @onclick="() => OnActionSelected.InvokeAsync(SharedModels.PlayerAction.Combattre)">
-                Combattre
-            </button>
-            <button class="btn btn-success" @onclick="() => ChooseAction(PlayerAction.Fouiller)">
-                Fouiller
-            </button>
-            <button class="btn btn-warning" @onclick="() => ChooseAction(PlayerAction.Fuir)">
-                Fuir
-            </button>
-            @if (Room.Loot.Any(i => i.Type == "Potion"))
-            {
-                <button class="btn btn-info" @onclick="() => ChooseAction(PlayerAction.UtiliserObjet)">
-                    Utiliser Potion
-                </button>
-            }
-        }
-        else
-        {
-            <div class="text-center text-muted">
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                Action en cours...
-            </div>
-        }
-    </div>
+    @* Zone d'actions MODIFIÉE pour utiliser les classes CSS du thème *@
+    <div class="action-buttons mt-5"> @* J'ai augmenté la marge top pour séparer les actions *@
+        @if (!IsLoading)
+        {
+            @* 🚨 BOUTON COMBATTRE (ROUGE) 🚨 *@
+            <button class="btn btn-danger" @onclick="() => OnActionSelected.InvokeAsync(SharedModels.PlayerAction.Combattre)">
+                COMBATTRE
+            </button>
+
+            @* BOUTON FOUILLER (GRIS/SECONDARAY) *@
+            <button class="btn btn-secondary" @onclick="() => ChooseAction(PlayerAction.Fouiller)">
+                FOUILLER
+            </button>
+            
+            @* BOUTON FUIR (GRIS/SECONDARY) *@
+            <button class="btn btn-secondary" @onclick="() => ChooseAction(PlayerAction.Fuir)">
+                FUIR
+            </button>
+
+            @if (Room.Loot.Any(i => i.Type == "Potion"))
+            {
+                @* BOUTON UTILISER OBJET (PRIMARY/VIOLET) *@
+                <button class="btn btn-primary" @onclick="() => ChooseAction(PlayerAction.UtiliserObjet)">
+                    UTILISER POTION
+                </button>
+            }
+        }
+        else
+        {
+            <div class="text-center text-muted">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Action en cours...
+            </div>
+        }
+    </div>
 </div>
 
 @code {
-    // Le code Razor utilise les propriétés définies dans RoomComponent.razor.cs
+    // Le code Razor utilise les propriétés définies dans RoomComponent.razor.cs
 }
