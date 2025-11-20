@@ -32,7 +32,7 @@
         {
             @if (Session.IsAuthenticated)
             {
-                <p class="text-muted">Bienvenue, <strong>@Session.CurrentPlayerName</strong>. Prêt à explorer ?</p>
+                <p class="text-white">Bienvenue, <strong>@Session.CurrentPlayerName</strong>. Prêt à explorer ?</p>
             }
 
             <EditForm Model="@FormModel" OnValidSubmit="StartAdventure">

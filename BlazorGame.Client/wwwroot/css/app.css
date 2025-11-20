@@ -54,7 +54,7 @@ min-height: 100vh; /* S'assurer que le corps prend au moins la hauteur de la vue
 p {
     line-height: 1.6;
     margin-bottom: 1rem;
-    /* Ajoute un très léger éclat/ombre pour faire "sortir" le texte sur le fond sombre */
+    color: var(--text-primary); /* <--- AJOUT DE SÉCURITÉ */
     text-shadow: 0 0 1px rgba(255, 255, 255, 0.1); 
 }
 
@@ -65,9 +65,12 @@ a{ color:var(--primary-300); text-decoration:none; }
 a:not(.btn):hover{ text-decoration:underline; }
 .btn, .btn:hover, .btn:focus{ text-decoration:none !important; }
 
-h1,h2,h3,.display-4,.display-5{
-margin:0 0 .5rem; font-family:var(--font-title);
-letter-spacing:var(--letter-title); text-transform:uppercase;
+h1,h2,h3,h4,h5,h6,.display-4,.display-5{
+    margin:0 0 .5rem; 
+    font-family:var(--font-title);
+    letter-spacing:var(--letter-title); 
+    text-transform:uppercase;
+    color: var(--text-primary); /* <--- LA CORRECTION EST ICI */
 }
 .display-4{ font-size:clamp(2rem,2.2rem + 1.5vw,3rem); }
 .display-5{ font-size:clamp(1.5rem,1.4rem + 1vw,2.2rem); }
