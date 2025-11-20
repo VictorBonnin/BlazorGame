@@ -1,38 +1,75 @@
-﻿@using SharedModels.Entities
+﻿@page "/room-component"
+@using SharedModels
+@using SharedModels.Entities
+@using System.Linq
 
-<div class="room-display p-3 border rounded @GetRoomCssClass()">
-    <h4>Salle n°@Room.Index - Type : **@Room.Type**</h4>
-    <p>Difficulté : **@Room.Difficulty**</p>
+@* CORRECTION CS0234 & CS0102: L'injection Session a été retirée et les using sont corrigés *@
 
-    {{-- Affichage de la description de l'événement --}}
-    <div class="alert alert-secondary">
-        @Room.EventDescription
+<div class="room-container">
+    <h4 class="room-title">Salle @Room.Id</h4> @* CORRECTION CS1061: Index remplacé par Id *@
+
+    <p class="room-type">Type : **@Room.Type** (Difficulté : @Room.Difficulty)</p>
+
+    <div class="room-description alert alert-light">
+        @Room.Description @* CORRECTION CS1061: EventDescription remplacé par Description *@
     </div>
 
+    @if (Room.Monsters.Any())
+    {
+        <div class="monsters-section">
+            <h5>Monstres à combattre :</h5>
+            <ul>
+                @foreach (var monster in Room.Monsters)
+                {
+                    <li>@monster.Name (PV: @monster.Health, Attaque: @monster.Attack)</li>
+                }
+            </ul>
+        </div>
+    }
+
+    @if (Room.Loot.Any())
+    {
+        <div class="loot-section">
+            <h5>Butin dans la salle :</h5>
+            <ul>
+                @foreach (var item in Room.Loot)
+                {
+                    <li>@item.Name (@item.Type, Valeur: @item.Value)</li>
+                }
+            </ul>
+        </div>
+    }
+
+    @* Zone d'actions *@
     <div class="action-buttons mt-3">
-        @* Action de Combattre *@
-        <button class="btn btn-danger m-1" @onclick="() => ChooseAction(PlayerAction.Combattre)" disabled="@IsLoading">
-            <i class="oi oi-fire"></i> Combattre
-        </button>
-
-        @* Action de Fouiller *@
-        <button class="btn btn-warning m-1" @onclick="() => ChooseAction(PlayerAction.Fouiller)" disabled="@IsLoading">
-            <i class="oi oi-wrench"></i> Fouiller
-        </button>
-
-        @* Action de Fuir *@
-        <button class="btn btn-info m-1" @onclick="() => ChooseAction(PlayerAction.Fuir)" disabled="@IsLoading">
-            <i class="oi oi-run"></i> Fuir
-        </button>
+        @if (!IsLoading)
+        {
+            <button class="btn btn-danger" @onclick="() => ChooseAction(PlayerAction.Combattre)">
+                Combattre
+            </button>
+            <button class="btn btn-success" @onclick="() => ChooseAction(PlayerAction.Fouiller)">
+                Fouiller
+            </button>
+            <button class="btn btn-warning" @onclick="() => ChooseAction(PlayerAction.Fuir)">
+                Fuir
+            </button>
+            @if (Room.Loot.Any(i => i.Type == "Potion"))
+            {
+                <button class="btn btn-info" @onclick="() => ChooseAction(PlayerAction.UtiliserObjet)">
+                    Utiliser Potion
+                </button>
+            }
+        }
+        else
+        {
+            <div class="text-center text-muted">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Action en cours...
+            </div>
+        }
     </div>
 </div>
 
 @code {
-    private string GetRoomCssClass() => Room.Type switch
-    {
-        RoomType.Combat => "bg-danger-subtle border-danger",
-        RoomType.Loot => "bg-warning-subtle border-warning",
-        RoomType.Trap => "bg-info-subtle border-info",
-        _ => "bg-light border-secondary"
-    };
+    // Le code Razor utilise les propriétés définies dans RoomComponent.razor.cs
 }

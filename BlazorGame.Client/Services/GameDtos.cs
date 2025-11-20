@@ -1,4 +1,5 @@
 using SharedModels.Entities;
+using SharedModels; // <--- CORRECTION CS0246: Ajout pour Room et RoomPlay
 
 namespace BlazorGame.Client.Services;
 

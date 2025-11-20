@@ -33,7 +33,8 @@
     
     @if (!string.IsNullOrEmpty(Message))
     {
-        <div class="alert @(Message.Contains("Erreur") ? "alert-danger" : "alert-success") mt-3">@Message</div>
+        <div class="alert @(Message.Contains("Erreur") ?
+ "alert-danger" : "alert-success") mt-3">@Message</div>
     }
 </div>
 
@@ -63,16 +64,14 @@
 
             // 2. Récupérer le Player créé (ou l'entité de confirmation avec l'ID)
             var player = await response.Content.ReadFromJsonAsync<Player>();
-            
             if (player?.Id > 0)
             {
                 // 3. Connecter l'utilisateur dans la session
                 Session.Login(player.Id, player.UserName!);
-                
                 Message = $"Bienvenue {player.UserName} ! Connexion réussie.";
                 
-                // 4. Rediriger vers la page du jeu
-                Navigation.NavigateTo("/new-adventure", forceLoad: true);
+                // 4. Rediriger vers la page du jeu - CORRIGÉ
+                Navigation.NavigateTo("/new-adventure"); 
             }
             else
             {

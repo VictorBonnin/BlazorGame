@@ -13,12 +13,13 @@ public class DungeonGeneratorTests
     [InlineData(5,7)]
     public void Generate_CountAndRanges(int min, int max)
     {
-        var rooms = DungeonGenerator.Generate(min, max);
+        // CORRECTION CS0117: Remplacer .Generate par .GenerateDungeon
+        var rooms = DungeonGenerator.GenerateDungeon(min, max); 
 
         Assert.InRange(rooms.Count, min, max);
         Assert.All(rooms, r =>
         {
-            Assert.InRange(r.Difficulty, 1, 5);
+            Assert.InRange(r.Difficulty, 1, 5); 
             Assert.True(Enum.IsDefined(typeof(RoomType), r.Type));
         });
     }

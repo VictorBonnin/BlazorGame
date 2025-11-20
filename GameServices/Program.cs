@@ -1,7 +1,8 @@
 using GameServices.Data;
 using Microsoft.EntityFrameworkCore;
 using SharedModels.Entities;
-using GameServices.Logic; // <-- NOUVEAU: Importation du générateur de donjon
+using GameServices.Logic; 
+using SharedModels; // <--- CORRECTION CS0246: Ajout pour Room et RoomPlay
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,14 +28,11 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors(CorsPolicy);
 
-// La fonction locale GenerateRooms a été supprimée, 
-// nous utilisons directement GameServices.Logic.DungeonGenerator
-
 // Compatibilité avec le client actuel (NewAdventure)
 app.MapGet("/api/dungeon/new", (int? min, int? max) =>
 {
-    // Utilisation de la classe DungeonGenerator externe et corrigée
-    var rooms = DungeonGenerator.Generate(min ?? 3, max ?? 5);
+    // CORRECTION CS0117: Changement de .Generate en .GenerateDungeon
+    var rooms = DungeonGenerator.GenerateDungeon(min ?? 3, max ?? 5); 
     return Results.Ok(rooms);
 });
 
@@ -66,8 +64,8 @@ app.MapPost("/api/adventures/start", async (GameDbContext db, StartAdventure dto
     db.Adventures.Add(adv);
     await db.SaveChangesAsync();
 
-    // Utilisation de la classe DungeonGenerator externe et corrigée
-    var rooms = DungeonGenerator.Generate(dto.MinRooms ?? 3, dto.MaxRooms ?? 5); 
+    // CORRECTION CS0117: Changement de .Generate en .GenerateDungeon
+    var rooms = DungeonGenerator.GenerateDungeon(dto.MinRooms ?? 3, dto.MaxRooms ?? 5); 
     return Results.Created($"/api/adventures/{adv.Id}", new StartPayload(adv.Id, rooms));
 });
 
@@ -103,4 +101,4 @@ app.Run();
 record PlayerCreate(string UserName);
 record StartAdventure(int PlayerId, int? MinRooms, int? MaxRooms);
 record FinishAdventure(int Score, List<RoomPlay>? Rooms);
-record StartPayload(int AdventureId, IReadOnlyList<Room> Rooms); // NOUVEAU: IReadOnlyList pour StartPayload
+record StartPayload(int AdventureId, IReadOnlyList<Room> Rooms);

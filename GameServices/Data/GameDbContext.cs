@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SharedModels.Entities;
+using SharedModels; // <--- CORRECTION CS0103: Ajout pour RoomPlay
 
 namespace GameServices.Data;
 

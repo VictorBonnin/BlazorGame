@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using SharedModels.Entities;
+using SharedModels; // <--- CORRECTION CS0246: Ajout pour Room et PlayerAction
 
 namespace BlazorGame.Client.Pages;
 
