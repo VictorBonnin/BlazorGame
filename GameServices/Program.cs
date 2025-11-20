@@ -6,6 +6,13 @@ using SharedModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// --- CORRECTION JSON : Permet d'inclure les objets liés (Aventure -> Joueur) sans erreur de boucle ---
+builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
+{
+    options.SerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+});
+// -----------------------------------------------------------------------------------------------------
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -68,7 +75,7 @@ app.MapPost("/api/adventures/start", async (GameDbContext db, StartAdventure dto
     // Génération du donjon
     var rooms = DungeonGenerator.GenerateDungeon(dto.MinRooms ?? 3, dto.MaxRooms ?? 5); 
     
-    // CORRECTION MAJEURE: On renvoie l'objet 'adv' complet, pas juste l'ID
+    // On renvoie l'objet 'adv' complet, pas juste l'ID
     return Results.Created($"/api/adventures/{adv.Id}", new StartPayload(adv, rooms));
 });
 
@@ -83,15 +90,14 @@ app.MapPost("/api/adventures/{id:int}/finish", async (GameDbContext db, int id, 
     adv.Score = dto.Score;
     adv.FinishedAt = DateTime.UtcNow;
 
-    // CORRECTION: Mapping des DTOs (int) vers les Entités (Enum)
     if (dto.Rooms != null)
     {
         adv.Rooms = dto.Rooms.Select(r => new RoomPlay
         {
             Index = r.Index,
-            Type = (RoomType)r.Type,           // Cast int -> Enum
+            Type = (RoomType)r.Type,           
             Difficulty = r.Difficulty,
-            Action = (PlayerAction)r.Action,   // Cast int -> Enum
+            Action = (PlayerAction)r.Action,   
             Points = r.Points
         }).ToList();
     }
@@ -104,15 +110,17 @@ app.MapPost("/api/adventures/{id:int}/finish", async (GameDbContext db, int id, 
     return Results.Ok(adv);
 });
 
-// Leaderboard
+// -----------------------------------------------------------
+// LEADERBOARD CORRIGÉ
+// -----------------------------------------------------------
 app.MapGet("/api/leaderboard", async (GameDbContext db, int top = 10) =>
 {
     var data = await db.Adventures
+        .Include(a => a.Player) // Charge les données du joueur
         .Where(a => a.FinishedAt != null)
         .OrderByDescending(a => a.Score)
         .Take(top)
-        .Select(a => new { a.Id, a.Score, a.PlayerId, a.FinishedAt })
-        .ToListAsync();
+        .ToListAsync(); // Envoie tout l'objet (sans .Select restrictif)
 
     return Results.Ok(data);
 });
@@ -120,14 +128,12 @@ app.MapGet("/api/leaderboard", async (GameDbContext db, int top = 10) =>
 app.Run();
 
 // -----------------------------------------------------------
-// DTOs (Data Transfer Objects)
+// DTOs
 // -----------------------------------------------------------
 record PlayerCreate(string UserName);
 record StartAdventure(int PlayerId, int? MinRooms, int? MaxRooms);
 
-// CORRECTION: Le StartPayload renvoie maintenant l'objet Adventure complet
 public record StartPayload(Adventure Adventure, IReadOnlyList<Room> Rooms);
 
-// CORRECTION: FinishAdventure utilise RoomPlayDto pour recevoir les données brutes (int)
 public record FinishAdventure(int Score, List<RoomPlayDto>? Rooms);
 public record RoomPlayDto(int Index, int Type, int Difficulty, int Action, int Points);
