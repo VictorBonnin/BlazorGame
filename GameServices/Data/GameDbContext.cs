@@ -1,28 +1,38 @@
 using Microsoft.EntityFrameworkCore;
-using SharedModels.Entities;   // <-- IMPORTANT
+using SharedModels.Entities;
 
 namespace GameServices.Data;
 
 public class GameDbContext : DbContext
 {
+    public DbSet<Player> Players { get; set; }
+    public DbSet<Adventure> Adventures { get; set; }
+
     public GameDbContext(DbContextOptions<GameDbContext> options) : base(options) { }
 
-    public DbSet<Player> Players => Set<Player>();
-    public DbSet<Adventure> Adventures => Set<Adventure>();
-
-    protected override void OnModelCreating(ModelBuilder b)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        b.Entity<Player>()
-            .HasIndex(p => p.UserName)
-            .IsUnique();
+        modelBuilder.Entity<Adventure>().HasKey(a => a.Id);
+        modelBuilder.Entity<Player>().HasKey(p => p.Id);
 
-        // Rooms (RoomPlay) stockées comme "owned collection"
-        b.Entity<Adventure>()
-         .OwnsMany(a => a.Rooms, rb =>
-         {
-             rb.WithOwner().HasForeignKey("AdventureId");
-             rb.Property<int>("Id");
-             rb.HasKey("Id");
-         });
+        // Configuration de la relation One-to-Many entre Player et Adventure
+        modelBuilder.Entity<Adventure>()
+            .HasOne(a => a.Player)
+            .WithMany()
+            .HasForeignKey(a => a.PlayerId);
+
+        // Configuration de la collection détenue (Owned Collection)
+        modelBuilder.Entity<Adventure>().OwnsMany(
+            a => a.Rooms,
+            r =>
+            {
+                r.WithOwner().HasForeignKey("AdventureId");
+                r.Property(rp => rp.Index);
+                r.Property(rp => rp.Type);
+                r.Property(rp => rp.Action);
+                r.Property(rp => rp.Points);
+                r.Property(rp => rp.Difficulty);
+                r.HasKey(nameof(RoomPlay.Id), "AdventureId");
+            });
     }
 }

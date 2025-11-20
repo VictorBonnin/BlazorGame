@@ -1,16 +1,17 @@
 ﻿@using System.Net.Http
-
+@using System.Net.Http.Json
+@using System.ComponentModel.DataAnnotations @* AJOUTÉ : Pour la validation du formulaire *@
 @using Microsoft.AspNetCore.Components
-@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Forms         @* ESSENTIEL : Active InputText, InputNumber, EditForm *@
 @using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Components.WebAssembly.Http
 @using Microsoft.JSInterop
-
 @using BlazorGame.Client
 @using BlazorGame.Client.Layout
 @using BlazorGame.Client.Pages
 @using BlazorGame.Client.Services
 @using BlazorGame.Client.Shared
-
 @using SharedModels
 @using SharedModels.Entities

@@ -1,19 +1,21 @@
 using Microsoft.AspNetCore.Components;
+using SharedModels.Entities;
 
 namespace BlazorGame.Client.Pages;
 
 public partial class RoomComponent : ComponentBase
 {
-    private string result = string.Empty;
+    [Parameter]
+    public Room Room { get; set; } = default!;
 
-    protected void ChooseAction(string action)
+    [Parameter]
+    public EventCallback<PlayerAction> OnActionSelected { get; set; }
+
+    [Parameter]
+    public bool IsLoading { get; set; }
+
+    private async Task ChooseAction(PlayerAction action)
     {
-        result = action switch
-        {
-            "combattre" => "Vous avez vaincu le gobelin ! +10 points",
-            "fuir"      => "Vous fuyez prudemment… aucun gain.",
-            "fouiller"  => "Vous trouvez un petit trésor ! +5 points",
-            _           => "Action inconnue."
-        };
+        await OnActionSelected.InvokeAsync(action);
     }
 }

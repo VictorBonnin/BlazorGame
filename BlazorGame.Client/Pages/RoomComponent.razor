@@ -1,16 +1,38 @@
-﻿<div class="card p-4">
-  <h3 class="mb-3">Une salle mystérieuse…</h3>
+﻿@using SharedModels.Entities
 
-  <div class="btn-group flex-wrap">
-    <button class="btn btn-success" @onclick="@(()=>ChooseAction("combattre"))">⚔️ Combattre</button>
-    <button class="btn btn-secondary" @onclick="@(()=>ChooseAction("fuir"))">🏃‍♀️ Fuir</button>
-    <button class="btn btn-warning" @onclick="@(()=>ChooseAction("fouiller"))">🧭 Fouiller</button>
-  </div>
+<div class="room-display p-3 border rounded @GetRoomCssClass()">
+    <h4>Salle n°@Room.Index - Type : **@Room.Type**</h4>
+    <p>Difficulté : **@Room.Difficulty**</p>
 
-  @if (!string.IsNullOrWhiteSpace(result))
-  {
-    <div class="alert alert-info mt-4">
-      @result
+    {{-- Affichage de la description de l'événement --}}
+    <div class="alert alert-secondary">
+        @Room.EventDescription
     </div>
-  }
+
+    <div class="action-buttons mt-3">
+        @* Action de Combattre *@
+        <button class="btn btn-danger m-1" @onclick="() => ChooseAction(PlayerAction.Combattre)" disabled="@IsLoading">
+            <i class="oi oi-fire"></i> Combattre
+        </button>
+
+        @* Action de Fouiller *@
+        <button class="btn btn-warning m-1" @onclick="() => ChooseAction(PlayerAction.Fouiller)" disabled="@IsLoading">
+            <i class="oi oi-wrench"></i> Fouiller
+        </button>
+
+        @* Action de Fuir *@
+        <button class="btn btn-info m-1" @onclick="() => ChooseAction(PlayerAction.Fuir)" disabled="@IsLoading">
+            <i class="oi oi-run"></i> Fuir
+        </button>
+    </div>
 </div>
+
+@code {
+    private string GetRoomCssClass() => Room.Type switch
+    {
+        RoomType.Combat => "bg-danger-subtle border-danger",
+        RoomType.Loot => "bg-warning-subtle border-warning",
+        RoomType.Trap => "bg-info-subtle border-info",
+        _ => "bg-light border-secondary"
+    };
+}

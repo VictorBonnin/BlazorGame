@@ -1,28 +1,19 @@
 @page "/"
+@inject BlazorGame.Client.Services.PlayerSessionService Session
+@inject NavigationManager Navigation
 
-<div class="page container-narrow">
-  <div class="card p-5 text-center">
-    <h1 class="display-4 hero-title">Blazor Game Quest</h1>
-    <p class="lead mt-2">
-      Entrez dans le donjon, récoltez des points et grimpez au classement.
-    </p>
+<PageTitle>Accueil de l'Aventure</PageTitle>
 
-    <div class="mt-4">
-      <NavLink class="btn btn-lg btn-start alien-sparkles" href="/newadventure">
-        <span class="icon-left">🚀</span>
-        <span class="label alien-text">Nouvelle aventure</span>
-      </NavLink>
-
-      <NavLink class="btn btn-lg btn-start alien-sparkles" href="/leaderboard">
-        <span class="icon-left">🏆</span>
-        <span class="label alien-text">Voir le classement</span>
-      </NavLink>
-    </div>
-
-    <div class="mt-5 alert alert-info">
-      <div class="mt-4">
-          <HintBox />
-      </div>
-    </div>
-  </div>
-</div>
+@code {
+    protected override void OnInitialized()
+    {
+        if (!Session.IsAuthenticated)
+        {
+            Navigation.NavigateTo("/login");
+        }
+        else
+        {
+            Navigation.NavigateTo("/new-adventure");
+        }
+    }
+}

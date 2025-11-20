@@ -390,3 +390,88 @@
   .btn-start.alien-sparkles::before{ animation:alienDrift1 14s linear infinite; opacity:.9; }
   .btn-start.alien-sparkles::after { animation:alienDrift2 20s linear infinite; opacity:.6; }
   
+  /* --- NOUVEAUX STYLES POUR LA VUE DE JEU ET LES COMPOSANTS DE SALLE --- */
+
+/* Styles pour le conteneur principal de la salle */
+.room-display {
+    padding: 20px !important;
+    margin-top: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.room-display:hover {
+    transform: translateY(-2px);
+}
+
+/* Amélioration du contraste pour la description de l'événement */
+.room-display .alert-secondary {
+    background-color: #e9ecef !important; /* Gris très clair */
+    border-left: 5px solid #007bff; /* Barre bleue pour attirer l'attention */
+    color: #343a40; /* Texte sombre pour un bon contraste */
+    font-size: 1.1em;
+    font-weight: 500;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+/* Style des boutons d'action pour la clarté et l'espace */
+.action-buttons {
+    display: flex;
+    justify-content: center; /* Centrer les boutons */
+    flex-wrap: wrap; /* Permettre le passage à la ligne sur petits écrans */
+    margin-top: 25px;
+}
+
+.action-buttons .btn {
+    min-width: 150px;
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: bold;
+    margin: 8px; /* Plus d'espace entre les boutons */
+    text-transform: uppercase;
+    transition: background-color 0.15s, box-shadow 0.15s;
+    border-radius: 8px;
+}
+
+/* Styles spécifiques aux types de salle (pour une meilleure identification visuelle) */
+/* Combat (Rouge) */
+.bg-danger-subtle {
+    background-color: #f8d7da !important;
+    border-color: #f5c6cb !important;
+}
+/* Loot (Jaune) */
+.bg-warning-subtle {
+    background-color: #fff3cd !important;
+    border-color: #ffeeba !important;
+}
+/* Trap (Bleu/Cyan) */
+.bg-info-subtle {
+    background-color: #cce5ff !important;
+    border-color: #b8daff !important;
+}
+
+/* S'assurer que les icônes dans les boutons sont bien visibles */
+.action-buttons .oi {
+    margin-right: 5px;
+}
+
+/* --- NOUVEAUX STYLES POUR LA PAGE DE CONNEXION (Login.razor) --- */
+
+.card .form-control {
+    /* Assure que le texte du champ d'entrée est sombre et lisible */
+    color: #212529 !important; /* Couleur sombre */
+    background-color: #f8f9fa; /* Fond très clair */
+    border: 1px solid #ced4da;
+}
+
+.card label {
+    /* Améliore la visibilité des étiquettes (labels) */
+    font-weight: 600;
+    color: #495057; 
+}
+
+/* Style de la carte pour mieux contraster avec l'arrière-plan */
+.card {
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}

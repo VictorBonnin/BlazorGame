@@ -1,112 +1,87 @@
-﻿@using SharedModels.Entities
+﻿@page "/new-adventure"
 
-@page "/newadventure"
+<PageTitle>Nouvelle Aventure</PageTitle>
 
-<div class="page container-narrow">
-
-  @if (!started && !finished)
-  {
-    <div class="card p-5 text-center">
-      <h2 class="display-5 page-title"><span class="die">🎲</span> Nouvelle aventure</h2>
-      <p class="lead">Prêt·e à explorer le donjon&nbsp;?</p>
-
-      @if (!string.IsNullOrEmpty(error))
-      {
-        <div class="alert alert-info mt-3">
-          Oups… <strong>@error</strong>
-        </div>
-      }
-
-      <button class="btn btn-primary btn-lg mt-3" @onclick="StartAndHint" disabled="@(loading)">
-        @(loading ? "Chargement..." : "Commencer")
-      </button>
+<div class="card mb-4 @(GameFinished ? "border-success" : (GameInProgress ? "border-primary" : "border-info"))">
+    <div class="card-header">
+        @if (GameInProgress)
+        {
+            <h3 class="mb-0">Salle @CurrentRoomIndex sur @DungeonRooms?.Count</h3>
+        }
+        else if (GameFinished)
+        {
+            <h3 class="mb-0 text-success">🎉 Aventure Terminée !</h3>
+        }
+        else
+        {
+            <h3 class="mb-0">Démarrer une Nouvelle Aventure</h3>
+        }
     </div>
-  }
-
-  @if (started)
-  {
-    <div class="card p-4 game-panel">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <div class="hud-label">Salle</div>
-          <div class="hud-value">@((current + 1)) / @(rooms?.Count ?? 0)</div>
+    <div class="card-body">
+        
+        @* Message d'état et d'erreur *@
+        <div class="alert @(Message.Contains("Erreur") ? "alert-danger" : "alert-info")">
+            @Message
         </div>
-        <div class="text-end">
-          <div class="hud-label">Score</div>
-          <div class="hud-value hud">⭐ @score</div>
-        </div>
-      </div>
 
-      <div class="progress-xeno mt-3">
-        <div class="bar" style="width:@Progress();"></div>
-      </div>
+        @* Formulaire de démarrage (Visible si le jeu n'est pas démarré ni terminé) *@
+        @if (!GameInProgress && !GameFinished)
+        {
+            @if (Session.IsAuthenticated)
+            {
+                <div class="alert alert-success">Connecté en tant que : **@Session.CurrentPlayerName**</div>
+            }
 
-      <div class="mt-4">
-        <h3 class="game-section-title">Que faites-vous ?</h3>
-        <div class="btn-group flex-wrap">
-          <button class="btn btn-success btn-lg"   @onclick="ChooseCombattre">⚔️ Combattre</button>
-          <button class="btn btn-secondary btn-lg" @onclick="ChooseFuir">🏃‍♂️ Fuir</button>
-          <button class="btn btn-warning btn-lg"   @onclick="ChooseFouiller">🧭 Fouiller</button>
-        </div>
-      </div>
-      <div class="mt-4">
-        <HintBox @ref="hintRef" Compact="true" class="mt-3" />
-      </div>
+            <EditForm Model="@FormModel" OnValidSubmit="StartAdventure">
+                <DataAnnotationsValidator />
+                <div class="row g-3 align-items-end">
+                    
+                    @* LE CHAMP PlayerId A ÉTÉ RETIRÉ ICI *@
+
+                    <div class="col-md-4">
+                        <label for="minRooms" class="form-label">Min Salles</label>
+                        <InputNumber id="minRooms" class="form-control" @bind-Value="FormModel.MinRooms" />
+                    </div>
+                    <div class="col-md-4">
+                        <label for="maxRooms" class="form-label">Max Salles</label>
+                        <InputNumber id="maxRooms" class="form-control" @bind-Value="FormModel.MaxRooms" />
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-primary w-100" disabled="@IsLoading">
+                            @if (IsLoading) {
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            }
+                            Démarrer l'Aventure
+                        </button>
+                    </div>
+                </div>
+            </EditForm>
+        }
+        @* Affichage de l'aventure en cours *@
+        else if (GameInProgress)
+        {
+            <div class="mb-3">
+                <p>Joueur : **@Session.CurrentPlayerName**</p>
+                <p>Score actuel : **@CurrentAdventure?.Score**</p>
+                <p>Salle : **@CurrentRoomIndex** sur **@DungeonRooms?.Count**</p>
+            </div>
+            
+            @if (CurrentRoom != null)
+            {
+                <RoomComponent Room="@CurrentRoom" OnActionSelected="HandleAction" IsLoading="@IsLoading" />
+            }
+        }
+
+        @* Affichage de fin de partie *@
+        else if (GameFinished)
+        {
+            <div class="text-center">
+                <h4 class="text-success">Votre Score Final : @CurrentAdventure?.Score</h4>
+                <p class="text-muted">Aventure jouée avec @CurrentAdventure?.Rooms.Count() salles.</p>
+                <button class="btn btn-primary mt-3" @onclick="StartAdventure" disabled="@IsLoading">
+                    Recommencer une partie
+                </button>
+            </div>
+        }
     </div>
-  }
-
-  @if (finished)
-  {
-    <div class="card p-5 text-center end-panel">
-      <h1 class="end-title" style="position:relative;">
-        <span class="glow">AVENTURE TERMINÉE</span>
-      </h1>
-
-      <p class="lead mt-2">Votre score final&nbsp;: <strong>⭐ @score</strong></p>
-
-      <div class="mt-4 d-flex gap-3 justify-content-center flex-wrap">
-        <NavLink class="btn btn-outline-primary px-4" href="/leaderboard">Voir le classement</NavLink>
-        <button class="btn btn-primary px-4" @onclick="StartAndHint">Rejouer</button>
-      </div>
-    </div>
-  }
-
 </div>
-
-@code {
-  private BlazorGame.Client.Shared.HintBox? hintRef;
-
-  private string Progress()
-  {
-    var total = rooms?.Count ?? 0;
-    if (total <= 0) return "0%";
-    var pct = (int)((current * 100.0) / total);
-    return $"{pct}%";
-  }
-
-  // --- Handlers UI async/await ---
-
-  private async Task StartAndHint()
-  {
-    await StartAdventure();   // ⚠️ on attend l'appel async
-    hintRef?.Refresh();
-  }
-
-  private async Task ChooseCombattre()
-  {
-    await Choose("combattre");
-    hintRef?.Refresh();
-  }
-
-  private async Task ChooseFuir()
-  {
-    await Choose("fuir");
-    hintRef?.Refresh();
-  }
-
-  private async Task ChooseFouiller()
-  {
-    await Choose("fouiller");
-    hintRef?.Refresh();
-  }
-}

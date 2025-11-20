@@ -1,6 +1,7 @@
 using GameServices.Data;
 using Microsoft.EntityFrameworkCore;
-using SharedModels.Entities;   // <-- pas SharedModels;
+using SharedModels.Entities;
+using GameServices.Logic; // <-- NOUVEAU: Importation du générateur de donjon
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,28 +27,14 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors(CorsPolicy);
 
-// util pour générer les salles
-static List<Room> GenerateRooms(int min = 3, int max = 5)
-{
-    var rng = Random.Shared;
-    min = Math.Max(1, min);
-    max = Math.Max(min, max);
-
-    var count = rng.Next(min, max + 1);
-    var rooms = new List<Room>(count);
-    for (int i = 1; i <= count; i++)
-    {
-        var type = (RoomType)rng.Next(0, 3);
-        var diff = rng.Next(1, 6);
-        rooms.Add(new Room(i, type, diff));
-    }
-    return rooms;
-}
+// La fonction locale GenerateRooms a été supprimée, 
+// nous utilisons directement GameServices.Logic.DungeonGenerator
 
 // Compatibilité avec le client actuel (NewAdventure)
 app.MapGet("/api/dungeon/new", (int? min, int? max) =>
 {
-    var rooms = GenerateRooms(min ?? 3, max ?? 5);
+    // Utilisation de la classe DungeonGenerator externe et corrigée
+    var rooms = DungeonGenerator.Generate(min ?? 3, max ?? 5);
     return Results.Ok(rooms);
 });
 
@@ -79,7 +66,8 @@ app.MapPost("/api/adventures/start", async (GameDbContext db, StartAdventure dto
     db.Adventures.Add(adv);
     await db.SaveChangesAsync();
 
-    var rooms = GenerateRooms(dto.MinRooms ?? 3, dto.MaxRooms ?? 5);
+    // Utilisation de la classe DungeonGenerator externe et corrigée
+    var rooms = DungeonGenerator.Generate(dto.MinRooms ?? 3, dto.MaxRooms ?? 5); 
     return Results.Created($"/api/adventures/{adv.Id}", new StartPayload(adv.Id, rooms));
 });
 
@@ -115,4 +103,4 @@ app.Run();
 record PlayerCreate(string UserName);
 record StartAdventure(int PlayerId, int? MinRooms, int? MaxRooms);
 record FinishAdventure(int Score, List<RoomPlay>? Rooms);
-record StartPayload(int AdventureId, List<Room> Rooms);
+record StartPayload(int AdventureId, IReadOnlyList<Room> Rooms); // NOUVEAU: IReadOnlyList pour StartPayload

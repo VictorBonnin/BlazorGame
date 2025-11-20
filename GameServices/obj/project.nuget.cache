@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "jHGnesB2ZnA=",
+  "dgSpecHash": "7TwjkDKEVxU=",
   "success": true,
-  "projectFilePath": "C:\\Users\\bonni\\Documents\\Ecole\\Efrei\\Inge\\DotNet\\Projet\\BlazorGameQuest\\GameServices\\GameServices.csproj",
+  "projectFilePath": "C:\\Users\\bonni\\Documents\\Ecole\\Efrei\\Inge\\DotNet\\Reset-Prod\\BlazorGame\\GameServices\\GameServices.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\bonni\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\bonni\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.9\\microsoft.aspnetcore.openapi.9.0.9.nupkg.sha512",
