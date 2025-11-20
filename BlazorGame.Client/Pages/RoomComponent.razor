@@ -44,7 +44,7 @@
     <div class="action-buttons mt-3">
         @if (!IsLoading)
         {
-            <button class="btn btn-danger" @onclick="() => ChooseAction(PlayerAction.Combattre)">
+            <button @onclick="() => OnActionSelected.InvokeAsync(SharedModels.PlayerAction.Combattre)">
                 Combattre
             </button>
             <button class="btn btn-success" @onclick="() => ChooseAction(PlayerAction.Fouiller)">

@@ -1,7 +1,6 @@
 ﻿@page "/new-adventure"
 @using Microsoft.AspNetCore.Components.Forms
 @using SharedModels.Entities
-@using System.Linq
 @using SharedModels
 
 <PageTitle>Nouvelle Aventure</PageTitle>
@@ -10,7 +9,7 @@
     <div class="card-header">
         @if (GameInProgress)
         {
-            <h3 class="mb-0">Salle @CurrentRoomIndex sur @DungeonRooms?.Count</h3>
+            <h3 class="mb-0">Salle @CurrentRoomIndex <small class="text-muted">/ @DungeonRooms?.Count</small></h3>
         }
         else if (GameFinished)
         {
@@ -23,66 +22,80 @@
     </div>
     <div class="card-body">
         
-        @* Message d'état et d'erreur *@
+        @* Message d'information ou d'erreur *@
         <div class="alert @(Message.Contains("Erreur") ? "alert-danger" : "alert-info")">
-            @Message
+             @Message
         </div>
 
-        @* Formulaire de démarrage (Visible si le jeu n'est pas démarré ni terminé) *@
+        @* --- CAS 1 : JEU NON COMMENCÉ --- *@
         @if (!GameInProgress && !GameFinished)
         {
             @if (Session.IsAuthenticated)
             {
-                <div class="alert alert-success">Connecté en tant que : **@Session.CurrentPlayerName**</div>
+                <p class="text-muted">Bienvenue, <strong>@Session.CurrentPlayerName</strong>. Prêt à explorer ?</p>
             }
 
-            @* CORRECTION : Formulaire simplifié sans choix de salles pour le joueur *@
             <EditForm Model="@FormModel" OnValidSubmit="StartAdventure">
                 <DataAnnotationsValidator />
-                
                 <div class="row g-3 align-items-end">
                     <div class="col-12">
-                        <p class="text-muted">Le donjon aura entre 3 et 5 salles générées aléatoirement.</p>
-                        
-                        <button type="submit" class="btn btn-primary w-100" disabled="@IsLoading">
+                        <p>Le donjon contiendra entre 3 et 5 salles générées aléatoirement.</p>
+                        <button type="submit" class="btn btn-primary w-100 btn-lg" disabled="@IsLoading">
                             @if (IsLoading) {
-                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                <span>Génération du donjon...</span>
                             }
-                            Démarrer l'Aventure
+                            else
+                            {
+                                <span>🚀 Démarrer l'Aventure</span>
+                            }
                         </button>
                     </div>
                 </div>
             </EditForm>
         }
-        @* Affichage de l'aventure en cours *@
+
+        @* --- CAS 2 : JEU EN COURS --- *@
         else if (GameInProgress)
         {
-            <div class="mb-3">
-                <p>Joueur : **@Session.CurrentPlayerName**</p>
-                <p>Score actuel : **@CurrentAdventure?.Score**</p>
-                <p>Salle : **@CurrentRoomIndex** sur **@DungeonRooms?.Count**</p>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="badge bg-secondary fs-6">Joueur : @Session.CurrentPlayerName</span>
+                <span class="badge bg-warning text-dark fs-5">Score : @CurrentAdventure?.Score</span>
             </div>
             
             @if (CurrentRoom != null)
             {
                 <RoomComponent Room="@CurrentRoom" OnActionSelected="HandleAction" IsLoading="@IsLoading" />
             }
+            else
+            {
+                <p class="text-danger">Erreur : Impossible de charger la salle actuelle.</p>
+            }
         }
 
-        @* Affichage de fin de partie *@
+        @* --- CAS 3 : JEU TERMINÉ --- *@
         else if (GameFinished)
         {
-            <div class="text-center">
-                <h4 class="text-success">Votre Score Final : @CurrentAdventure?.Score</h4>
-                <p class="text-muted">Aventure jouée avec @CurrentAdventure?.Rooms.Count() salles.</p>
-                <button class="btn btn-primary mt-3" @onclick="StartAdventure" disabled="@IsLoading">
-                    Recommencer une partie
-                </button>
+            <div class="text-center py-4">
+                <h1 class="display-4 @(CurrentAdventure?.Score < 0 ? "text-danger" : "text-success")">
+                    @CurrentAdventure?.Score pts
+                </h1>
+                <p class="lead">
+                    @if(CurrentAdventure?.Score < 0) { <span>Vous avez péri dans le donjon... 🪦</span> }
+                    else { <span>Félicitations pour cette expédition ! 💰</span> }
+                </p>
+                
+                <hr />
+                
+                <div class="d-grid gap-2 col-6 mx-auto">
+                    <button class="btn btn-primary" @onclick="StartAdventure" disabled="@IsLoading">
+                        🔄 Rejouer une partie
+                    </button>
+                    <a href="/leaderboard" class="btn btn-outline-secondary">
+                        🏆 Voir le classement
+                    </a>
+                </div>
             </div>
         }
     </div>
 </div>
-
-@code {
-    // Le code Razor utilise les propriétés définies dans NewAdventure.razor.cs
-}

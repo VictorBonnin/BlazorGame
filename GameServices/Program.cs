@@ -2,7 +2,7 @@ using GameServices.Data;
 using Microsoft.EntityFrameworkCore;
 using SharedModels.Entities;
 using GameServices.Logic; 
-using SharedModels; // <--- CORRECTION CS0246: Ajout pour Room et RoomPlay
+using SharedModels; 
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,10 +28,9 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors(CorsPolicy);
 
-// Compatibilité avec le client actuel (NewAdventure)
+// Compatibilité avec le client actuel (Test Dungeon)
 app.MapGet("/api/dungeon/new", (int? min, int? max) =>
 {
-    // CORRECTION CS0117: Changement de .Generate en .GenerateDungeon
     var rooms = DungeonGenerator.GenerateDungeon(min ?? 3, max ?? 5); 
     return Results.Ok(rooms);
 });
@@ -54,7 +53,9 @@ app.MapGet("/api/players/{id:int}", async (GameDbContext db, int id) =>
     return p is null ? Results.NotFound() : Results.Ok(p);
 });
 
-// Démarrer une aventure -> renvoie ID + salles
+// -----------------------------------------------------------
+// Démarrer une aventure
+// -----------------------------------------------------------
 app.MapPost("/api/adventures/start", async (GameDbContext db, StartAdventure dto) =>
 {
     var player = await db.Players.FindAsync(dto.PlayerId);
@@ -64,12 +65,16 @@ app.MapPost("/api/adventures/start", async (GameDbContext db, StartAdventure dto
     db.Adventures.Add(adv);
     await db.SaveChangesAsync();
 
-    // CORRECTION CS0117: Changement de .Generate en .GenerateDungeon
+    // Génération du donjon
     var rooms = DungeonGenerator.GenerateDungeon(dto.MinRooms ?? 3, dto.MaxRooms ?? 5); 
-    return Results.Created($"/api/adventures/{adv.Id}", new StartPayload(adv.Id, rooms));
+    
+    // CORRECTION MAJEURE: On renvoie l'objet 'adv' complet, pas juste l'ID
+    return Results.Created($"/api/adventures/{adv.Id}", new StartPayload(adv, rooms));
 });
 
-// Terminer une aventure
+// -----------------------------------------------------------
+// Terminer une aventure (Sauvegarde score + historique)
+// -----------------------------------------------------------
 app.MapPost("/api/adventures/{id:int}/finish", async (GameDbContext db, int id, FinishAdventure dto) =>
 {
     var adv = await db.Adventures.FirstOrDefaultAsync(a => a.Id == id);
@@ -77,7 +82,24 @@ app.MapPost("/api/adventures/{id:int}/finish", async (GameDbContext db, int id, 
 
     adv.Score = dto.Score;
     adv.FinishedAt = DateTime.UtcNow;
-    adv.Rooms = dto.Rooms ?? new();
+
+    // CORRECTION: Mapping des DTOs (int) vers les Entités (Enum)
+    if (dto.Rooms != null)
+    {
+        adv.Rooms = dto.Rooms.Select(r => new RoomPlay
+        {
+            Index = r.Index,
+            Type = (RoomType)r.Type,           // Cast int -> Enum
+            Difficulty = r.Difficulty,
+            Action = (PlayerAction)r.Action,   // Cast int -> Enum
+            Points = r.Points
+        }).ToList();
+    }
+    else 
+    {
+        adv.Rooms = new List<RoomPlay>();
+    }
+
     await db.SaveChangesAsync();
     return Results.Ok(adv);
 });
@@ -97,8 +119,15 @@ app.MapGet("/api/leaderboard", async (GameDbContext db, int top = 10) =>
 
 app.Run();
 
-// DTOs
+// -----------------------------------------------------------
+// DTOs (Data Transfer Objects)
+// -----------------------------------------------------------
 record PlayerCreate(string UserName);
 record StartAdventure(int PlayerId, int? MinRooms, int? MaxRooms);
-record FinishAdventure(int Score, List<RoomPlay>? Rooms);
-record StartPayload(int AdventureId, IReadOnlyList<Room> Rooms);
+
+// CORRECTION: Le StartPayload renvoie maintenant l'objet Adventure complet
+public record StartPayload(Adventure Adventure, IReadOnlyList<Room> Rooms);
+
+// CORRECTION: FinishAdventure utilise RoomPlayDto pour recevoir les données brutes (int)
+public record FinishAdventure(int Score, List<RoomPlayDto>? Rooms);
+public record RoomPlayDto(int Index, int Type, int Difficulty, int Action, int Points);

@@ -14,20 +14,22 @@ public partial class NewAdventure : ComponentBase
     [Inject] public PlayerSessionService Session { get; set; } = default!;
     [Inject] public NavigationManager Navigation { get; set; } = default!;
 
-    // Modèle de formulaire (Simplifié, il ne contient plus de MinRooms/MaxRooms)
+    // Modèle de formulaire
     public StartFormModel FormModel { get; set; } = new StartFormModel();
 
-    // ... (Reste des propriétés d'état de la partie)
+    // État de la partie
     public Adventure? CurrentAdventure { get; set; }
     public IReadOnlyList<Room>? DungeonRooms { get; set; }
+    
+    // Récupère la salle correspondant à l'index actuel (Index 1 = Élément 0)
     public Room? CurrentRoom => DungeonRooms?.ElementAtOrDefault(CurrentRoomIndex - 1);
     public int CurrentRoomIndex { get; set; } = 1;
+    
     public string Message { get; set; } = "Préparez-vous pour l'aventure !";
     public bool GameInProgress => CurrentAdventure != null && CurrentAdventure.FinishedAt == null;
     public bool GameFinished => CurrentAdventure != null && CurrentAdventure.FinishedAt != null;
     public bool IsLoading { get; set; } = false;
 
-    // Redirige vers la page de connexion si le joueur n'est pas authentifié au chargement
     protected override void OnInitialized()
     {
         if (!Session.IsAuthenticated)
@@ -37,7 +39,7 @@ public partial class NewAdventure : ComponentBase
     }
 
     /// <summary>
-    /// Démarre une nouvelle aventure. (Déclenché par OnValidSubmit du EditForm)
+    /// Démarre une nouvelle aventure.
     /// </summary>
     public async Task StartAdventure()
     {
@@ -51,13 +53,13 @@ public partial class NewAdventure : ComponentBase
         CurrentAdventure = null; 
         DungeonRooms = null;
         CurrentRoomIndex = 1;
-        Message = $"Tentative de création d'une nouvelle aventure pour {Session.CurrentPlayerName} (3 à 5 salles)...";
+        Message = $"Création du donjon pour {Session.CurrentPlayerName} (3 à 5 salles)...";
         
         StateHasChanged(); 
         
         try
         {
-            // CORRECTION: Passage des valeurs 3 et 5 en dur pour le MinRooms et MaxRooms
+            // On demande un donjon de 3 à 5 salles
             var requestDto = new StartRequest(Session.CurrentPlayerId.Value, 3, 5); 
             var response = await Http.PostAsJsonAsync("api/adventures/start", requestDto);
 
@@ -66,11 +68,13 @@ public partial class NewAdventure : ComponentBase
             var result = await response.Content.ReadFromJsonAsync<StartPayload>();
             
             CurrentAdventure = result?.Adventure;
-            DungeonRooms = result?.Rooms; // Utilise rooms du payload
+            DungeonRooms = result?.Rooms; 
             
             if (DungeonRooms is not null && DungeonRooms.Any())
             {
-                 Message = $"Aventure n°{CurrentAdventure?.Id} démarrée ! Nombre de salles : {DungeonRooms.Count}. Bonne chance, {Session.CurrentPlayerName} !";
+                 // Initialise la liste des salles jouées côté client pour le suivi
+                 CurrentAdventure!.Rooms = new List<RoomPlay>();
+                 UpdateRoomMessage("L'aventure commence !");
             }
             else
             {
@@ -93,14 +97,34 @@ public partial class NewAdventure : ComponentBase
     }
 
     /// <summary>
-    /// Gère l'action du joueur pour la salle en cours.
+    /// Met à jour le message affiché en haut de l'écran selon la salle actuelle.
     /// </summary>
-    /// <param name="action">L'action choisie par le joueur.</param>
+    private void UpdateRoomMessage(string prefix = "")
+    {
+        if (CurrentRoom == null) return;
+
+        // CORRECTION: Utilisation des bons types d'Enum définis dans SharedModels/Rooms.cs
+        string roomDesc = CurrentRoom.Type switch
+        {
+            RoomType.Combat => "Un monstre menaçant se dresse devant vous !", // Correspond à Monster
+            RoomType.Loot   => "Vous apercevez un trésor ou un objet intéressant.", // Correspond à Treasure/Item
+            RoomType.Trap   => "Attention ! Vous avez déclenché un piège !", 
+            RoomType.Shop   => "Un marchand vous propose ses articles.",
+            RoomType.Exit   => "La sortie du donjon est devant vous.",
+            _               => "Une salle mystérieuse."
+        };
+
+        Message = $"{prefix} {roomDesc} (Salle {CurrentRoomIndex}/{DungeonRooms!.Count})";
+    }
+
+    /// <summary>
+    /// Gère l'action choisie par le joueur via le RoomComponent.
+    /// </summary>
     public void HandleAction(PlayerAction action)
     {
         if (!GameInProgress || CurrentRoom == null) return;
         
-        // 1. Créer le RoomPlay pour l'historique
+        // 1. Créer l'entrée d'historique pour cette salle
         var roomPlay = new RoomPlay
         {
             Index = CurrentRoomIndex,
@@ -109,61 +133,64 @@ public partial class NewAdventure : ComponentBase
             Action = action,
         };
 
-        // 2. Calculer le score (La logique de 'mort' dépend de ScoreCalculator.cs)
+        // 2. Calculer le score (Logique métier locale)
         int pointsGained = ScoreCalculator.CalculatePoints(roomPlay);
-
-        // 3. Mettre à jour l'état de la partie localement
         roomPlay.Points = pointsGained;
-        // Vérifie si la liste Rooms est initialisée (elle devrait l'être si le donjon n'est pas vide)
-        CurrentAdventure!.Rooms ??= new List<RoomPlay>(); 
-        CurrentAdventure!.Rooms.Add(roomPlay);
-        CurrentAdventure!.Score += pointsGained;
 
-        // 4. Mettre à jour le message
-        Message = $"Salle {CurrentRoomIndex} : Action '{action}' dans une salle '{CurrentRoom.Type}'. Vous gagnez {pointsGained} points. Score total : {CurrentAdventure.Score}.";
-        
-        // Vérification de la condition de mort (si points < 0)
-        if (CurrentAdventure!.Score < 0)
+        // 3. Mettre à jour l'aventure
+        CurrentAdventure!.Rooms.Add(roomPlay);
+        CurrentAdventure.Score += pointsGained;
+
+        // 4. Feedback textuel pour le joueur
+        string actionResult = pointsGained >= 0 
+            ? $"Succès ! (+{pointsGained} pts)." 
+            : $"Aïe... ({pointsGained} pts).";
+
+        // Condition de défaite (Score < 0)
+        if (CurrentAdventure.Score < 0)
         {
-            Message = $"💀 Vous avez perdu ! Votre score est tombé à {CurrentAdventure.Score}.";
+            Message = $"💀 {actionResult} Votre score est négatif ({CurrentAdventure.Score}). Vous avez succombé dans le donjon.";
             _ = FinishAdventure();
             return;
         }
 
-        // 5. Passer à la salle suivante ou terminer
+        // 5. Passage à la salle suivante
         if (CurrentRoomIndex < DungeonRooms!.Count)
         {
             CurrentRoomIndex++;
+            UpdateRoomMessage(actionResult + " Vous avancez...");
         }
         else
         {
-            // Dernière salle jouée, on termine la partie
+            // Fin du jeu
+            Message = $"🎉 {actionResult} Vous sortez du donjon !";
             _ = FinishAdventure();
         }
     }
 
     /// <summary>
-    /// Termine l'aventure et persiste les résultats.
+    /// Termine l'aventure et sauvegarde le score.
     /// </summary>
     public async Task FinishAdventure()
     {
         if (CurrentAdventure == null || GameFinished) return;
 
         IsLoading = true;
-        Message = "Fin de l'aventure. Sauvegarde des résultats...";
-        
         CurrentAdventure.FinishedAt = DateTime.UtcNow;
 
         try
         {
-            // La logique utilise une liste de RoomPlay, que nous avons initialisée.
-            var roomsToSave = CurrentAdventure.Rooms.Select(r => new RoomPlayDto(r.Index, (int)r.Type, r.Difficulty, (int)r.Action, r.Points)).ToList();
+            // Prépare les données pour l'API
+            var roomsToSave = CurrentAdventure.Rooms
+                .Select(r => new RoomPlayDto(r.Index, (int)r.Type, r.Difficulty, (int)r.Action, r.Points))
+                .ToList();
+
             var finishDto = new FinishRequest(CurrentAdventure.Score, roomsToSave);
 
             var response = await Http.PostAsJsonAsync($"api/adventures/{CurrentAdventure.Id}/finish", finishDto);
             response.EnsureSuccessStatusCode();
-
-            Message = $"Aventure terminée ! Score final : {CurrentAdventure.Score}.";
+            
+            // Le message final sera géré par l'affichage Razor
         }
         catch (Exception ex)
         {
@@ -172,18 +199,16 @@ public partial class NewAdventure : ComponentBase
         finally
         {
             IsLoading = false;
+            StateHasChanged();
         }
     }
 
-    // CORRECTION: DTO simplifié et corrigé
-    public class StartFormModel
-    {
-        // Ne contient plus de MinRooms/MaxRooms
-    }
+    public class StartFormModel { }
 
-    // CORRECTION: DTOs client mis à jour pour être utilisés dans l'appel
-    public record StartRequest(int PlayerId, int? MinRooms, int? MaxRooms); // Utilisé dans StartAdventure
-    public record StartPayload(int AdventureId, IReadOnlyList<Room> Rooms);
+    // DTOs mis à jour
+    public record StartRequest(int PlayerId, int? MinRooms, int? MaxRooms);
+    public record StartPayload(Adventure Adventure, IReadOnlyList<Room> Rooms);
+    
     public record FinishRequest(int Score, List<RoomPlayDto> Rooms);
     public record RoomPlayDto(int Index, int Type, int Difficulty, int Action, int Points);
 }
