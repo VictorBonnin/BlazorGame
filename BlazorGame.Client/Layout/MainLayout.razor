@@ -1,23 +1,34 @@
 ﻿@inherits LayoutComponentBase
-@inject BlazorGame.Client.Services.PlayerSessionService PlayerSessionService
+@inject BlazorGame.Client.Services.PlayerSessionService Session
+@inject NavigationManager Navigation
 
-<div class="app-root">
-    <NavMenu />
-    <main class="main-content">
-        @Body
+<div class="page">
+    @* AFFICHER LA NAVBAR UNIQUEMENT SI CONNECTÉ *@
+    @if (Session.IsAuthenticated)
+    {
+        <NavMenu />
+    }
+
+    <main>
+        <div class="content px-4">
+            @Body
+        </div>
     </main>
 </div>
 
 @code {
-    protected override async Task OnInitializedAsync()
+    protected override void OnParametersSet()
     {
-        try
+        // Récupère l'URL relative actuelle (ex: "login", "new-adventure")
+        var relativePath = Navigation.ToBaseRelativePath(Navigation.Uri).ToLower();
+
+        // Liste des pages autorisées SANS connexion
+        bool isPublicPage = relativePath.StartsWith("login") || relativePath.StartsWith("admin");
+
+        // SÉCURITÉ : Si pas connecté et page protégée -> Hop, au login !
+        if (!Session.IsAuthenticated && !isPublicPage)
         {
-            await PlayerSessionService.GetPlayerSession();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[MainLayout] Erreur de connexion Auth non bloquante : {ex.Message}");
+            Navigation.NavigateTo("login");
         }
     }
 }

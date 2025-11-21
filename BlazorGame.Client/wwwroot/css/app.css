@@ -336,6 +336,7 @@ font-family:var(--font-ui); letter-spacing:var(--letter-ui); text-transform:uppe
 .navlink:hover{
 transform:translateY(-1px); background:rgba(128,90,213,.18);
 box-shadow:0 6px 18px rgba(120,90,200,.15) inset;
+text-decoration: none;
 }
 .navlink.active{
 background:linear-gradient(135deg, rgba(139,92,246,.22), rgba(88,28,189,.18));
@@ -413,4 +414,8 @@ font-family: var(--font-ui);
 
 .card {
 box-shadow: var(--shadow-2);
+}
+
+#blazor-error-ui {
+    display: none !important;
 }

@@ -42,8 +42,8 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGam
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\Microsoft.Win32.Registry.nbxzikm6ra.wasm
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\mscorlib.xd6mv31d55.wasm
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\netstandard.kaml52uspo.wasm
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\SharedModels.r0alpn3dre.pdb
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\SharedModels.q4ahrwexip.wasm
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\SharedModels.u1nyei8p8y.pdb
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\SharedModels.ma8sqgwkgj.wasm
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.AppContext.s2mli7k045.wasm
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Buffers.d8ayacj23s.wasm
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Collections.Concurrent.feo024siyp.wasm
@@ -228,7 +228,7 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGam
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.ServiceModel.Web.jxbpi5wlg5.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Runtime.Handles.e3jwcwvkfi.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\dotnet.native.9ih887ebfz.js.gz
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\SharedModels.q4ahrwexip.wasm.gz
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\SharedModels.ma8sqgwkgj.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Linq.b6i9jn5866.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Numerics.b89n5cbieg.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\Microsoft.Extensions.DependencyInjection.cjor3emdhz.wasm.gz
@@ -253,7 +253,7 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGam
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Net.HttpListener.pjiup6uulr.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Net.WebHeaderCollection.3mwc447ji4.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Net.Http.t88101cxuh.wasm.gz
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\SharedModels.r0alpn3dre.pdb.gz
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\SharedModels.u1nyei8p8y.pdb.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Private.Xml.xkmk1pg9kr.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Text.Encodings.Web.f1xjgsf1dl.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\Microsoft.Extensions.Configuration.Json.7a8qwg1fzw.wasm.gz
@@ -838,7 +838,7 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGam
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\scopedcss\projectbundle\BlazorGame.Client.bundle.scp.css
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\blazor.build.boot-extension.json
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\blazor.boot.json
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\compressed\851kpmcpoy-p2ekr55boh.gz
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\compressed\851kpmcpoy-e7obznuyv7.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\compressed\gwjm23zozp-8jtx3udw10.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\compressed\6di2wi1uy7-r0syqi7o94.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\compressed\0ehqcrma78-t1cqhe9u97.gz
@@ -1093,8 +1093,8 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGam
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\compressed\b2u99a3xb3-tjcz0u77k5.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\compressed\iqxld3k7x2-tptq2av103.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\compressed\w9a4rrd8uo-lfu7j35m59.gz
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\compressed\4g85fzs2dp-q4ahrwexip.gz
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\compressed\85j3kajxx2-r0alpn3dre.gz
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\compressed\4g85fzs2dp-ma8sqgwkgj.gz
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\compressed\85j3kajxx2-u1nyei8p8y.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\staticwebassets.build.json
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\staticwebassets.build.json.cache
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\staticwebassets.development.json
@@ -1104,10 +1104,10 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGam
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\refint\BlazorGame.Client.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\BlazorGame.Client.pdb
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\ref\BlazorGame.Client.dll
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\BlazorGame.Client.7jkn0ndsll.pdb
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\BlazorGame.Client.6r72bw4j18.wasm
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\BlazorGame.Client.6r72bw4j18.wasm.gz
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\BlazorGame.Client.7jkn0ndsll.pdb.gz
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\compressed\3xge7xgleq-6r72bw4j18.gz
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\compressed\l6szname3n-7jkn0ndsll.gz
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\compressed\wvjiyygni7-j3rtuw8e0p.gz
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\BlazorGame.Client.cozhd97e2d.pdb
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\BlazorGame.Client.kar6gq48hc.wasm
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\BlazorGame.Client.kar6gq48hc.wasm.gz
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\BlazorGame.Client.cozhd97e2d.pdb.gz
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\compressed\3xge7xgleq-kar6gq48hc.gz
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\compressed\l6szname3n-cozhd97e2d.gz
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-Prod\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\compressed\wvjiyygni7-hegvndkkxf.gz

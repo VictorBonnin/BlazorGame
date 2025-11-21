@@ -1,86 +1,77 @@
 @page "/login"
-@using System.Net.Http.Json
-@using SharedModels.Entities
-@using BlazorGame.Client.Services
-@using Microsoft.AspNetCore.Components.Forms
-
-@inject HttpClient Http
-@inject PlayerSessionService Session
+@inject BlazorGame.Client.Services.PlayerSessionService Session
 @inject NavigationManager Navigation
+@inject HttpClient Http
+@using SharedModels.Entities
 
-<PageTitle>Connexion Joueur</PageTitle>
+<PageTitle>Connexion</PageTitle>
 
-<div class="card p-4">
-    <h3>Connexion ou Création de Joueur</h3>
-    <p>Entrez votre nom pour continuer l'aventure.</p>
-    
-    <EditForm Model="@Model" OnValidSubmit="HandleLoginOrCreate">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5 text-center">
+                    <h2 class="mb-4 fw-bold text-primary">Identifiez-vous</h2>
+                    
+                    @if (!string.IsNullOrEmpty(ErrorMessage))
+                    {
+                        <div class="alert alert-danger">@ErrorMessage</div>
+                    }
 
-        <div class="mb-3">
-            <label for="userName">Nom d'utilisateur</label>
-            <InputText id="userName" class="form-control" @bind-Value="Model.UserName" />
+                    <EditForm Model="this" OnValidSubmit="HandleLogin">
+                        <div class="mb-3 text-start">
+                            <label class="form-label">Nom d'utilisateur</label>
+                            <InputText @bind-Value="Username" class="form-control form-control-lg" placeholder="Ex: Victor" />
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 btn-lg mt-3">
+                            @(IsLoading ? "Chargement..." : "Entrer dans le jeu")
+                        </button>
+                    </EditForm>
+                </div>
+            </div>
         </div>
-
-        <button type="submit" class="btn btn-primary" disabled="@IsLoading">
-            @if (IsLoading) {
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            }
-            Démarrer la Session
-        </button>
-    </EditForm>
-    
-    @if (!string.IsNullOrEmpty(Message))
-    {
-        <div class="alert @(Message.Contains("Erreur") ?
- "alert-danger" : "alert-success") mt-3">@Message</div>
-    }
+    </div>
 </div>
 
 @code {
-    private PlayerCreateModel Model { get; set; } = new();
-    private string Message { get; set; } = string.Empty;
-    private bool IsLoading { get; set; } = false;
+    public string Username { get; set; } = "";
+    public string ErrorMessage { get; set; } = "";
+    public bool IsLoading { get; set; } = false;
 
-    // DTO local pour la création de joueur (PlayerCreate est dans GameServices, mais nous le redéfinissons pour la clarté du client)
-    public class PlayerCreateModel
+    private async Task HandleLogin()
     {
-        [System.ComponentModel.DataAnnotations.Required]
-        [System.ComponentModel.DataAnnotations.MinLength(3)]
-        public string? UserName { get; set; }
-    }
+        if (string.IsNullOrWhiteSpace(Username)) return;
 
-    private async Task HandleLoginOrCreate()
-    {
         IsLoading = true;
-        Message = string.Empty;
+        ErrorMessage = "";
 
         try
         {
-            // 1. Tenter de créer le joueur via l'API
-            var response = await Http.PostAsJsonAsync("api/players", new { Model.UserName });
-            response.EnsureSuccessStatusCode();
-
-            // 2. Récupérer le Player créé (ou l'entité de confirmation avec l'ID)
-            var player = await response.Content.ReadFromJsonAsync<Player>();
-            if (player?.Id > 0)
+            // 1. Création ou récupération du joueur via l'API
+            var response = await Http.PostAsJsonAsync("api/players", new { UserName = Username });
+            
+            if (response.IsSuccessStatusCode)
             {
-                // 3. Connecter l'utilisateur dans la session
-                Session.Login(player.Id, player.UserName!);
-                Message = $"Bienvenue {player.UserName} ! Connexion réussie.";
+                var player = await response.Content.ReadFromJsonAsync<Player>();
                 
-                // 4. Rediriger vers la page du jeu - CORRIGÉ
-                Navigation.NavigateTo("/new-adventure"); 
+                if (player != null)
+                {
+                    // 2. Enregistrement dans la session locale
+                    Session.Login(player.Id, player.UserName);
+
+                    // 3. REDIRECTION VERS L'ACCUEIL (Le Dashboard)
+                    Navigation.NavigateTo("/");
+                }
             }
             else
             {
-                Message = "Erreur: ID de joueur non reçu.";
+                ErrorMessage = "Erreur de connexion au serveur.";
             }
         }
         catch (Exception ex)
         {
-            Message = $"Erreur lors de la connexion/création : {ex.Message}";
+            ErrorMessage = $"Erreur technique : {ex.Message}";
         }
         finally
         {

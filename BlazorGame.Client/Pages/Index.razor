@@ -1,19 +1,34 @@
 @page "/"
 @inject BlazorGame.Client.Services.PlayerSessionService Session
-@inject NavigationManager Navigation
 
-<PageTitle>Accueil de l'Aventure</PageTitle>
+<PageTitle>Tableau de Bord</PageTitle>
 
-@code {
-    protected override void OnInitialized()
-    {
-        if (!Session.IsAuthenticated)
-        {
-            Navigation.NavigateTo("/login");
-        }
-        else
-        {
-            Navigation.NavigateTo("/new-adventure");
-        }
-    }
-}
+<div class="container text-center mt-5">
+    <div class="p-5 mb-4 bg-dark text-white rounded-3 shadow border border-secondary">
+        <h1 class="display-4 fw-bold">
+            Bienvenue, <span class="text-info">@Session.CurrentPlayerName</span>
+        </h1>
+        <p class="lead mb-4">Le donjon n'attend que vous.</p>
+
+        <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+            <a href="new-adventure" class="btn btn-success btn-lg px-5 fw-bold">
+                ⚔️ JOUER
+            </a>
+            <a href="leaderboard" class="btn btn-outline-light btn-lg px-5">
+                🏆 CLASSEMENT
+            </a>
+        </div>
+    </div>
+    
+    @* Petite section informative *@
+    <div class="row text-start mt-5">
+        <div class="col-md-6 offset-md-3">
+            <div class="card bg-secondary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Dernières nouvelles</h5>
+                    <p class="card-text">Le système de sécurité est actif. Seuls les aventuriers identifiés peuvent entrer.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -3,96 +3,115 @@
 @using SharedModels.Entities
 @using SharedModels
 
-<PageTitle>Nouvelle Aventure</PageTitle>
+<PageTitle>Aventure</PageTitle>
 
-<div class="card mb-4 @(GameFinished ? "border-success" : (GameInProgress ? "border-primary" : "border-info"))">
-    <div class="card-header">
+<div class="card mb-4 border-secondary">
+    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
         @if (GameInProgress)
         {
-            <h3 class="mb-0">Salle @CurrentRoomIndex <small class="text-muted">/ @DungeonRooms?.Count</small></h3>
-        }
-        else if (GameFinished)
-        {
-            <h3 class="mb-0 text-success">🎉 Aventure Terminée !</h3>
+            <span>Salle @CurrentRoomIndex / @DungeonRooms?.Count</span>
+            <span class="badge bg-warning text-dark fs-5">🏆 Score: @CurrentAdventure?.Score</span>
         }
         else
         {
-            <h3 class="mb-0">Démarrer une Nouvelle Aventure</h3>
+            <span>Nouvelle Partie</span>
         }
     </div>
-    <div class="card-body">
+
+    <div class="card-body bg-dark text-light">
         
-        @* Message d'information ou d'erreur *@
-        <div class="alert @(Message.Contains("Erreur") ? "alert-danger" : "alert-info")">
-             @Message
+        <div class="alert alert-info text-center">
+            @Message
         </div>
 
-        @* --- CAS 1 : JEU NON COMMENCÉ --- *@
-        @if (!GameInProgress && !GameFinished)
+        @if (GameInProgress)
         {
-            @if (Session.IsAuthenticated)
-            {
-                <p class="text-white">Bienvenue, <strong>@Session.CurrentPlayerName</strong>. Prêt à explorer ?</p>
-            }
-
-            <EditForm Model="@FormModel" OnValidSubmit="StartAdventure">
-                <DataAnnotationsValidator />
-                <div class="row g-3 align-items-end">
-                    <div class="col-12">
-                        <p>Le donjon contiendra entre 3 et 5 salles générées aléatoirement.</p>
-                        <button type="submit" class="btn btn-primary w-100 btn-lg" disabled="@IsLoading">
-                            @if (IsLoading) {
-                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                <span>Génération du donjon...</span>
-                            }
-                            else
-                            {
-                                <span>🚀 Démarrer l'Aventure</span>
-                            }
-                        </button>
+            <div class="mb-4">
+                <label class="form-label">Santé (@CurrentHealth / 100)</label>
+                <div class="progress" style="height: 25px;">
+                    <div class="progress-bar bg-danger progress-bar-striped progress-bar-animated" 
+                         role="progressbar" 
+                         style="width: @CurrentHealth%">
                     </div>
                 </div>
-            </EditForm>
-        }
-
-        @* --- CAS 2 : JEU EN COURS --- *@
-        else if (GameInProgress)
-        {
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="badge bg-secondary fs-6">Joueur : @Session.CurrentPlayerName</span>
-                <span class="badge bg-warning text-dark fs-5">Score : @CurrentAdventure?.Score</span>
             </div>
-            
+
             @if (CurrentRoom != null)
             {
                 <RoomComponent Room="@CurrentRoom" OnActionSelected="HandleAction" IsLoading="@IsLoading" />
-            }
-            else
-            {
-                <p class="text-danger">Erreur : Impossible de charger la salle actuelle.</p>
+                
+                <div class="mt-3 p-3 border border-secondary rounded">
+                    <h6 class="text-muted">🎒 Inventaire</h6>
+                    @if (Inventory.Count == 0) { <small>Vide</small> }
+                    else 
+                    {
+                        @foreach(var item in Inventory)
+                        {
+                            <span class="badge bg-secondary me-1">@item</span>
+                        }
+                    }
+                </div>
             }
         }
-
-        @* --- CAS 3 : JEU TERMINÉ --- *@
-        else if (GameFinished)
+        else if (!GameFinished)
+        {
+            <div class="text-center mt-5">
+                <h1>🏰 Entrez dans le Donjon</h1>
+                <p class="lead">Survivrez-vous aux pièges et aux monstres ?</p>
+                <EditForm Model="@FormModel" OnValidSubmit="StartAdventure">
+                    <button type="submit" class="btn btn-lg btn-success px-5">JOUER</button>
+                </EditForm>
+            </div>
+        }
+        else // --- ÉCRAN DE FIN ---
         {
             <div class="text-center py-4">
-                <h1 class="display-4 @(CurrentAdventure?.Score < 0 ? "text-danger" : "text-success")">
-                    @CurrentAdventure?.Score pts
-                </h1>
-                <p class="lead">
-                    @if(CurrentAdventure?.Score < 0) { <span>Vous avez péri dans le donjon... 🪦</span> }
-                    else { <span>Félicitations pour cette expédition ! 💰</span> }
-                </p>
+                @if(CurrentHealth <= 0) 
+                { 
+                    <h1 class="text-danger fw-bold display-3">☠️ VOUS ÊTES MORT</h1>
+                }
+                else 
+                { 
+                    <h1 class="text-success fw-bold display-3">VICTOIRE !</h1>
+                }
                 
-                <hr />
-                
-                <div class="d-grid gap-2 col-6 mx-auto">
-                    <button class="btn btn-primary" @onclick="StartAdventure" disabled="@IsLoading">
-                        🔄 Rejouer une partie
+                <h2 class="text-warning mt-3">Score Final : @CurrentAdventure?.Score</h2>
+                <hr class="border-secondary my-4"/>
+
+                @* --- RÉSUMÉ DE L'AVENTURE --- *@
+                <h4 class="text-white mb-3">📜 Résumé de l'expédition</h4>
+                <div class="list-group text-start mb-4 mx-auto" style="max-width: 600px;">
+                    @foreach (var log in AdventureLogs)
+                    {
+                        <div class="list-group-item list-group-item-dark d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="fw-bold me-2">Salle @log.RoomIndex :</span>
+                                <span>@log.Description</span>
+                            </div>
+                            <div class="text-end" style="min-width: 80px;">
+                                @if (log.ScoreChange > 0)
+                                {
+                                    <span class="badge bg-warning text-dark me-1">+@log.ScoreChange pts</span>
+                                }
+                                @if (log.HealthChange < 0)
+                                {
+                                    <span class="badge bg-danger">@log.HealthChange PV</span>
+                                }
+                                else if (log.HealthChange > 0)
+                                {
+                                    <span class="badge bg-success">+@log.HealthChange PV</span>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="d-flex gap-3 justify-content-center mt-4">
+                    <button class="btn btn-primary btn-lg" @onclick="StartAdventure">
+                        🔄 Recommencer
                     </button>
-                    <a href="/leaderboard" class="btn btn-outline-secondary">
-                        🏆 Voir le classement
+                    <a href="leaderboard" class="btn btn-outline-light btn-lg">
+                        🏆 Voir les scores
                     </a>
                 </div>
             </div>
