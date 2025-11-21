@@ -1,39 +1,55 @@
+using Microsoft.AspNetCore.Mvc;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+// 1. AJOUT DES SERVICES
 builder.Services.AddOpenApi();
+
+// --- MODIFICATION RADICALE : On utilise la politique PAR DÉFAUT ---
+// Plus de nom de politique compliqué, on ouvre tout.
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()  // Accepte tout le monde (localhost:5000, 127.0.0.1, etc.)
+              .AllowAnyMethod()  // GET, POST, PUT...
+              .AllowAnyHeader(); // Content-Type, etc.
+    });
+});
+// ------------------------------------------------------------------
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// 2. PREUVE DE VIE (Regarde ta console au lancement !)
+Console.ForegroundColor = ConsoleColor.Green;
+Console.WriteLine("*********************************************************");
+Console.WriteLine("* NOUVELLE CONFIGURATION CORS CHARGÉE AVEC SUCCÈS !    *");
+Console.WriteLine("*********************************************************");
+Console.ResetColor();
+
+// 3. CONFIGURATION DU PIPELINE
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+// Pas de redirection HTTPS pour éviter les conflits en local
+// app.UseHttpsRedirection(); 
 
-app.MapGet("/weatherforecast", () =>
+// --- ACTIVATION DU CORS (Doit être AVANT les routes) ---
+app.UseCors(); // On appelle la politique par défaut définie plus haut
+// -------------------------------------------------------
+
+// 4. LES ROUTES
+app.MapGet("/api/auth/session", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    Console.WriteLine("--> Appel reçu sur /api/auth/session !"); // Log pour voir si l'appel arrive
+    return Results.Ok<object?>(null);
+});
+
+app.MapPost("/api/auth/login", ([FromBody] object loginData) =>
+{
+    return Results.Ok(new { Message = "Login simulation" });
+});
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

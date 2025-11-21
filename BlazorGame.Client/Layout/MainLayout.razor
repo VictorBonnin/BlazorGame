@@ -1,8 +1,23 @@
 ﻿@inherits LayoutComponentBase
+@inject BlazorGame.Client.Services.PlayerSessionService PlayerSessionService
 
 <div class="app-root">
-  <NavMenu />
-  <main class="main-content">
-    @Body
-  </main>
+    <NavMenu />
+    <main class="main-content">
+        @Body
+    </main>
 </div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await PlayerSessionService.GetPlayerSession();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[MainLayout] Erreur de connexion Auth non bloquante : {ex.Message}");
+        }
+    }
+}

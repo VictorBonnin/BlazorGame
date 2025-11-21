@@ -6,21 +6,24 @@ using SharedModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- CORRECTION JSON : Permet d'inclure les objets liés (Aventure -> Joueur) sans erreur de boucle ---
+// 1. CONFIGURATION JSON (Indispensable pour éviter les boucles infinies)
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
 {
     options.SerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
-// -----------------------------------------------------------------------------------------------------
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// CORS pour le client sur 5000
-const string CorsPolicy = "AllowClient";
-builder.Services.AddCors(o => o.AddPolicy(CorsPolicy, p =>
-    p.WithOrigins("http://localhost:5000").AllowAnyHeader().AllowAnyMethod()
-));
+// 2. CORS "BAZOOKA" (On autorise tout pour débloquer le développement)
+// C'est ici que ça coinçait !
+builder.Services.AddCors(options => 
+{
+    options.AddDefaultPolicy(policy => 
+        policy.AllowAnyOrigin()  // Accepte http://localhost:5000, 127.0.0.1, etc.
+              .AllowAnyMethod()
+              .AllowAnyHeader());
+});
 
 // EF Core InMemory
 builder.Services.AddDbContext<GameDbContext>(opt =>
@@ -28,12 +31,28 @@ builder.Services.AddDbContext<GameDbContext>(opt =>
 
 var app = builder.Build();
 
+// 3. CONFIRMATION VISUELLE
+Console.ForegroundColor = ConsoleColor.Cyan;
+Console.WriteLine("*************************************************");
+Console.WriteLine("* GameServices (Port 5001) : CORS OUVERT !      *");
+Console.WriteLine("*************************************************");
+Console.ResetColor();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseCors(CorsPolicy);
+
+// Pas de redirection HTTPS (cause de conflits en local)
+// app.UseHttpsRedirection();
+
+// Active le CORS par défaut (avant les routes)
+app.UseCors();
+
+// -----------------------------------------------------------
+// ROUTES API
+// -----------------------------------------------------------
 
 // Compatibilité avec le client actuel (Test Dungeon)
 app.MapGet("/api/dungeon/new", (int? min, int? max) =>
@@ -60,9 +79,7 @@ app.MapGet("/api/players/{id:int}", async (GameDbContext db, int id) =>
     return p is null ? Results.NotFound() : Results.Ok(p);
 });
 
-// -----------------------------------------------------------
 // Démarrer une aventure
-// -----------------------------------------------------------
 app.MapPost("/api/adventures/start", async (GameDbContext db, StartAdventure dto) =>
 {
     var player = await db.Players.FindAsync(dto.PlayerId);
@@ -72,16 +89,11 @@ app.MapPost("/api/adventures/start", async (GameDbContext db, StartAdventure dto
     db.Adventures.Add(adv);
     await db.SaveChangesAsync();
 
-    // Génération du donjon
     var rooms = DungeonGenerator.GenerateDungeon(dto.MinRooms ?? 3, dto.MaxRooms ?? 5); 
-    
-    // On renvoie l'objet 'adv' complet, pas juste l'ID
     return Results.Created($"/api/adventures/{adv.Id}", new StartPayload(adv, rooms));
 });
 
-// -----------------------------------------------------------
-// Terminer une aventure (Sauvegarde score + historique)
-// -----------------------------------------------------------
+// Terminer une aventure
 app.MapPost("/api/adventures/{id:int}/finish", async (GameDbContext db, int id, FinishAdventure dto) =>
 {
     var adv = await db.Adventures.FirstOrDefaultAsync(a => a.Id == id);
@@ -110,30 +122,24 @@ app.MapPost("/api/adventures/{id:int}/finish", async (GameDbContext db, int id, 
     return Results.Ok(adv);
 });
 
-// -----------------------------------------------------------
-// LEADERBOARD CORRIGÉ
-// -----------------------------------------------------------
+// Leaderboard
 app.MapGet("/api/leaderboard", async (GameDbContext db, int top = 10) =>
 {
     var data = await db.Adventures
-        .Include(a => a.Player) // Charge les données du joueur
+        .Include(a => a.Player)
         .Where(a => a.FinishedAt != null)
         .OrderByDescending(a => a.Score)
         .Take(top)
-        .ToListAsync(); // Envoie tout l'objet (sans .Select restrictif)
+        .ToListAsync();
 
     return Results.Ok(data);
 });
 
 app.Run();
 
-// -----------------------------------------------------------
 // DTOs
-// -----------------------------------------------------------
 record PlayerCreate(string UserName);
 record StartAdventure(int PlayerId, int? MinRooms, int? MaxRooms);
-
 public record StartPayload(Adventure Adventure, IReadOnlyList<Room> Rooms);
-
 public record FinishAdventure(int Score, List<RoomPlayDto>? Rooms);
 public record RoomPlayDto(int Index, int Type, int Difficulty, int Action, int Points);

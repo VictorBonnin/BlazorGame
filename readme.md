@@ -24,6 +24,11 @@ dotnet watch run --project .\BlazorGame.Client\BlazorGame.Client.csproj
 dotnet watch run --project .\GameServices\GameServices.csproj
 ```
 
+#### Terminal 3 : API sur 5200 Authentification
+```bash 
+dotnet run --project AuthenticationServices
+```
+
 ### Version 2
 
 #### Utilisation de Swagger
