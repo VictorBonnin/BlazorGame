@@ -419,3 +419,51 @@ box-shadow: var(--shadow-2);
 #blazor-error-ui {
     display: none !important;
 }
+
+/* --- Styles spécifiques pour la HintBox --- */
+.hint-box {
+    color: #ffffff !important; /* Force le texte en blanc pur */
+}
+
+.hint-title {
+    font-weight: bold;
+    color: var(--warning); /* Optionnel : Met le titre "💡 Astuce" en jaune/orange pour qu'il ressorte */
+    margin-bottom: 5px;
+}
+
+.hint-content {
+    font-style: italic;
+    opacity: 0.9;
+}
+
+/* Force le texte en blanc sur l'alerte ET tous ses enfants (titres, paragraphes, etc.) */
+.alert-info, .alert-danger, .alert-success, .alert-warning,
+.alert-info *, .alert-danger *, .alert-success *, .alert-warning * {
+    color: #ffffff !important;
+}
+
+/* Redéfinition des fonds (translucides pour le mode sombre) */
+.alert-info {
+    background-color: rgba(14, 165, 233, 0.25) !important;
+    border-color: rgba(14, 165, 233, 0.5) !important;
+}
+
+.alert-danger {
+    background-color: rgba(239, 68, 68, 0.25) !important;
+    border-color: rgba(239, 68, 68, 0.5) !important;
+}
+
+.alert-success {
+    background-color: rgba(34, 197, 94, 0.25) !important;
+    border-color: rgba(34, 197, 94, 0.5) !important;
+}
+
+.alert-warning {
+    background-color: rgba(245, 158, 11, 0.25) !important;
+    border-color: rgba(245, 158, 11, 0.5) !important;
+}
+
+/* On s'assure que les titres ont une petite ombre pour bien ressortir */
+.alert-heading {
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8) !important;
+}
