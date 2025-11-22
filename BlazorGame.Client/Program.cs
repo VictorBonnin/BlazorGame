@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using BlazorGame.Client;
 using BlazorGame.Client.Services;
+using BlazorGame.Client.Logic; // C'est bien, tu as mis le using
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -25,5 +26,9 @@ builder.Services.AddHttpClient("AuthApi", client =>
 // Enregistrement des services
 builder.Services.AddSingleton<PlayerSessionService>(); 
 builder.Services.AddSingleton<HintService>();
+
+// --- AJOUTE CETTE LIGNE ICI ---
+builder.Services.AddScoped<RoomHandlerFactory>(); 
+// ------------------------------
 
 await builder.Build().RunAsync();

@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\bonni\\Documents\\Ecole\\Efrei\\Inge\\DotNet\\Reset-Prod\\BlazorGame\\SharedModels\\SharedModels.csproj",
+      "projectUniqueName": "C:\\Users\\bonni\\Documents\\Ecole\\Efrei\\Inge\\DotNet\\Reset-prod_2\\BlazorGame\\SharedModels\\SharedModels.csproj",
       "projectName": "SharedModels",
-      "projectPath": "C:\\Users\\bonni\\Documents\\Ecole\\Efrei\\Inge\\DotNet\\Reset-Prod\\BlazorGame\\SharedModels\\SharedModels.csproj",
+      "projectPath": "C:\\Users\\bonni\\Documents\\Ecole\\Efrei\\Inge\\DotNet\\Reset-prod_2\\BlazorGame\\SharedModels\\SharedModels.csproj",
       "packagesPath": "C:\\Users\\bonni\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\bonni\\Documents\\Ecole\\Efrei\\Inge\\DotNet\\Reset-Prod\\BlazorGame\\SharedModels\\obj\\",
+      "outputPath": "C:\\Users\\bonni\\Documents\\Ecole\\Efrei\\Inge\\DotNet\\Reset-prod_2\\BlazorGame\\SharedModels\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

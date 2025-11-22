@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "nbLe9XQ/APY=",
+  "dgSpecHash": "wjwcySxaAr8=",
   "success": true,
-  "projectFilePath": "C:\\Users\\bonni\\Documents\\Ecole\\Efrei\\Inge\\DotNet\\Reset-Prod\\BlazorGame\\BlazorGame.Tests\\BlazorGame.Tests.csproj",
+  "projectFilePath": "C:\\Users\\bonni\\Documents\\Ecole\\Efrei\\Inge\\DotNet\\Reset-prod_2\\BlazorGame\\BlazorGame.Tests\\BlazorGame.Tests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\bonni\\.nuget\\packages\\coverlet.collector\\6.0.2\\coverlet.collector.6.0.2.nupkg.sha512",
     "C:\\Users\\bonni\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.9\\microsoft.aspnetcore.openapi.9.0.9.nupkg.sha512",

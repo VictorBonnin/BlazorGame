@@ -4,6 +4,7 @@ using System.Net.Http.Json;
 using SharedModels.Entities;
 using BlazorGame.Client.Services; 
 using SharedModels; 
+using BlazorGame.Client.Logic;
 
 namespace BlazorGame.Client.Pages;
 
@@ -12,6 +13,9 @@ public partial class NewAdventure : ComponentBase
     [Inject] public HttpClient Http { get; set; } = default!;
     [Inject] public PlayerSessionService Session { get; set; } = default!;
     [Inject] public NavigationManager Navigation { get; set; } = default!;
+    
+    // Injection de notre nouvelle Factory pour gérer les salles
+    [Inject] public RoomHandlerFactory RoomFactory { get; set; } = default!;
 
     public StartFormModel FormModel { get; set; } = new StartFormModel();
 
@@ -95,81 +99,26 @@ public partial class NewAdventure : ComponentBase
         if (!GameInProgress || CurrentRoom == null) return;
         if (CurrentRoom.Type == RoomType.Exit) return;
 
-        string outcomeText = "";
-        int scoreGain = 0;
-        int healthChange = 0;
-        int roll = _rng.Next(1, 101); 
+        // --- REFACTORING STRATEGY PATTERN ---
+        
+        // 1. On récupère le gestionnaire adapté au type de salle actuel
+        var handler = RoomFactory.GetHandler(CurrentRoom.Type);
 
-        switch (action)
-        {
-            case PlayerAction.Combattre:
-                if (CurrentRoom.Type == RoomType.Combat)
-                {
-                    if (roll > 30) {
-                        scoreGain = 50 + (CurrentRoom.Difficulty * 10);
-                        healthChange = -_rng.Next(0, 10); 
-                        outcomeText = "⚔️ Victoire ! Vous terrassez la bête.";
-                        Inventory.Add("Trophée");
-                    } else {
-                        healthChange = -_rng.Next(15, 25);
-                        outcomeText = "🩸 Le monstre vous a blessé avant de tomber.";
-                    }
-                }
-                else if (CurrentRoom.Type == RoomType.Loot)
-                    outcomeText = "🪓 Vous fracassez le coffre... quel gâchis.";
-                else if (CurrentRoom.Type == RoomType.Trap)
-                {
-                    healthChange = -20;
-                    outcomeText = "💢 Vous déclenchez le piège en vous agitant !";
-                }
-                else 
-                    outcomeText = "Vous effrayez le marchand.";
-                break;
+        // 2. On délègue la logique.
+        // Le handler reçoit l'inventaire (pour ajouter/retirer des objets)
+        // et retourne un résultat structuré (Message, Changement PV, Changement Score)
+        var result = handler.HandleAction(action, CurrentRoom, Inventory, _rng);
 
-            case PlayerAction.Fouiller:
-                if (CurrentRoom.Type == RoomType.Loot)
-                {
-                    scoreGain = 30;
-                    Inventory.Add("Trésor");
-                    outcomeText = "💰 Vous trouvez des objets de valeur !";
-                    if (roll > 80) { healthChange = 10; outcomeText += " (Et une potion)"; }
-                }
-                else if (CurrentRoom.Type == RoomType.Combat)
-                {
-                    healthChange = -30; 
-                    outcomeText = "🩸 Le monstre vous poignarde pendant que vous fouillez !";
-                }
-                else if (CurrentRoom.Type == RoomType.Trap)
-                {
-                    if (roll > 60) { scoreGain = 15; outcomeText = "👀 Vous désarmez le piège avec succès."; }
-                    else { healthChange = -15; outcomeText = "💥 CLIC. Le piège explose."; }
-                }
-                else if (CurrentRoom.Type == RoomType.Shop)
-                {
-                    scoreGain = 10; Inventory.Add("Potion Achetée"); outcomeText = "🤝 Marché conclu.";
-                }
-                break;
+        string outcomeText = result.Message;
+        int healthChange = result.HealthChange;
+        int scoreGain = result.ScoreChange;
 
-            case PlayerAction.Fuir:
-                if (CurrentRoom.Type == RoomType.Trap) outcomeText = "🏃 Vous courrez pour éviter le piège.";
-                else if (CurrentRoom.Type == RoomType.Combat) { healthChange = -10; outcomeText = "🏃 Fuite réussie (mais douloureuse)."; }
-                else outcomeText = "🏃 Vous passez votre chemin.";
-                break;
-            
-            case PlayerAction.UtiliserObjet:
-                 if (Inventory.Contains("Potion") || Inventory.Contains("Potion de Soin"))
-                 {
-                     if(!Inventory.Remove("Potion")) Inventory.Remove("Potion de Soin");
-                     healthChange = 40; outcomeText = "🧪 Potion bue (+40 PV).";
-                 }
-                 else outcomeText = "Pas de potion !";
-                 break;
-        }
-
+        // 3. Mise à jour de l'état global (UI)
         CurrentHealth += healthChange;
         if (CurrentHealth > 100) CurrentHealth = 100; 
         CurrentAdventure!.Score += scoreGain;
 
+        // 4. Enregistrement de l'historique
         CurrentAdventure.Rooms.Add(new RoomPlay {
             Index = CurrentRoomIndex,
             Type = CurrentRoom.Type,
@@ -180,6 +129,7 @@ public partial class NewAdventure : ComponentBase
 
         AdventureLogs.Add(new AdventureLogEntry(CurrentRoomIndex, outcomeText, healthChange, scoreGain));
 
+        // 5. Vérification de la mort
         if (CurrentHealth <= 0)
         {
             CurrentHealth = 0;
@@ -188,10 +138,11 @@ public partial class NewAdventure : ComponentBase
             return;
         }
 
+        // 6. Gestion de la progression (Salle suivante)
         if (CurrentRoomIndex < DungeonRooms!.Count)
         {
             CurrentRoomIndex++;
-            // ICI : On met juste le résultat de l'action. Pas la description de la salle suivante.
+            // On met juste le résultat de l'action. La description de la nouvelle salle s'affichera via l'UI.
             LastOutcome = outcomeText; 
         }
         else
