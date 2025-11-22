@@ -10,35 +10,43 @@ public class DungeonGenerator
     {
         var rng = new Random();
         
-        // Déterminer un nombre aléatoire de salles
-        int numRooms = rng.Next(minRooms, maxRooms + 1);
+        // Déterminer le nombre de salles de GAMEPLAY uniquement (sans compter la sortie)
+        int numGameplayRooms = rng.Next(minRooms, maxRooms + 1);
 
         var dungeon = new List<Room>();
 
-        for (int i = 0; i < numRooms; i++)
+        // 1. Générer les salles de gameplay (Combat, Loot, etc.)
+        for (int i = 0; i < numGameplayRooms; i++)
         {
             var room = new Room
             {
                 Id = i + 1,
-                Difficulty = rng.Next(1, 4) // Difficulté aléatoire entre 1 et 3
+                Difficulty = rng.Next(1, 4)
             };
 
-            if (i == numRooms - 1)
-            {
-                room.Type = RoomType.Exit;
-                room.Description = "Une lourde porte ornée se dresse devant vous. C'est la sortie !";
-            }
-            else
-            {
-                room.Type = GetRandomRoomType(rng);
-                PopulateRoom(room, rng);
-            }
+            // On assigne toujours un type de salle de jeu ici
+            room.Type = GetRandomRoomType(rng);
+            PopulateRoom(room, rng);
 
             dungeon.Add(room);
         }
 
+        // 2. Ajouter la salle de sortie comme un élément distinct à la fin
+        var exitRoom = new Room
+        {
+            Id = numGameplayRooms + 1, // L'ID suit la dernière salle
+            Difficulty = 1, // Difficulté par défaut ou nulle pour la sortie
+            Type = RoomType.Exit,
+            Description = "Une lourde porte ornée se dresse devant vous. C'est la sortie !",
+            // Initialiser les listes pour éviter des erreurs si le client tente de les lire
+            Monsters = new List<Monster>(),
+            Loot = new List<Item>()
+        };
+
+        dungeon.Add(exitRoom);
+
         return dungeon;
-    }
+    }  
 
     private static RoomType GetRandomRoomType(Random rng)
     {

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GameServices")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+027e4b3d4e260d05fdf789b194fa2f2923103d10")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aea30d2ebe97f447126ebcaea4dd318f17f87a54")]
 [assembly: System.Reflection.AssemblyProductAttribute("GameServices")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GameServices")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
