@@ -132,7 +132,7 @@ public class DungeonGenerator
                 // Parfois une potion gratuite
                 if (rng.Next(0, 2) == 0) 
                 {
-                    room.Loot.Add(new Item { Name = "Eau Bénite", Type = ItemType.Potion, Value = 0, EffectPower = 50, Description = "Rend 50 PV" });
+                    room.Loot.Add(new Item { Name = "Eau Bénite", Type = ItemType.Potion, ScoreValue = 0, EffectPower = 50, Description = "Rend 50 PV" });
                 }
                 break;
 
@@ -184,7 +184,7 @@ public class DungeonGenerator
         else
         {
             int value = 5 + difficulty * rng.Next(1, 10);
-            return new Item { Name = "Pièces d'Or", Type = ItemType.Gold, Value = value, Description = "Monnaie d'échange" };
+            return new Item { Name = "Pièces d'Or", Type = ItemType.Gold, ScoreValue = value, Description = "Monnaie d'échange" };
         }
     }
     
@@ -197,7 +197,7 @@ public class DungeonGenerator
             return new Item { 
                 Name = "Potion de Soin", 
                 Type = ItemType.Potion, 
-                Value = isShopItem ? 50 : 25, 
+                ScoreValue = isShopItem ? 50 : 25, 
                 EffectPower = 20, 
                 Description = "Rend 20 PV" 
             };
@@ -206,7 +206,7 @@ public class DungeonGenerator
             return new Item { 
                 Name = isShopItem ? "Épée en Acier" : "Épée Rouillée", 
                 Type = ItemType.Weapon, 
-                Value = isShopItem ? 100 : 40,
+                ScoreValue = isShopItem ? 100 : 40,
                 EffectPower = isShopItem ? 10 : 5,
                 Description = isShopItem ? "+10 Attaque" : "+5 Attaque"
             };
@@ -214,7 +214,7 @@ public class DungeonGenerator
         return new Item { 
             Name = "Amulette de Force", 
             Type = ItemType.Artifact, 
-            Value = isShopItem ? 150 : 75,
+            ScoreValue = isShopItem ? 150 : 75,
             EffectPower = 2,
             Description = "+2 Attaque (Permanent)"
         };
