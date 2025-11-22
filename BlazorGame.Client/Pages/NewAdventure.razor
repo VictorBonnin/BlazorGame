@@ -77,9 +77,14 @@
                         <button class="btn btn-outline-warning btn-lg px-4" @onclick="() => HandleAction(PlayerAction.Fouiller)">🔍 Fouiller</button>
                         <button class="btn btn-outline-light btn-lg px-4" @onclick="() => HandleAction(PlayerAction.Fuir)">🏃 Fuir</button>
                     </div>
-                    <div class="mt-3">
-                         <button class="btn btn-sm btn-link text-info text-decoration-none" @onclick="() => HandleAction(PlayerAction.UtiliserObjet)">🧪 Boire une Potion</button>
-                    </div>
+                    
+                    // --- ACTION CONTEXTUELLE : ITEMS ---
+                    @if (Inventory.Contains("Potion") || Inventory.Contains("Potion de Soin"))
+                    {
+                        <div class="mt-3">
+                             <button class="btn btn-sm btn-link text-info text-decoration-none" @onclick="() => HandleAction(PlayerAction.UtiliserObjet)">🧪 Boire une Potion</button>
+                        </div>
+                    }
                 }
             }
             else if (!GameFinished) // Écran d'accueil (Start)
