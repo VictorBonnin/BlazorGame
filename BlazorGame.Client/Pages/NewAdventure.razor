@@ -2,30 +2,24 @@
 @using Microsoft.AspNetCore.Components.Forms
 @using SharedModels.Entities
 @using SharedModels
+@using System.Linq 
 
 <PageTitle>Aventure</PageTitle>
 
 <div class="container" style="max-width: 800px;">
     
-    @* --- EN-TÊTE : Toujours visible si jeu en cours --- *@
     @if (GameInProgress)
     {
         <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-dark text-white border border-secondary rounded shadow-sm">
             <div class="d-flex align-items-center gap-3">
-                @* CORRECTION DU COMPTEUR ET INDICATEUR DE FIN *@
                 @if (DungeonRooms != null)
                 {
-                    @* LOGIQUE CORRIGÉE : 
-                       On affiche le compteur tant qu'on n'est pas strictement sur la dernière case (Sortie).
-                       On compare à Count pour inclure l'avant-dernière salle.
-                    *@
                     @if (CurrentRoomIndex < DungeonRooms.Count)
                     {
                         <span class="fs-5 fw-bold">Salle @CurrentRoomIndex / @(DungeonRooms.Count - 1)</span>
                     }
                     else
                     {
-                        @* S'affiche uniquement quand on est sur la case de sortie *@
                         <span class="fs-5 fw-bold text-warning">🚪 Dernière Étape</span>
                     }
                 }
@@ -41,13 +35,12 @@
         </div>
     }
 
-    @* --- ZONE PRINCIPALE (CARTE) --- *@
     <div class="card shadow-lg border-secondary bg-dark text-white">
         <div class="card-body text-center p-5">
             
             @if (GameInProgress && CurrentRoom != null)
             {
-                // 1. FEEDBACK (Action précédente)
+                // FEEDBACK
                 @if (!string.IsNullOrEmpty(LastOutcome))
                 {
                     <div class="alert alert-secondary bg-secondary text-white border-0 mb-4 animate__animated animate__fadeIn">
@@ -55,7 +48,7 @@
                     </div>
                 }
 
-                // 2. SCÈNE (Description Salle)
+                // SCÈNE
                 <div class="my-5">
                     <h3 class="card-title fw-bold mb-3">Que faites-vous ?</h3>
                     <p class="card-text fs-4 fst-italic text-white-50">
@@ -63,7 +56,7 @@
                     </p>
                 </div>
 
-                // 3. ACTIONS
+                // ACTIONS
                 @if (CurrentRoom.Type == RoomType.Exit)
                 {
                     <button class="btn btn-success btn-lg px-5 py-3 shadow" @onclick="FinishAdventure">
@@ -78,24 +71,34 @@
                         <button class="btn btn-outline-light btn-lg px-4" @onclick="() => HandleAction(PlayerAction.Fuir)">🏃 Fuir</button>
                     </div>
                     
-                    // --- ACTION CONTEXTUELLE : ITEMS ---
-                    @if (Inventory.Contains("Potion") || Inventory.Contains("Potion de Soin"))
+                    @* --- SECTION POTION --- *@
+                    @if (Inventory.Any(i => i.Type == ItemType.Potion))
                     {
-                        <div class="mt-3">
-                             <button class="btn btn-sm btn-link text-info text-decoration-none" @onclick="() => HandleAction(PlayerAction.UtiliserObjet)">🧪 Boire une Potion</button>
+                        <div class="mt-4 pt-3 border-top border-secondary">
+                                <p class="text-muted small mb-2">Objet rapide</p>
+                                @* On récupère l'objet pour le passer à la méthode *@
+                                @{ var potion = Inventory.First(i => i.Type == ItemType.Potion); }
+                                
+                                @* CORRECTION : On appelle UseItem(potion) au lieu de HandleAction *@
+                                <button class="btn btn-success btn-sm px-4 py-2 shadow-sm w-100 w-sm-auto" @onclick="() => UseItem(potion)">
+                                    🧪 Boire une Potion (+@potion.EffectPower PV)
+                                </button>
                         </div>
                     }
                 }
             }
-            else if (!GameFinished) // Écran d'accueil (Start)
+            else if (!GameFinished) // START
             {
                 <h1 class="display-4 fw-bold text-primary mb-3">L'Aventure Vous Attend</h1>
                 <p class="lead text-white-50 mb-5">Serez-vous assez brave pour atteindre la sortie ?</p>
+                <div class="mb-5">
+                    <HintBox />
+                </div>
                 <EditForm Model="@FormModel" OnValidSubmit="StartAdventure">
                     <button type="submit" class="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow">COMMENCER L'AVENTURE</button>
                 </EditForm>
             }
-            else // Écran de Fin (Game Over / Victoire)
+            else // FIN
             {
                 @if (CurrentHealth > 0)
                 {
@@ -115,12 +118,9 @@
                     <a href="leaderboard" class="btn btn-outline-light">🏆 Classement</a>
                 </div>
 
-                @* --- RÉSUMÉ DE L'AVENTURE (VERSION CLAIRE) --- *@
                 @if (AdventureLogs.Any())
                 {
                     <hr class="border-secondary my-5" />
-                    
-                    @* Fond gris clair (#f8f9fa) et texte sombre pour une lisibilité maximale *@
                     <div class="card border-0 mx-auto shadow text-start" style="max-width: 700px; background-color: #f8f9fa; color: #212529;">
                         <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
                             <h5 class="mb-0 fw-bold">📜 Journal de bord</h5>
@@ -129,27 +129,15 @@
                         <div class="list-group list-group-flush">
                             @foreach(var log in AdventureLogs)
                             {
-                                <div class="list-group-item border-bottom border-secondary-subtle py-3 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center"
-                                     style="background-color: transparent;">
-                                    
+                                <div class="list-group-item border-bottom border-secondary-subtle py-3 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center" style="background-color: transparent;">
                                     <div class="d-flex align-items-center mb-2 mb-sm-0">
                                         <span class="badge bg-dark text-white rounded-pill me-3">#@log.RoomIndex</span>
                                         <span class="fw-medium">@log.Description</span>
                                     </div>
-
                                     <div class="d-flex gap-2 justify-content-end" style="min-width: 120px;">
-                                        @if(log.ScoreChange > 0) 
-                                        { 
-                                            <span class="badge bg-warning text-dark border border-warning shadow-sm">+@log.ScoreChange pts</span> 
-                                        }
-                                        @if(log.HealthChange < 0) 
-                                        { 
-                                            <span class="badge bg-danger text-white shadow-sm">@log.HealthChange PV</span> 
-                                        }
-                                        else if(log.HealthChange > 0) 
-                                        { 
-                                            <span class="badge bg-success text-white shadow-sm">+@log.HealthChange PV</span> 
-                                        }
+                                        @if(log.ScoreChange > 0) { <span class="badge bg-warning text-dark border border-warning shadow-sm">+@log.ScoreChange pts</span> }
+                                        @if(log.HealthChange < 0) { <span class="badge bg-danger text-white shadow-sm">@log.HealthChange PV</span> }
+                                        else if(log.HealthChange > 0) { <span class="badge bg-success text-white shadow-sm">+@log.HealthChange PV</span> }
                                     </div>
                                 </div>
                             }
@@ -159,7 +147,6 @@
             }
         </div>
         
-        @* --- PIED DE PAGE : INVENTAIRE (Uniquement en jeu) --- *@
         @if (GameInProgress)
         {
             <div class="card-footer bg-dark border-top border-secondary p-3">
@@ -173,7 +160,7 @@
                     {
                         @foreach(var item in Inventory)
                         {
-                            <span class="badge rounded-pill bg-secondary border border-light">@item</span>
+                            <span class="badge rounded-pill bg-secondary border border-light">@item.Name</span>
                         }
                     }
                 </div>

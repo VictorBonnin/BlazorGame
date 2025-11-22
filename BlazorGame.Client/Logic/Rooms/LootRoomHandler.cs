@@ -1,6 +1,7 @@
 using SharedModels;
 using SharedModels.Entities;
 using BlazorGame.Client.Logic;
+using System.Linq;
 
 namespace BlazorGame.Client.Logic.Rooms;
 
@@ -8,49 +9,52 @@ public class LootRoomHandler : IRoomHandler
 {
     public bool CanHandle(RoomType type) => type == RoomType.Loot;
 
-    public RoomEventResult HandleAction(PlayerAction action, Room room, List<string> inventory, Random rng)
+    public RoomEventResult HandleAction(PlayerAction action, Room room, List<Item> inventory, Random rng)
     {
-        // 1. Fouiller (Le but principal de cette salle)
         if (action == PlayerAction.Fouiller)
         {
-            // On simule la découverte d'un trésor
-            inventory.Add("Trésor");
-            
-            // Petit bonus de chance pour trouver une potion (20%)
-            bool foundPotion = rng.Next(1, 101) > 80;
-            string message = "💰 Vous trouvez des objets de valeur !";
-            int heal = 0;
+            int roll = rng.Next(1, 101);
+            Item foundItem;
+            string message;
 
-            if (foundPotion)
+            if (roll > 85)
             {
-                message += " (Et une potion)";
-                inventory.Add("Potion");
-                heal = 10; // La potion trouvée redonne un peu de vie immédiatement (optionnel) ou juste ajoutée à l'inventaire
+                foundItem = new Item { Name = "Épée Rouillée", Type = ItemType.Weapon, EffectPower = 2, ScoreValue = 10 };
+                message = "⚔️ Incroyable ! Vous trouvez une vieille arme.";
+            }
+            else if (roll > 60)
+            {
+                foundItem = new Item { Name = "Potion de Soin", Type = ItemType.Potion, EffectPower = 20, ScoreValue = 5 };
+                message = "🧪 Vous trouvez une fiole rouge.";
+            }
+            else
+            {
+                foundItem = new Item { Name = "Pièces d'or", Type = ItemType.Treasure, EffectPower = 0, ScoreValue = 30 };
+                message = "💰 Vous ramassez quelques pièces d'or.";
             }
 
-            return new RoomEventResult(message, heal, 30); // +30 points
+            inventory.Add(foundItem);
+            return new RoomEventResult(message, 0, foundItem.ScoreValue);
         }
-        // 2. Combattre (Gâchis)
         else if (action == PlayerAction.Combattre)
         {
-            return new RoomEventResult("🪓 Vous fracassez le coffre... quel gâchis.", 0, 0);
+            return new RoomEventResult("🪓 Gâchis...", 0, 0);
         }
-        // 3. Fuir
         else if (action == PlayerAction.Fuir)
         {
-            return new RoomEventResult("🏃 Vous passez votre chemin en ignorant le trésor.", 0, 0);
+            return new RoomEventResult("🏃 Vous passez votre chemin.", 0, 0);
         }
-        // 4. Boire une potion (AJOUT IMPORTANT)
         else if (action == PlayerAction.UtiliserObjet)
         {
-            if (inventory.Contains("Potion") || inventory.Contains("Potion de Soin"))
+            var potion = inventory.FirstOrDefault(i => i.Type == ItemType.Potion);
+            if (potion != null)
             {
-                if (!inventory.Remove("Potion")) inventory.Remove("Potion de Soin");
-                return new RoomEventResult("🧪 Vous prenez le temps de boire une potion (+40 PV).", 40, 0);
+                inventory.Remove(potion);
+                return new RoomEventResult($"🧪 Glou glou... (+{potion.EffectPower} PV).", potion.EffectPower, 0);
             }
-            return new RoomEventResult("Pas de potion dans l'inventaire !", 0, 0);
+            return new RoomEventResult("Pas de potion !", 0, 0);
         }
 
-        return new RoomEventResult("Action inutile ici.", 0, 0);
+        return new RoomEventResult("...", 0, 0);
     }
 }

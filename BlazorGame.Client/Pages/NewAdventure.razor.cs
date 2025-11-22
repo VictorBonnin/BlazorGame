@@ -13,16 +13,13 @@ public partial class NewAdventure : ComponentBase
     [Inject] public HttpClient Http { get; set; } = default!;
     [Inject] public PlayerSessionService Session { get; set; } = default!;
     [Inject] public NavigationManager Navigation { get; set; } = default!;
-    
-    // Injection de notre nouvelle Factory pour gérer les salles
     [Inject] public RoomHandlerFactory RoomFactory { get; set; } = default!;
 
     public StartFormModel FormModel { get; set; } = new StartFormModel();
 
-    // État de la partie
     public Adventure? CurrentAdventure { get; set; }
     public IReadOnlyList<Room>? DungeonRooms { get; set; }
-    public List<string> Inventory { get; set; } = new();
+    public List<Item> Inventory { get; set; } = new();
     public List<AdventureLogEntry> AdventureLogs { get; set; } = new();
     public int CurrentHealth { get; set; } = 100;
     
@@ -31,8 +28,6 @@ public partial class NewAdventure : ComponentBase
     public Room? CurrentRoom => DungeonRooms?.ElementAtOrDefault(CurrentRoomIndex - 1);
     public int CurrentRoomIndex { get; set; } = 1;
 
-    // --- NETTOYAGE : On sépare le "Feedback" de la "Description" ---
-    // LastOutcome ne contient QUE le résultat de l'action précédente (ex: "Vous avez pris 10 dégâts")
     public string? LastOutcome { get; set; } = "L'aventure commence !"; 
 
     public bool GameInProgress => CurrentAdventure != null && CurrentAdventure.FinishedAt == null;
@@ -76,7 +71,7 @@ public partial class NewAdventure : ComponentBase
             {
                  CurrentAdventure!.Rooms = new List<RoomPlay>();
                  CurrentAdventure.Score = 0; 
-                 LastOutcome = "Vous pénétrez dans l'obscurité."; // Message initial propre
+                 LastOutcome = "Vous pénétrez dans l'obscurité.";
             }
             else
             {
@@ -94,31 +89,48 @@ public partial class NewAdventure : ComponentBase
         }
     }
 
+    // --- NOUVELLE MÉTHODE POUR UTILISER UN OBJET GRATUITEMENT ---
+    public void UseItem(Item item)
+    {
+        if (!Inventory.Contains(item)) return;
+
+        if (item.Type == ItemType.Potion)
+        {
+            int healAmount = item.EffectPower;
+            CurrentHealth += healAmount;
+            if (CurrentHealth > 100) CurrentHealth = 100;
+
+            // On retire l'objet de l'inventaire
+            Inventory.Remove(item);
+
+            // Feedback visuel simple
+            LastOutcome = $"🧪 Vous buvez {item.Name} et récupérez {healAmount} PV. (Action Gratuite)";
+            
+            // On rafraîchit l'UI sans faire avancer le jeu
+            StateHasChanged();
+        }
+        // Tu pourras ajouter d'autres types d'objets ici plus tard
+    }
+
     public void HandleAction(PlayerAction action)
     {
+        // Si c'est juste utiliser un objet, on passe par notre méthode dédiée (si appelée depuis l'UI)
+        // Mais ici, on gère les actions qui font AVANCER le jeu (passer le tour)
+        
         if (!GameInProgress || CurrentRoom == null) return;
         if (CurrentRoom.Type == RoomType.Exit) return;
 
-        // --- REFACTORING STRATEGY PATTERN ---
-        
-        // 1. On récupère le gestionnaire adapté au type de salle actuel
         var handler = RoomFactory.GetHandler(CurrentRoom.Type);
-
-        // 2. On délègue la logique.
-        // Le handler reçoit l'inventaire (pour ajouter/retirer des objets)
-        // et retourne un résultat structuré (Message, Changement PV, Changement Score)
         var result = handler.HandleAction(action, CurrentRoom, Inventory, _rng);
 
         string outcomeText = result.Message;
         int healthChange = result.HealthChange;
         int scoreGain = result.ScoreChange;
 
-        // 3. Mise à jour de l'état global (UI)
         CurrentHealth += healthChange;
         if (CurrentHealth > 100) CurrentHealth = 100; 
         CurrentAdventure!.Score += scoreGain;
 
-        // 4. Enregistrement de l'historique
         CurrentAdventure.Rooms.Add(new RoomPlay {
             Index = CurrentRoomIndex,
             Type = CurrentRoom.Type,
@@ -129,7 +141,6 @@ public partial class NewAdventure : ComponentBase
 
         AdventureLogs.Add(new AdventureLogEntry(CurrentRoomIndex, outcomeText, healthChange, scoreGain));
 
-        // 5. Vérification de la mort
         if (CurrentHealth <= 0)
         {
             CurrentHealth = 0;
@@ -138,11 +149,9 @@ public partial class NewAdventure : ComponentBase
             return;
         }
 
-        // 6. Gestion de la progression (Salle suivante)
         if (CurrentRoomIndex < DungeonRooms!.Count)
         {
             CurrentRoomIndex++;
-            // On met juste le résultat de l'action. La description de la nouvelle salle s'affichera via l'UI.
             LastOutcome = outcomeText; 
         }
         else

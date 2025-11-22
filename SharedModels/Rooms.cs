@@ -1,7 +1,8 @@
+using SharedModels.Entities; // <--- AJOUT IMPORTANT : Pour trouver Item et ItemType
+
 namespace SharedModels;
 
-// NOUVEAU : Enumération pour identifier facilement le type d'objet
-public enum ItemType { Gold, Potion, Weapon, Armor, Artifact }
+// --- SUPPRESSION : On retire ItemType et Item car ils sont maintenant dans Entities/Item.cs ---
 
 public class Monster
 {
@@ -10,25 +11,9 @@ public class Monster
     public int Attack { get; set; } = 3;
 }
 
-public class Item
-{
-    public string Name { get; set; } = "Pièce d'Or";
-    
-    // MODIFICATION : On utilise l'enum au lieu d'un string pour plus de sécurité
-    public ItemType Type { get; set; } = ItemType.Gold; 
-    
-    public int Value { get; set; } = 1; // Valeur en or ou score
-    
-    // NOUVEAU : La puissance de l'effet (ex: +20 PV, +5 Attaque)
-    public int EffectPower { get; set; } 
-    
-    // NOUVEAU : Petite description pour l'interface
-    public string Description { get; set; } = ""; 
-}
+// --- SUPPRESSION DE LA CLASSE ITEM ICI --- 
 
-// MODIFICATION : Ajout de Sanctuary, Boss et Mystery
 public enum RoomType { Trap, Combat, Loot, Shop, Exit, Sanctuary, Boss, Mystery } 
-
 public enum PlayerAction { Combattre, Fouiller, UtiliserObjet, Fuir } 
 
 public class Room
@@ -39,13 +24,15 @@ public class Room
     
     public string Description { get; set; } = "Une salle sombre.";
     public List<Monster> Monsters { get; set; } = new List<Monster>();
+    
+    // Ici, il utilisera SharedModels.Entities.Item grâce au 'using'
     public List<Item> Loot { get; set; } = new List<Item>();
 
-    // NOUVEAU : Pour savoir si le joueur a déjà vidé la salle
     public bool IsCleared { get; set; } = false; 
 }
 
-// NOUVEAU : Cette classe servira à suivre l'état du héros pendant la partie (Côté Client)
+// NOTE : Cette classe PlayerState semble être un doublon de celle dans GameDtos.cs (Client).
+// Si tu ne l'utilises pas côté Serveur, tu pourrais la supprimer, mais laissons-la pour l'instant.
 public class PlayerState
 {
     public int Health { get; set; } = 100;
@@ -55,7 +42,6 @@ public class PlayerState
     public List<Item> Inventory { get; set; } = new List<Item>();
 }
 
-// Classe utilisée pour l'historique des parties (Base de données)
 public class RoomPlay
 {
     public int Id { get; set; } 

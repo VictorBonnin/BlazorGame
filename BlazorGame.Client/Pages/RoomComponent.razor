@@ -1,4 +1,8 @@
-﻿@using SharedModels
+﻿@using SharedModels.Entities
+@using SharedModels
+
+@* --- PARTIE HTML UNIQUEMENT --- *@
+@* Les variables (Message, IsLoading, OnActionSelected) viennent du fichier .razor.cs *@
 
 @if (!string.IsNullOrEmpty(Message))
 {
@@ -28,36 +32,11 @@
     }
 </div>
 
-<hr class="text-white" />
-
 <div class="card bg-dark text-white mb-3">
     <div class="card-header">
-        🎒 Sac à dos (Actions Gratuites - Ne passe pas le tour)
+        🎒 Info (Compatibilité)
     </div>
     <div class="card-body">
-        @if (CurrentPlayerState != null && CurrentPlayerState.Inventory.Count > 0)
-        {
-            @foreach (var item in CurrentPlayerState.Inventory.ToList()) 
-            {
-                <!-- CORRECTION MAJEURE : type="button" ajouté pour empêcher le submit/refresh -->
-                <button type="button" class="btn btn-outline-info btn-sm m-1" @onclick="() => UseItem(item)">
-                    Utiliser @item.Name 
-                    <span class="badge bg-secondary">@GetItemEffectDescription(item)</span>
-                </button>
-            }
-        }
-        else
-        {
-            <p class="text-muted fst-italic">Votre sac est vide...</p>
-        }
+       Ce composant est conservé pour la compatibilité.
     </div>
 </div>
-
-@code {
-    private string GetItemEffectDescription(Item item)
-    {
-        if (item.Type == ItemType.Potion) return $"+{item.EffectPower} PV";
-        if (item.Type == ItemType.Weapon) return $"+{item.EffectPower} ATK";
-        return "???";
-    }
-}

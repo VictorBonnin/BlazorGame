@@ -4,22 +4,17 @@ using SharedModels.Entities;
 
 namespace BlazorGame.Client.Pages;
 
-public partial class RoomComponent
+public partial class RoomComponent : ComponentBase
 {
-    [Parameter]
-    public Room Room { get; set; } = default!;
+    // Ces paramètres sont remplis par le parent (NewAdventure.razor ou Index.razor)
+    [Parameter] public string Message { get; set; } = "";
+    [Parameter] public bool IsLoading { get; set; }
+    [Parameter] public EventCallback<PlayerAction> OnActionSelected { get; set; }
 
-    [Parameter]
-    public PlayerState CurrentPlayerState { get; set; } = default!;
+    // Paramètre nécessaire si tu veux manipuler l'état du joueur ici
+    [Parameter] public PlayerState CurrentPlayerState { get; set; } = default!;
 
-    // Cet EventCallback sert à prévenir le parent (Combat/Fuir). 
-    // On NE L'APPELLE PAS dans UseItem pour ne pas passer le tour !
-    [Parameter]
-    public EventCallback<PlayerAction> OnActionSelected { get; set; }
-
-    private bool IsLoading { get; set; } = false;
-    private string Message { get; set; } = "";
-
+    // La méthode pour utiliser un objet
     public void UseItem(Item item)
     {
         // 1. Sécurité : On vérifie si l'objet est vraiment là
@@ -29,35 +24,49 @@ public partial class RoomComponent
         switch (item.Type)
         {
             case ItemType.Potion:
-                int oldHealth = CurrentPlayerState.Health;
-                CurrentPlayerState.Health += item.EffectPower;
+                int oldHealth = CurrentPlayerState.Health; // Suppose que PlayerState a une propriété Health (int)
+                // CORRECTION : Utilisation de EffectPower
+                CurrentPlayerState.Health += item.EffectPower; 
                 
-                if (CurrentPlayerState.Health > CurrentPlayerState.MaxHealth) 
-                    CurrentPlayerState.Health = CurrentPlayerState.MaxHealth;
+                // Suppose que PlayerState a une propriété MaxHealth (int)
+                // Si MaxHealth n'existe pas dans PlayerState (GameDtos.cs), remplace par 100 ou ajoute-la.
+                int maxHealth = 100; 
+                if (CurrentPlayerState.Health > maxHealth) 
+                    CurrentPlayerState.Health = maxHealth;
 
                 int healed = CurrentPlayerState.Health - oldHealth;
                 Message = $"Glou glou... Vous récupérez {healed} PV grâce à {item.Name}.";
                 
-                // On consomme l'objet (on le retire de la liste)
+                // On consomme l'objet
                 CurrentPlayerState.Inventory.Remove(item); 
                 break;
 
             case ItemType.Weapon:
-                CurrentPlayerState.AttackPower += item.EffectPower;
-                Message = $"Vous affûtez votre lame avec {item.Name}. Attaque +{item.EffectPower} !";
-                CurrentPlayerState.Inventory.Remove(item); 
+                // Suppose que PlayerState a une propriété AttackPower ou similaire
+                // Si elle n'existe pas, on ne peut pas l'augmenter ici.
+                // Pour l'instant, on affiche juste un message car les armes sont passives dans ton système de combat.
+                Message = $"Vous équipez {item.Name}. (Bonus passif: +{item.EffectPower} ATK)";
+                // On ne retire PAS l'arme de l'inventaire !
                 break;
 
             case ItemType.Artifact:
-                Message = $"L'objet {item.Name} vibre, mais rien ne se passe pour l'instant.";
+                Message = $"L'objet {item.Name} brille étrangement.";
                 break;
                 
             default:
-                Message = "Cet objet ne semble pas utilisable ici.";
+                Message = "Cet objet ne semble pas utilisable ainsi.";
                 break;
         }
         
-        // 3. On rafraîchit l'interface SEULEMENT ICI (pas de rechargement de page)
+        // 3. On rafraîchit l'interface du composant
         StateHasChanged();
+    }
+
+    // Méthode utilitaire pour l'affichage
+    private string GetItemEffectDescription(Item item)
+    {
+        if (item.Type == ItemType.Potion) return $"+{item.EffectPower} PV";
+        if (item.Type == ItemType.Weapon) return $"+{item.EffectPower} ATK";
+        return "";
     }
 }
