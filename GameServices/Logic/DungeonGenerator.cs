@@ -1,5 +1,6 @@
 using SharedModels;
 using System;
+using System.Collections.Generic; // Nécessaire pour les Listes
 using SharedModels.Entities;
 
 namespace GameServices.Logic;
@@ -15,30 +16,36 @@ public class DungeonGenerator
 
         var dungeon = new List<Room>();
 
-        // 1. Générer les salles de gameplay (Combat, Loot, etc.)
+        // 1. Générer les salles de gameplay
         for (int i = 0; i < numGameplayRooms; i++)
         {
             var room = new Room
             {
                 Id = i + 1,
-                Difficulty = rng.Next(1, 4)
+                Difficulty = rng.Next(1, 4) + (i / 5) // La difficulté augmente légèrement avec la profondeur
             };
 
-            // On assigne toujours un type de salle de jeu ici
-            room.Type = GetRandomRoomType(rng);
+            // Si c'est la dernière salle de gameplay, c'est un BOSS
+            if (i == numGameplayRooms - 1)
+            {
+                room.Type = RoomType.Boss;
+            }
+            else
+            {
+                room.Type = GetRandomRoomType(rng);
+            }
+            
             PopulateRoom(room, rng);
-
             dungeon.Add(room);
         }
 
-        // 2. Ajouter la salle de sortie comme un élément distinct à la fin
+        // 2. Ajouter la salle de sortie
         var exitRoom = new Room
         {
-            Id = numGameplayRooms + 1, // L'ID suit la dernière salle
-            Difficulty = 1, // Difficulté par défaut ou nulle pour la sortie
+            Id = numGameplayRooms + 1,
+            Difficulty = 1,
             Type = RoomType.Exit,
-            Description = "Une lourde porte ornée se dresse devant vous. C'est la sortie !",
-            // Initialiser les listes pour éviter des erreurs si le client tente de les lire
+            Description = "Une lourde porte ornée se dresse devant vous. C'est la sortie ! Vous avez survécu.",
             Monsters = new List<Monster>(),
             Loot = new List<Item>()
         };
@@ -52,10 +59,13 @@ public class DungeonGenerator
     {
         int roll = rng.Next(1, 101); 
         
-        if (roll <= 45) return RoomType.Combat;     
-        if (roll <= 75) return RoomType.Loot;       
-        if (roll <= 90) return RoomType.Trap;       
-        return RoomType.Shop;                       
+        // Distribution des types de salles
+        if (roll <= 35) return RoomType.Combat;     // 35%
+        if (roll <= 55) return RoomType.Loot;       // 20%
+        if (roll <= 70) return RoomType.Trap;       // 15%
+        if (roll <= 85) return RoomType.Sanctuary;  // 15% NOUVEAU
+        if (roll <= 95) return RoomType.Mystery;    // 10% NOUVEAU
+        return RoomType.Shop;                       // 5%
     }
 
     private static void PopulateRoom(Room room, Random rng)
@@ -63,11 +73,9 @@ public class DungeonGenerator
         room.Monsters = new List<Monster>();
         room.Loot = new List<Item>();
 
-        // --- MODIFICATION : Descriptions immersives ---
         switch (room.Type)
         {
             case RoomType.Combat:
-                // Indices : Odeur, Bruit, Ombre
                 string[] combatDesc = {
                     "Une odeur de chair putréfiée vous prend à la gorge...",
                     "Vous entendez une respiration lourde dans l'obscurité.",
@@ -84,7 +92,6 @@ public class DungeonGenerator
                 break;
                 
             case RoomType.Loot: 
-                // Indices : Brillance, Contenant, Autel
                 string[] lootDesc = {
                     "Quelque chose scintille sous la poussière dans un coin.",
                     "Vous apercevez une vieille malle en bois renforcé.",
@@ -101,7 +108,6 @@ public class DungeonGenerator
                 break;
 
             case RoomType.Trap:
-                // Indices : Sol étrange, Trous, Silence suspect
                 string[] trapDesc = {
                     "Le sol semble instable et sonne creux sous vos pas.",
                     "Des trous étranges parsèment les murs de cette salle.",
@@ -110,20 +116,59 @@ public class DungeonGenerator
                 };
                 room.Description = trapDesc[rng.Next(trapDesc.Length)];
 
+                // Parfois un piège cache un trésor
                 if (rng.Next(1, 10) == 1) room.Loot.Add(GenerateLoot(1, rng));
                 break;
 
             case RoomType.Shop:
                 room.Description = "Une lueur chaude et une odeur d'encens vous accueillent. Un marchand vous fait signe.";
-                room.Loot.Add(GenerateItem(true, rng)); 
+                // Le magasin propose toujours 3 objets de qualité
+                for(int k=0; k<3; k++) room.Loot.Add(GenerateItem(true, rng)); 
+                break;
+
+            // NOUVEAU : Salle de repos
+            case RoomType.Sanctuary:
+                room.Description = "Une source d'eau cristalline coule d'une statue brisée. L'air est pur.";
+                // Parfois une potion gratuite
+                if (rng.Next(0, 2) == 0) 
+                {
+                    room.Loot.Add(new Item { Name = "Eau Bénite", Type = ItemType.Potion, Value = 0, EffectPower = 50, Description = "Rend 50 PV" });
+                }
+                break;
+
+            // NOUVEAU : Salle Mystère (Soit un monstre, soit un trésor)
+            case RoomType.Mystery:
+                room.Description = "Une brume épaisse envahit la pièce. Vous ne voyez pas le bout de vos pieds.";
+                if (rng.Next(0, 2) == 0)
+                {
+                    // Malchance : Un monstre caché
+                    room.Monsters.Add(GenerateMonster(room.Difficulty, rng));
+                }
+                else
+                {
+                    // Chance : Un objet
+                    room.Loot.Add(GenerateItem(false, rng));
+                }
+                break;
+
+            // NOUVEAU : Salle de Boss
+            case RoomType.Boss:
+                room.Description = "Une immense porte s'ouvre sur une salle du trône. Une créature gigantesque vous barre la route !";
+                var boss = GenerateMonster(room.Difficulty + 2, rng);
+                boss.Name = "Gardien du Donjon";
+                boss.Health *= 2; // Plus de vie
+                boss.Attack += 2; // Plus fort
+                room.Monsters.Add(boss);
+                // Le boss donne toujours un bon objet
+                room.Loot.Add(GenerateItem(true, rng));
                 break;
         }
     }
 
     private static Monster GenerateMonster(int difficulty, Random rng)
     {
-        string name = difficulty == 3 ? "Ogre" : (difficulty == 2 ? "Squelette" : "Gobelin");
-        int health = 10 + difficulty * rng.Next(1, 6);
+        string name = difficulty >= 4 ? "Troll" : (difficulty == 3 ? "Ogre" : (difficulty == 2 ? "Squelette" : "Gobelin"));
+        int health = 10 + difficulty * rng.Next(2, 6);
         int attack = 3 + difficulty;
 
         return new Monster { Name = name, Health = health, Attack = attack };
@@ -131,6 +176,7 @@ public class DungeonGenerator
 
     private static Item GenerateLoot(int difficulty, Random rng)
     {
+        // 25% de chance d'avoir un objet, sinon de l'or
         if (rng.Next(1, 5) == 1) 
         {
             return GenerateItem(false, rng);
@@ -138,16 +184,39 @@ public class DungeonGenerator
         else
         {
             int value = 5 + difficulty * rng.Next(1, 10);
-            return new Item { Name = "Pièces d'Or", Type = "Gold", Value = value };
+            return new Item { Name = "Pièces d'Or", Type = ItemType.Gold, Value = value, Description = "Monnaie d'échange" };
         }
     }
     
+    // Génère un objet avec des statistiques réelles
     private static Item GenerateItem(bool isShopItem, Random rng)
     {
         int roll = rng.Next(1, 101);
         
-        if (roll < 40) return new Item { Name = "Potion de Soin", Type = "Potion", Value = isShopItem ? 50 : 25 };
-        if (roll < 70) return new Item { Name = "Épée Rouillée", Type = "Weapon", Value = isShopItem ? 80 : 40 };
-        return new Item { Name = "Gemme Brillante", Type = "Gem", Value = isShopItem ? 150 : 75 };
+        if (roll < 40) 
+            return new Item { 
+                Name = "Potion de Soin", 
+                Type = ItemType.Potion, 
+                Value = isShopItem ? 50 : 25, 
+                EffectPower = 20, 
+                Description = "Rend 20 PV" 
+            };
+            
+        if (roll < 70) 
+            return new Item { 
+                Name = isShopItem ? "Épée en Acier" : "Épée Rouillée", 
+                Type = ItemType.Weapon, 
+                Value = isShopItem ? 100 : 40,
+                EffectPower = isShopItem ? 10 : 5,
+                Description = isShopItem ? "+10 Attaque" : "+5 Attaque"
+            };
+            
+        return new Item { 
+            Name = "Amulette de Force", 
+            Type = ItemType.Artifact, 
+            Value = isShopItem ? 150 : 75,
+            EffectPower = 2,
+            Description = "+2 Attaque (Permanent)"
+        };
     }
 }

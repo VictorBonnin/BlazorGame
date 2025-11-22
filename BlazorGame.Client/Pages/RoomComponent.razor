@@ -1,43 +1,62 @@
-﻿@page "/room-component"
-@using SharedModels
-@using SharedModels.Entities
+﻿@using SharedModels
 
-<div class="card bg-secondary text-white mb-3">
-    <div class="card-body text-center">
-        
-        @* On cache le Type technique pour laisser le suspense *@
-        @* <h4 class="card-title">Salle @Room.Id</h4> *@
-        
-        @* La description est le seul indice du joueur *@
-        <p class="card-text fs-4 fst-italic my-4">
-            "@Room.Description"
-        </p>
+@if (!string.IsNullOrEmpty(Message))
+{
+    <div class="alert alert-info animate__animated animate__fadeIn">
+        @Message
+    </div>
+}
 
-        @* Zone d'actions : TOUJOURS VISIBLES *@
-        <div class="d-grid gap-2 d-md-block">
-            @if (!IsLoading)
+<div class="d-grid gap-2 d-md-block mb-4">
+    @if (!IsLoading)
+    {
+        <button class="btn btn-danger btn-lg mx-2" @onclick="() => OnActionSelected.InvokeAsync(PlayerAction.Combattre)">
+            🗡️ COMBATTRE
+        </button>
+        
+        <button class="btn btn-primary btn-lg mx-2" @onclick="() => OnActionSelected.InvokeAsync(PlayerAction.Fouiller)">
+            🔍 FOUILLER
+        </button>
+            
+        <button class="btn btn-warning btn-lg mx-2" @onclick="() => OnActionSelected.InvokeAsync(PlayerAction.Fuir)">
+            🏃 FUIR
+        </button>
+    }
+    else
+    {
+        <div class="spinner-border text-light" role="status"></div>
+    }
+</div>
+
+<hr class="text-white" />
+
+<div class="card bg-dark text-white mb-3">
+    <div class="card-header">
+        🎒 Sac à dos (Actions Gratuites - Ne passe pas le tour)
+    </div>
+    <div class="card-body">
+        @if (CurrentPlayerState != null && CurrentPlayerState.Inventory.Count > 0)
+        {
+            @foreach (var item in CurrentPlayerState.Inventory.ToList()) 
             {
-                <button class="btn btn-danger btn-lg mx-2" @onclick="() => OnActionSelected.InvokeAsync(PlayerAction.Combattre)">
-                    🗡️ COMBATTRE
-                </button>
-                
-                <button class="btn btn-primary btn-lg mx-2" @onclick="() => OnActionSelected.InvokeAsync(PlayerAction.Fouiller)">
-                    🔍 FOUILLER
-                </button>
-                
-                <button class="btn btn-warning btn-lg mx-2" @onclick="() => OnActionSelected.InvokeAsync(PlayerAction.Fuir)">
-                    🏃 FUIR
+                <button class="btn btn-outline-info btn-sm m-1" @onclick="() => UseItem(item)">
+                    Utiliser @item.Name 
+                    <span class="badge bg-secondary">@GetItemEffectDescription(item)</span>
                 </button>
             }
-            else
-            {
-                <div class="spinner-border text-light" role="status"></div>
-            }
-        </div>
+        }
+        else
+        {
+            <p class="text-muted fst-italic">Votre sac est vide...</p>
+        }
     </div>
 </div>
 
 @code {
-    // RIEN ICI ! 
-    // Tout est déjà géré dans RoomComponent.razor.cs
+    private string GetItemEffectDescription(Item item)
+    {
+        if (item.Type == ItemType.Potion) return $"+{item.EffectPower} PV";
+        if (item.Type == ItemType.Weapon) return $"+{item.EffectPower} ATK";
+        return "???";
+    }
 }
