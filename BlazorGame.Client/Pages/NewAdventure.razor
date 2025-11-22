@@ -17,9 +17,9 @@
                 {
                     @* LOGIQUE CORRIGÉE : 
                        On affiche le compteur tant qu'on n'est pas strictement sur la dernière case (Sortie).
-                       (Count - 1) correspond à l'index de la dernière salle (Sortie).
+                       On compare à Count pour inclure l'avant-dernière salle.
                     *@
-                    @if (CurrentRoomIndex < (DungeonRooms.Count - 1))
+                    @if (CurrentRoomIndex < DungeonRooms.Count)
                     {
                         <span class="fs-5 fw-bold">Salle @CurrentRoomIndex / @(DungeonRooms.Count - 1)</span>
                     }
