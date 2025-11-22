@@ -39,7 +39,8 @@
         {
             @foreach (var item in CurrentPlayerState.Inventory.ToList()) 
             {
-                <button class="btn btn-outline-info btn-sm m-1" @onclick="() => UseItem(item)">
+                <!-- CORRECTION MAJEURE : type="button" ajouté pour empêcher le submit/refresh -->
+                <button type="button" class="btn btn-outline-info btn-sm m-1" @onclick="() => UseItem(item)">
                     Utiliser @item.Name 
                     <span class="badge bg-secondary">@GetItemEffectDescription(item)</span>
                 </button>

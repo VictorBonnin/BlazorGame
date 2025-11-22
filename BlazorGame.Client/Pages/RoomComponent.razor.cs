@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using SharedModels;
-using SharedModels.Entities; //
+using SharedModels.Entities;
 
 namespace BlazorGame.Client.Pages;
 
