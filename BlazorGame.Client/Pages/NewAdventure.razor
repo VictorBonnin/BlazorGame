@@ -5,118 +5,156 @@
 
 <PageTitle>Aventure</PageTitle>
 
-<div class="card mb-4 border-secondary">
-    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-        @if (GameInProgress)
-        {
-            <span>Salle @CurrentRoomIndex / @DungeonRooms?.Count</span>
-            <span class="badge bg-warning text-dark fs-5">🏆 Score: @CurrentAdventure?.Score</span>
-        }
-        else
-        {
-            <span>Nouvelle Partie</span>
-        }
-    </div>
-
-    <div class="card-body bg-dark text-light">
-        
-        <div class="alert alert-info text-center">
-            @Message
-        </div>
-
-        @if (GameInProgress)
-        {
-            <div class="mb-4">
-                <label class="form-label">Santé (@CurrentHealth / 100)</label>
-                <div class="progress" style="height: 25px;">
-                    <div class="progress-bar bg-danger progress-bar-striped progress-bar-animated" 
-                         role="progressbar" 
-                         style="width: @CurrentHealth%">
-                    </div>
+<div class="container" style="max-width: 800px;">
+    
+    @* --- EN-TÊTE : Toujours visible si jeu en cours --- *@
+    @if (GameInProgress)
+    {
+        <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-dark text-white border border-secondary rounded shadow-sm">
+            <div class="d-flex align-items-center gap-3">
+                <span class="fs-5 fw-bold">Salle @CurrentRoomIndex / @DungeonRooms?.Count</span>
+                <span class="badge bg-warning text-dark">🏆 @CurrentAdventure?.Score pts</span>
+            </div>
+            
+            <div class="d-flex align-items-center gap-2" style="min-width: 200px;">
+                <span class="small">❤️ @CurrentHealth PV</span>
+                <div class="progress flex-grow-1" style="height: 10px; background-color: #444;">
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: @CurrentHealth%"></div>
                 </div>
             </div>
+        </div>
+    }
 
-            @if (CurrentRoom != null)
+    @* --- ZONE PRINCIPALE (CARTE) --- *@
+    <div class="card shadow-lg border-secondary bg-dark text-white">
+        <div class="card-body text-center p-5">
+            
+            @if (GameInProgress && CurrentRoom != null)
             {
-                <RoomComponent Room="@CurrentRoom" OnActionSelected="HandleAction" IsLoading="@IsLoading" />
+                // 1. FEEDBACK (Action précédente)
+                @if (!string.IsNullOrEmpty(LastOutcome))
+                {
+                    <div class="alert alert-secondary bg-secondary text-white border-0 mb-4 animate__animated animate__fadeIn">
+                        @LastOutcome
+                    </div>
+                }
+
+                // 2. SCÈNE (Description Salle)
+                <div class="my-5">
+                    <h3 class="card-title fw-bold mb-3">Que faites-vous ?</h3>
+                    <p class="card-text fs-4 fst-italic text-white-50">
+                        "@CurrentRoom.Description"
+                    </p>
+                </div>
+
+                // 3. ACTIONS
+                @if (CurrentRoom.Type == RoomType.Exit)
+                {
+                    <button class="btn btn-success btn-lg px-5 py-3 shadow" @onclick="FinishAdventure">
+                        🚪 Pousser la porte finale
+                    </button>
+                }
+                else
+                {
+                    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mt-4">
+                        <button class="btn btn-outline-danger btn-lg px-4" @onclick="() => HandleAction(PlayerAction.Combattre)">⚔️ Attaquer</button>
+                        <button class="btn btn-outline-warning btn-lg px-4" @onclick="() => HandleAction(PlayerAction.Fouiller)">🔍 Fouiller</button>
+                        <button class="btn btn-outline-light btn-lg px-4" @onclick="() => HandleAction(PlayerAction.Fuir)">🏃 Fuir</button>
+                    </div>
+                    <div class="mt-3">
+                         <button class="btn btn-sm btn-link text-info text-decoration-none" @onclick="() => HandleAction(PlayerAction.UtiliserObjet)">🧪 Boire une Potion</button>
+                    </div>
+                }
+            }
+            else if (!GameFinished) // Écran d'accueil (Start)
+            {
+                <h1 class="display-4 fw-bold text-primary mb-3">L'Aventure Vous Attend</h1>
+                <p class="lead text-white-50 mb-5">Serez-vous assez brave pour atteindre la sortie ?</p>
+                <EditForm Model="@FormModel" OnValidSubmit="StartAdventure">
+                    <button type="submit" class="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow">COMMENCER L'AVENTURE</button>
+                </EditForm>
+            }
+            else // Écran de Fin (Game Over / Victoire)
+            {
+                @if (CurrentHealth > 0)
+                {
+                    <h1 class="text-success display-3 mb-3">🎉 VICTOIRE !</h1>
+                    <p class="lead">Vous avez survécu au donjon.</p>
+                }
+                else
+                {
+                    <h1 class="text-danger display-3 mb-3">☠️ GAME OVER</h1>
+                    <p class="lead">Le donjon a eu raison de vous.</p>
+                }
                 
-                <div class="mt-3 p-3 border border-secondary rounded">
-                    <h6 class="text-muted">🎒 Inventaire</h6>
-                    @if (Inventory.Count == 0) { <small>Vide</small> }
-                    else 
+                <div class="display-6 fw-bold text-warning my-4">Score : @CurrentAdventure?.Score</div>
+                
+                <div class="d-flex gap-3 justify-content-center mb-5">
+                    <button class="btn btn-primary" @onclick="StartAdventure">🔄 Rejouer</button>
+                    <a href="leaderboard" class="btn btn-outline-light">🏆 Classement</a>
+                </div>
+
+                @* --- RÉSUMÉ DE L'AVENTURE (VERSION CLAIRE) --- *@
+                @if (AdventureLogs.Any())
+                {
+                    <hr class="border-secondary my-5" />
+                    
+                    @* Fond gris clair (#f8f9fa) et texte sombre pour une lisibilité maximale *@
+                    <div class="card border-0 mx-auto shadow text-start" style="max-width: 700px; background-color: #f8f9fa; color: #212529;">
+                        <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0 fw-bold">📜 Journal de bord</h5>
+                            <small class="badge bg-dark">@AdventureLogs.Count Étapes</small>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            @foreach(var log in AdventureLogs)
+                            {
+                                <div class="list-group-item border-bottom border-secondary-subtle py-3 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center"
+                                     style="background-color: transparent;">
+                                    
+                                    <div class="d-flex align-items-center mb-2 mb-sm-0">
+                                        <span class="badge bg-dark text-white rounded-pill me-3">#@log.RoomIndex</span>
+                                        <span class="fw-medium">@log.Description</span>
+                                    </div>
+
+                                    <div class="d-flex gap-2 justify-content-end" style="min-width: 120px;">
+                                        @if(log.ScoreChange > 0) 
+                                        { 
+                                            <span class="badge bg-warning text-dark border border-warning shadow-sm">+@log.ScoreChange pts</span> 
+                                        }
+                                        @if(log.HealthChange < 0) 
+                                        { 
+                                            <span class="badge bg-danger text-white shadow-sm">@log.HealthChange PV</span> 
+                                        }
+                                        else if(log.HealthChange > 0) 
+                                        { 
+                                            <span class="badge bg-success text-white shadow-sm">+@log.HealthChange PV</span> 
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+        
+        @* --- PIED DE PAGE : INVENTAIRE (Uniquement en jeu) --- *@
+        @if (GameInProgress)
+        {
+            <div class="card-footer bg-dark border-top border-secondary p-3">
+                <div class="d-flex justify-content-center align-items-center flex-wrap gap-2">
+                    <span class="fw-bold me-2 text-white-50">🎒 Sac :</span>
+                    @if (Inventory.Count == 0)
+                    {
+                        <span class="small fst-italic text-muted">Vide</span>
+                    }
+                    else
                     {
                         @foreach(var item in Inventory)
                         {
-                            <span class="badge bg-secondary me-1">@item</span>
+                            <span class="badge rounded-pill bg-secondary border border-light">@item</span>
                         }
                     }
-                </div>
-            }
-        }
-        else if (!GameFinished)
-        {
-            <div class="text-center mt-5">
-                <h1>🏰 Entrez dans le Donjon</h1>
-                <p class="lead">Survivrez-vous aux pièges et aux monstres ?</p>
-
-                <div class="mx-auto mb-4" style="max-width: 500px;">
-                    <HintBox />
-                </div>
-                <EditForm Model="@FormModel" OnValidSubmit="StartAdventure">
-                    <button type="submit" class="btn btn-lg btn-success px-5">JOUER</button>
-                </EditForm>
-            </div>
-        }
-        else // --- ÉCRAN DE FIN ---
-        {
-            <div class="text-center py-4">
-                @if(CurrentHealth <= 0) 
-                { 
-                    <h1 class="text-danger fw-bold display-3">☠️ VOUS ÊTES MORT</h1>
-                }
-                else 
-                { 
-                    <h1 class="text-success fw-bold display-3">VICTOIRE !</h1>
-                }
-                
-                <h2 class="text-warning mt-3">Score Final : @CurrentAdventure?.Score</h2>
-                <hr class="border-secondary my-4"/>
-
-                @* --- RÉSUMÉ DE L'AVENTURE --- *@
-                <h4 class="text-white mb-3">📜 Résumé de l'expédition</h4>
-                <div class="list-group text-start mb-4 mx-auto" style="max-width: 600px;">
-                    @foreach (var log in AdventureLogs)
-                    {
-                        <div class="list-group-item list-group-item-dark d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="fw-bold me-2">Salle @log.RoomIndex :</span>
-                                <span>@log.Description</span>
-                            </div>
-                            <div class="text-end" style="min-width: 80px;">
-                                @if (log.ScoreChange > 0)
-                                {
-                                    <span class="badge bg-warning text-dark me-1">+@log.ScoreChange pts</span>
-                                }
-                                @if (log.HealthChange < 0)
-                                {
-                                    <span class="badge bg-danger">@log.HealthChange PV</span>
-                                }
-                                else if (log.HealthChange > 0)
-                                {
-                                    <span class="badge bg-success">+@log.HealthChange PV</span>
-                                }
-                            </div>
-                        </div>
-                    }
-                </div>
-
-                <div class="d-flex gap-3 justify-content-center mt-4">
-                    <button class="btn btn-primary btn-lg" @onclick="StartAdventure">
-                        🔄 Recommencer
-                    </button>
-                    <a href="leaderboard" class="btn btn-outline-light btn-lg">
-                        🏆 Voir les scores
-                    </a>
                 </div>
             </div>
         }

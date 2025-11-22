@@ -19,17 +19,18 @@ public partial class NewAdventure : ComponentBase
     public Adventure? CurrentAdventure { get; set; }
     public IReadOnlyList<Room>? DungeonRooms { get; set; }
     public List<string> Inventory { get; set; } = new();
-    
-    // --- NOUVEAU : Historique pour le résumé de fin ---
     public List<AdventureLogEntry> AdventureLogs { get; set; } = new();
-
     public int CurrentHealth { get; set; } = 100;
     
     private readonly Random _rng = new Random();
 
     public Room? CurrentRoom => DungeonRooms?.ElementAtOrDefault(CurrentRoomIndex - 1);
     public int CurrentRoomIndex { get; set; } = 1;
-    public string Message { get; set; } = "Préparez-vous à l'aventure !";
+
+    // --- NETTOYAGE : On sépare le "Feedback" de la "Description" ---
+    // LastOutcome ne contient QUE le résultat de l'action précédente (ex: "Vous avez pris 10 dégâts")
+    public string? LastOutcome { get; set; } = "L'aventure commence !"; 
+
     public bool GameInProgress => CurrentAdventure != null && CurrentAdventure.FinishedAt == null;
     public bool GameFinished => CurrentAdventure != null && CurrentAdventure.FinishedAt != null;
     public bool IsLoading { get; set; } = false;
@@ -52,10 +53,9 @@ public partial class NewAdventure : ComponentBase
         DungeonRooms = null;
         CurrentRoomIndex = 1;
         Inventory.Clear();
-        AdventureLogs.Clear(); // On vide l'historique
-        
+        AdventureLogs.Clear(); 
         CurrentHealth = 100;
-        Message = "Le donjon se génère...";
+        LastOutcome = "Le donjon se génère...";
         StateHasChanged(); 
         
         try
@@ -72,16 +72,16 @@ public partial class NewAdventure : ComponentBase
             {
                  CurrentAdventure!.Rooms = new List<RoomPlay>();
                  CurrentAdventure.Score = 0; 
-                 UpdateRoomMessage("Vous entrez dans le donjon.");
+                 LastOutcome = "Vous pénétrez dans l'obscurité."; // Message initial propre
             }
             else
             {
-                 Message = "Erreur: Donjon vide.";
+                 LastOutcome = "Erreur: Donjon vide.";
             }
         }
         catch (Exception ex)
         {
-            Message = $"Erreur : {ex.Message}";
+            LastOutcome = $"Erreur : {ex.Message}";
         }
         finally
         {
@@ -90,108 +90,86 @@ public partial class NewAdventure : ComponentBase
         }
     }
 
-    private void UpdateRoomMessage(string prefix = "")
-    {
-        if (CurrentRoom == null) return;
-        Message = $"{prefix} {CurrentRoom.Description}";
-    }
-
     public void HandleAction(PlayerAction action)
     {
         if (!GameInProgress || CurrentRoom == null) return;
-        
+        if (CurrentRoom.Type == RoomType.Exit) return;
+
         string outcomeText = "";
         int scoreGain = 0;
         int healthChange = 0;
+        int roll = _rng.Next(1, 101); 
 
-        // --- LOGIQUE DE RÉSOLUTION ---
         switch (action)
         {
             case PlayerAction.Combattre:
-                if (CurrentRoom.Type == RoomType.Combat) 
+                if (CurrentRoom.Type == RoomType.Combat)
                 {
-                    int roll = _rng.Next(0, 101);
-                    if (roll > 40) 
-                    {
+                    if (roll > 30) {
                         scoreGain = 50 + (CurrentRoom.Difficulty * 10);
-                        healthChange = -_rng.Next(1, 5); 
+                        healthChange = -_rng.Next(0, 10); 
                         outcomeText = "⚔️ Victoire ! Vous terrassez la bête.";
                         Inventory.Add("Trophée");
-                    }
-                    else 
-                    {
-                        healthChange = -_rng.Next(15, 25); 
-                        outcomeText = "🩸 Le monstre vous a violemment blessé avant de tomber.";
+                    } else {
+                        healthChange = -_rng.Next(15, 25);
+                        outcomeText = "🩸 Le monstre vous a blessé avant de tomber.";
                     }
                 }
+                else if (CurrentRoom.Type == RoomType.Loot)
+                    outcomeText = "🪓 Vous fracassez le coffre... quel gâchis.";
                 else if (CurrentRoom.Type == RoomType.Trap)
                 {
-                    healthChange = -10;
-                    outcomeText = "💥 Vous attaquez l'air... et déclenchez un piège !";
+                    healthChange = -20;
+                    outcomeText = "💢 Vous déclenchez le piège en vous agitant !";
                 }
-                else
-                {
-                    outcomeText = "💨 Vous brassez de l'air. Il n'y a personne ici.";
-                    healthChange = -1; 
-                }
+                else 
+                    outcomeText = "Vous effrayez le marchand.";
                 break;
 
             case PlayerAction.Fouiller:
-                if (CurrentRoom.Type == RoomType.Loot || CurrentRoom.Type == RoomType.Shop)
+                if (CurrentRoom.Type == RoomType.Loot)
                 {
                     scoreGain = 30;
-                    outcomeText = "💰 Vous trouvez un objet de valeur !";
                     Inventory.Add("Trésor");
-                    
-                    if (_rng.Next(0, 10) > 7) {
-                        healthChange = 15;
-                        outcomeText += " Et une potion de soin ! (+15 PV)";
-                    }
+                    outcomeText = "💰 Vous trouvez des objets de valeur !";
+                    if (roll > 80) { healthChange = 10; outcomeText += " (Et une potion)"; }
                 }
                 else if (CurrentRoom.Type == RoomType.Combat)
                 {
-                    healthChange = -20;
-                    outcomeText = "👹 Le monstre vous attaque pendant que vous regardez ailleurs !";
+                    healthChange = -30; 
+                    outcomeText = "🩸 Le monstre vous poignarde pendant que vous fouillez !";
                 }
                 else if (CurrentRoom.Type == RoomType.Trap)
                 {
-                    healthChange = -25;
-                    outcomeText = "☠️ PIÈGE ! Une explosion vous souffle.";
+                    if (roll > 60) { scoreGain = 15; outcomeText = "👀 Vous désarmez le piège avec succès."; }
+                    else { healthChange = -15; outcomeText = "💥 CLIC. Le piège explose."; }
                 }
-                else
+                else if (CurrentRoom.Type == RoomType.Shop)
                 {
-                    outcomeText = "Rien d'intéressant ici.";
+                    scoreGain = 10; Inventory.Add("Potion Achetée"); outcomeText = "🤝 Marché conclu.";
                 }
                 break;
 
             case PlayerAction.Fuir:
-                healthChange = -5;
-                outcomeText = "🏃 Vous fuyez vers la salle suivante (Fatigue -5 PV).";
+                if (CurrentRoom.Type == RoomType.Trap) outcomeText = "🏃 Vous courrez pour éviter le piège.";
+                else if (CurrentRoom.Type == RoomType.Combat) { healthChange = -10; outcomeText = "🏃 Fuite réussie (mais douloureuse)."; }
+                else outcomeText = "🏃 Vous passez votre chemin.";
                 break;
             
             case PlayerAction.UtiliserObjet:
-                if (Inventory.Contains("Potion"))
-                {
-                    healthChange = 30;
-                    Inventory.Remove("Potion");
-                    outcomeText = "🧪 Vous buvez une potion.";
-                }
-                else
-                {
-                    outcomeText = "Vous n'avez pas de potion !";
-                }
-                break;
+                 if (Inventory.Contains("Potion") || Inventory.Contains("Potion de Soin"))
+                 {
+                     if(!Inventory.Remove("Potion")) Inventory.Remove("Potion de Soin");
+                     healthChange = 40; outcomeText = "🧪 Potion bue (+40 PV).";
+                 }
+                 else outcomeText = "Pas de potion !";
+                 break;
         }
 
-        // Application des changements
         CurrentHealth += healthChange;
         if (CurrentHealth > 100) CurrentHealth = 100; 
-        
         CurrentAdventure!.Score += scoreGain;
 
-        // --- ENREGISTREMENT POUR API ET HISTORIQUE LOCAL ---
-        
-        // 1. Pour l'API (Données brutes)
         CurrentAdventure.Rooms.Add(new RoomPlay {
             Index = CurrentRoomIndex,
             Type = CurrentRoom.Type,
@@ -200,33 +178,25 @@ public partial class NewAdventure : ComponentBase
             Points = scoreGain 
         });
 
-        // 2. Pour l'Affichage Résumé (Données riches)
-        AdventureLogs.Add(new AdventureLogEntry(
-            CurrentRoomIndex,
-            outcomeText,
-            healthChange,
-            scoreGain
-        ));
+        AdventureLogs.Add(new AdventureLogEntry(CurrentRoomIndex, outcomeText, healthChange, scoreGain));
 
-        // Vérification Mort
         if (CurrentHealth <= 0)
         {
             CurrentHealth = 0;
-            Message = $"💀 {outcomeText} Vous êtes mort...";
+            LastOutcome = $"💀 {outcomeText} (Mort)";
             _ = FinishAdventure();
             return;
         }
 
-        // Passage à la suite
         if (CurrentRoomIndex < DungeonRooms!.Count)
         {
             CurrentRoomIndex++;
-            UpdateRoomMessage($"{outcomeText}");
+            // ICI : On met juste le résultat de l'action. Pas la description de la salle suivante.
+            LastOutcome = outcomeText; 
         }
         else
         {
-            Message = $"🎉 {outcomeText} Donjon terminé ! Score final : {CurrentAdventure.Score}";
-            _ = FinishAdventure();
+            LastOutcome = $"{outcomeText} Vous êtes devant la sortie.";
         }
     }
 
@@ -238,17 +208,11 @@ public partial class NewAdventure : ComponentBase
 
         try
         {
-            var roomsToSave = CurrentAdventure.Rooms
-                .Select(r => new RoomPlayDto(r.Index, (int)r.Type, r.Difficulty, (int)r.Action, r.Points))
-                .ToList();
-
+            var roomsToSave = CurrentAdventure.Rooms.Select(r => new RoomPlayDto(r.Index, (int)r.Type, r.Difficulty, (int)r.Action, r.Points)).ToList();
             var finishDto = new FinishRequest(CurrentAdventure.Score, roomsToSave);
             await Http.PostAsJsonAsync($"api/adventures/{CurrentAdventure.Id}/finish", finishDto);
         }
-        catch (Exception ex)
-        {
-            Message = $"Erreur sauvegarde : {ex.Message}";
-        }
+        catch (Exception ex) { LastOutcome = $"Erreur : {ex.Message}"; }
         finally { IsLoading = false; StateHasChanged(); }
     }
 
@@ -257,7 +221,5 @@ public partial class NewAdventure : ComponentBase
     public record StartPayload(Adventure Adventure, IReadOnlyList<Room> Rooms);
     public record FinishRequest(int Score, List<RoomPlayDto> Rooms);
     public record RoomPlayDto(int Index, int Type, int Difficulty, int Action, int Points);
-
-    // --- DTO Local pour l'affichage du résumé ---
     public record AdventureLogEntry(int RoomIndex, string Description, int HealthChange, int ScoreChange);
 }
