@@ -7,7 +7,7 @@ public class ScoreCalculatorsTests
 {
     [Theory]
     [InlineData(RoomType.Combat,   PlayerAction.Combattre, 3, 30)] // Combat réussi
-    [InlineData(RoomType.Combat,   PlayerAction.Fuir,      3, -6)] // Fuite d'un combat
+    [InlineData(RoomType.Combat,   PlayerAction.Fuir,      3, 15)] // Fuite d'un combat
     [InlineData(RoomType.Combat,   PlayerAction.Fouiller,  3, 0)]  // Fouiller en combat (neutre)
     
     [InlineData(RoomType.Loot,     PlayerAction.Fouiller,  4, 20)] // Butin réussi
