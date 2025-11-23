@@ -47,7 +47,7 @@ public class CombatRoomHandler : IRoomHandler
             }
             else
             {
-                int damage = -rng.Next(5, 10);
+                int damage = -rng.Next(10, 15);
                 return new RoomEventResult("🚫 Le monstre vous rattrape alors que vous tentiez de fuir !", damage, 0);
             }
         }

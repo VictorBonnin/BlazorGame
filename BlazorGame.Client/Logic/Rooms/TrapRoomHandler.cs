@@ -24,19 +24,19 @@ public class TrapRoomHandler : IRoomHandler
         {
             trapType = "Fosse";
             triggerMessage = "⬇️ CRAC ! Le sol se dérobe sous vos pieds. Chute brutale !";
-            baseDamage = 20; // La chute fait mal
+            baseDamage = 30; // La chute fait mal
         }
         else if (desc.Contains("trous") || desc.Contains("murs"))
         {
             trapType = "Fléchettes";
             triggerMessage = "🏹 ZIP ! Une volée de fléchettes sort des murs !";
-            baseDamage = 10; // Moins de dégâts
+            baseDamage = 20; // Moins de dégâts
         }
         else if (desc.Contains("fils") || desc.Contains("lames"))
         {
             trapType = "Guillotine";
             triggerMessage = "⚔️ CLANG ! Une lame cachée siffle à vos oreilles !";
-            baseDamage = 25; // Très dangereux
+            baseDamage = 35; // Très dangereux
         }
 
         if (action == PlayerAction.Fouiller) // ACTION : DÉSAMORCER
@@ -85,7 +85,7 @@ public class TrapRoomHandler : IRoomHandler
         else if (action == PlayerAction.Combattre) // ACTION : FORCER LE PASSAGE
         {
             // Essayer de casser le piège est stupide et déclenche tout immédiatement
-            int damage = -rng.Next(baseDamage, baseDamage + 10); // Dégâts max
+            int damage = -rng.Next(baseDamage, baseDamage + 20); // Dégâts max
             return new RoomEventResult($"💢 Mauvaise idée ! En frappant le mécanisme, vous le déclenchez violemment. {triggerMessage}", damage, 0);
         }
         else if (action == PlayerAction.Fuir)

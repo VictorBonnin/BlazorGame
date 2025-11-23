@@ -28,7 +28,6 @@ public class RoomHandlerFactory
         return handler;
     }
 
-    // --- CORRECTION ICI ---
     private class DefaultRoomHandler : IRoomHandler
     {
         public bool CanHandle(RoomType type) => true;
