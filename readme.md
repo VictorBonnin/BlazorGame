@@ -1,7 +1,36 @@
-## Blazor Game Quest
+# BlazorGame Quest
 ### Projet réalisé par Victor BONNIN & Elias DIONYSSOPOULOS
 
-## Lancement de l'application 
+Bienvenue dans **BlazorGame Quest**, un jeu d'aventure de type *Rogue-like* (Dungeon Crawler) textuel développé avec **.NET 9** et **Blazor WebAssembly**.
+
+## Description
+
+Le joueur incarne un aventurier explorant un donjon généré procéduralement. L'objectif est de survivre le plus longtemps possible en traversant différentes salles, en combattant des monstres, en collectant des trésors et en améliorant son équipement.
+
+### Fonctionnalités Principales
+* **Génération de Donjon :** Création aléatoire de salles à chaque nouvelle aventure.
+* **Système de Salles Variées :**
+    * ⚔️ **Combat :** Affrontez des ennemis pour gagner de l'expérience.
+    * 💰 **Loot (Trésor) :** Trouvez des objets rares.
+    * 🛒 **Shop (Boutique) :** Achetez des potions et équipements avec votre or.
+    * ❓ **Mystère :** Un événement aléatoire (bonus ou malus ?).
+    * 🩸 **Piège :** Testez votre chance au risque de perdre de la vie.
+    * 🕊️ **Sanctuaire :** Reposez-vous pour récupérer des points de vie.
+* **Système de Score :** Classement (Leaderboard) des meilleures aventures.
+* **Authentification :** Gestion des sessions joueurs sécurisée.
+
+## Architecture Technique
+
+Le projet suit une architecture orientée services (SOA) / Microservices :
+
+1.  **`BlazorGame.Client`** : Application Front-end en **Blazor WebAssembly (WASM)**. C'est l'interface utilisateur qui tourne dans le navigateur.
+2.  **`GameServices`** : API REST (ASP.NET Core) gérant la logique métier du jeu (génération de donjon, calcul des combats, gestion des items).
+3.  **`AuthenticationServices`** : API REST dédiée à la gestion des utilisateurs et à la sécurité (Login/Register).
+4.  **`SharedModels`** : Bibliothèque de classes partagée contenant les entités communes (DTOs, Modèles) pour assurer la cohérence entre le front et le back.
+
+## Installation et Lancement
+
+Puisque le projet est divisé en plusieurs services, il est nécessaire de lancer les composants dans un ordre précis.
 
 #### Nettoyer & compiler
 ```bash 
@@ -28,8 +57,6 @@ dotnet watch run --project .\GameServices\GameServices.csproj
 ```bash 
 dotnet run --project AuthenticationServices
 ```
-
-### Version 2
 
 #### Utilisation de Swagger
 ```
