@@ -180,22 +180,65 @@ public class DungeonGenerator
             //
 
             case RoomType.Trap:
-                string[] trapDesc = {
-                    "Le sol semble instable et sonne creux sous vos pas.",
-                    "Des trous étranges parsèment les murs de cette salle.",
-                    "Un silence de mort règne ici. C'est trop calme...",
-                    "Vous remarquez des fils très fins tendus en travers du passage."
-                };
-                room.Description = trapDesc[rng.Next(trapDesc.Length)];
+                // 1. On choisit un type de piège aléatoire
+                int trapTypeIndex = rng.Next(0, 3);
+                
+                if (trapTypeIndex == 0)
+                {
+                    room.Description = "Le sol semble instable et sonne creux sous vos pas. Attention où vous marchez.";
+                }
+                else if (trapTypeIndex == 1)
+                {
+                    room.Description = "Des petits trous étranges parsèment les murs de cette salle. Un mécanisme de tir ?";
+                }
+                else
+                {
+                    room.Description = "Des fils argentés et des lames rouillées sont tendus en travers du passage.";
+                }
 
-                // Parfois un piège cache un trésor
-                if (rng.Next(1, 10) == 1) room.Loot.Add(GenerateLoot(1, rng));
+                // 2. Le piège protège-t-il un trésor ? (30% de chance)
+                // C'est l'appât qui incite le joueur à tenter le "Fouiller" risqué
+                if (rng.Next(1, 101) <= 30) 
+                {
+                    room.Loot.Add(GenerateLoot(room.Difficulty, rng));
+                }
                 break;
 
+            //
+            //  Salle Shop
+            //
+
             case RoomType.Shop:
-                room.Description = "Une lueur chaude et une odeur d'encens vous accueillent. Un marchand vous fait signe.";
-                // Le magasin propose toujours 3 objets de qualité
-                for(int k=0; k<3; k++) room.Loot.Add(GenerateItem(true, rng)); 
+                // 1. On génère le stock du magasin (3 objets de qualité "Shop")
+                room.Loot = new List<Item>();
+                for(int k = 0; k < 3; k++) 
+                {
+                    room.Loot.Add(GenerateItem(true, rng)); 
+                }
+
+                // 2. On crée une description dynamique basée sur le premier objet en vente (la "vedette")
+                if (room.Loot.Count > 0)
+                {
+                    Item starItem = room.Loot[0];
+                    string price = $"{starItem.ScoreValue} Or";
+                    
+                    if (starItem.Type == ItemType.Weapon)
+                    {
+                        room.Description = $"Le marchand aiguise une {starItem.Name}. 'La meilleure lame du royaume, seulement {price} !'";
+                    }
+                    else if (starItem.Type == ItemType.Potion)
+                    {
+                        room.Description = $"Une odeur d'herbes règne ici. Le marchand vous tend une {starItem.Name} ({price}). 'Ça soigne tout !'";
+                    }
+                    else if (starItem.Type == ItemType.Artifact)
+                    {
+                        room.Description = $"Le marchand sort un objet brillant d'un coffre : {starItem.Name}. 'Une rareté pour {price}, intéressé ?'";
+                    }
+                    else
+                    {
+                        room.Description = "Le marchand vous accueille avec un grand sourire. 'J'ai les meilleurs prix du donjon !'";
+                    }
+                }
                 break;
 
             //
@@ -203,11 +246,26 @@ public class DungeonGenerator
             //
 
             case RoomType.Sanctuary:
-                room.Description = "Une source d'eau cristalline coule d'une statue brisée. L'air est pur.";
-                // Parfois une potion gratuite
+                // 1. On décide d'abord si la "Potion Gratuite" est présente
                 if (rng.Next(0, 2) == 0) 
                 {
-                    room.Loot.Add(new Item { Name = "Eau Bénite", Type = ItemType.Potion, ScoreValue = 0, EffectPower = 50, Description = "Rend 50 PV" });
+                    // CHANCE : L'objet est là
+                    room.Loot.Add(new Item { 
+                        Name = "Eau Bénite", 
+                        Type = ItemType.Potion, 
+                        ScoreValue = 20, // J'ai mis un peu de score, c'est toujours sympa
+                        EffectPower = 50, 
+                        Description = "Rend 50 PV" 
+                    });
+
+                    // Description qui indique la présence de l'objet
+                    room.Description = "Une source d'eau cristalline coule d'une statue. Une fiole remplie est posée sur le rebord !";
+                }
+                else
+                {
+                    // PAS D'OBJET
+                    // Description qui indique que la source est seule
+                    room.Description = "Une source d'eau cristalline coule d'une statue brisée. L'air est pur, mais le lieu semble avoir été pillé.";
                 }
                 break;
 
@@ -252,16 +310,32 @@ public class DungeonGenerator
             //
             //  Salle BOSS
             //
-            
+
             case RoomType.Boss:
-                room.Description = "Une immense porte s'ouvre sur une salle du trône. Une créature gigantesque vous barre la route !";
+                // 1. On génère le BOSS
+                // On prend une base de monstre très fort (Difficulté + 2)
                 var boss = GenerateMonster(room.Difficulty + 2, rng);
+                
+                // On le booste manuellement pour en faire un vrai Boss
                 boss.Name = "Gardien du Donjon";
-                boss.Health *= 2; // Plus de vie
-                boss.Attack += 2; // Plus fort
+                boss.Health *= 2; // Double PV
+                boss.Attack += 3; // Frappe très fort
                 room.Monsters.Add(boss);
-                // Le boss donne toujours un bon objet
-                room.Loot.Add(GenerateItem(true, rng));
+
+                // 2. On génère la RÉCOMPENSE (Toujours un objet de qualité "Shop")
+                var bossLoot = GenerateItem(true, rng);
+                room.Loot.Add(bossLoot);
+
+                // 3. Description Épique et Dynamique
+                // On mentionne le boss ET l'objet qu'il protège pour motiver le joueur
+                string[] bossIntros = {
+                    $"Une immense porte s'ouvre sur la salle du trône. Le {boss.Name} hurle en vous voyant !",
+                    $"Le sol tremble... Une créature gigantesque ({boss.Name}) garde le trésor final.",
+                    $"C'est la fin du chemin. Le terrible {boss.Name} vous barre la route vers la sortie."
+                };
+                
+                string intro = bossIntros[rng.Next(bossIntros.Length)];
+                room.Description = $"{intro} Derrière lui, vous apercevez une lueur : {bossLoot.Name} !";
                 break;
         }
     }
