@@ -1,5 +1,5 @@
 using SharedModels;
-using SharedModels.Entities; // Pour RoomPlay
+using SharedModels.Entities;
 using BlazorGame.Client.Logic;
 using System.Linq;
 
@@ -11,7 +11,6 @@ public class CombatRoomHandler : IRoomHandler
 
     public RoomEventResult HandleAction(PlayerAction action, Room room, List<Item> inventory, Random rng)
     {
-        // 1. On prépare l'objet RoomPlay pour le calculateur de score
         var roomPlay = new RoomPlay 
         { 
             Type = room.Type, 
@@ -21,40 +20,33 @@ public class CombatRoomHandler : IRoomHandler
 
         if (action == PlayerAction.Combattre)
         {
-            int roll = rng.Next(1, 101);
-            int attackBonus = inventory.Where(i => i.Type == ItemType.Weapon).Sum(i => i.EffectPower);
-            string bonusMsg = attackBonus > 0 ? $" (Bonus: +{attackBonus})" : "";
+            int combatScenario = rng.Next(0, 2); 
 
-            if (roll + attackBonus > 40) 
+            if (combatScenario == 0)
             {
-                // CORRECTION : On utilise le ScoreCalculator
-                int scoreGain = ScoreCalculator.CalculatePoints(roomPlay);
-                return new RoomEventResult($"⚔️ Victoire !{bonusMsg}", 0, scoreGain);
+                return HandleStandardCombat(roomPlay, inventory, rng);
             }
             else
             {
-                int damage = -rng.Next(10, 20);
-                return new RoomEventResult($"🩸 Le monstre contre-attaque !{bonusMsg}", damage, 0);
+                return HandleEnragedCombat(roomPlay, inventory, rng);
             }
         }
         else if (action == PlayerAction.Fouiller)
         {
-            return new RoomEventResult("🩸 Impossible de fouiller en combat !", -15, 0);
+            return new RoomEventResult("🩸 Vous essayez de fouiller, mais un monstre était présent !", -15, 0);
         }
         else if (action == PlayerAction.Fuir)
         {
-            // CORRECTION : Logique de fuite avec risque et récompense
+            // Logique de fuite avec risque et récompense
             int fleeRoll = rng.Next(1, 101);
             
             if (fleeRoll > 50) // 50% de chance de réussir la fuite
             {
-                // On récupère les points de fuite définis dans ScoreCalculator (15 pts)
                 int scoreGain = ScoreCalculator.CalculatePoints(roomPlay);
                 return new RoomEventResult("🏃 Vous avez réussi à semer le monstre !", 0, scoreGain);
             }
             else
             {
-                // Échec de la fuite : on prend des dégâts
                 int damage = -rng.Next(5, 10);
                 return new RoomEventResult("🚫 Le monstre vous rattrape alors que vous tentiez de fuir !", damage, 0);
             }
@@ -71,5 +63,48 @@ public class CombatRoomHandler : IRoomHandler
         }
 
         return new RoomEventResult("Action invalide.", 0, 0);
+    }
+
+    // --- SCÉNARIO 1 : Le combat classique (Ta logique originale) ---
+    private RoomEventResult HandleStandardCombat(RoomPlay roomPlay, List<Item> inventory, Random rng)
+    {
+        int roll = rng.Next(1, 101);
+        int attackBonus = inventory.Where(i => i.Type == ItemType.Weapon).Sum(i => i.EffectPower);
+        string bonusMsg = attackBonus > 0 ? $" (Bonus: +{attackBonus})" : "";
+
+        // Seuil de réussite : 40
+        if (roll + attackBonus > 40) 
+        {
+            int scoreGain = ScoreCalculator.CalculatePoints(roomPlay);
+            return new RoomEventResult($"⚔️ Victoire contre le monstre !{bonusMsg}", 0, scoreGain);
+        }
+        else
+        {
+            // Dégâts -
+            int damage = -rng.Next(20, 30);
+            return new RoomEventResult($"🩸 Le monstre contre-attaque !{bonusMsg}", damage, 0);
+        }
+    }
+
+    // --- SCÉNARIO 2 : Le monstre enragé ---
+    private RoomEventResult HandleEnragedCombat(RoomPlay roomPlay, List<Item> inventory, Random rng)
+    {
+        int roll = rng.Next(1, 101);
+        int attackBonus = inventory.Where(i => i.Type == ItemType.Weapon).Sum(i => i.EffectPower);
+        string bonusMsg = attackBonus > 0 ? $" (Bonus: +{attackBonus})" : "";
+
+        // Ce monstre attaque furieusement sans se protéger : il est plus facile à toucher
+        // Seuil de réussite abaissé à 30 (au lieu de 40)
+        if (roll + attackBonus > 30) 
+        {
+            int scoreGain = ScoreCalculator.CalculatePoints(roomPlay);
+            // Optionnel : Tu pourrais donner un bonus de points ici si tu voulais
+            return new RoomEventResult($"🔥 Vous profitez de la rage du monstre pour le terrasser !{bonusMsg}", 0, scoreGain);
+        }
+        else
+        {
+            int damage = -rng.Next(30, 45);
+            return new RoomEventResult($"💥 Le monstre enragé vous inflige un coup brutal !{bonusMsg}", damage, 0);
+        }
     }
 }

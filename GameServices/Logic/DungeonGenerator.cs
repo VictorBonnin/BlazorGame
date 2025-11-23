@@ -63,8 +63,8 @@ public class DungeonGenerator
         if (roll <= 35) return RoomType.Combat;     // 35%
         if (roll <= 55) return RoomType.Loot;       // 20%
         if (roll <= 70) return RoomType.Trap;       // 15%
-        if (roll <= 85) return RoomType.Sanctuary;  // 15% NOUVEAU
-        if (roll <= 95) return RoomType.Mystery;    // 10% NOUVEAU
+        if (roll <= 85) return RoomType.Sanctuary;  // 15%
+        if (roll <= 95) return RoomType.Mystery;    // 10%
         return RoomType.Shop;                       // 5%
     }
 
@@ -75,37 +75,109 @@ public class DungeonGenerator
 
         switch (room.Type)
         {
-            case RoomType.Combat:
-                string[] combatDesc = {
-                    "Une odeur de chair putréfiée vous prend à la gorge...",
-                    "Vous entendez une respiration lourde dans l'obscurité.",
-                    "Des cliquetis d'armes résonnent contre les murs de pierre.",
-                    "Une ombre menaçante se dresse au centre de la pièce."
-                };
-                room.Description = combatDesc[rng.Next(combatDesc.Length)];
+            //
+            //  Salle Combat
+            //
 
+            case RoomType.Combat:
+                // 1. On génère d'abord les monstres pour savoir à qui on a affaire
                 int numMonsters = rng.Next(1, 4);
                 for (int i = 0; i < numMonsters; i++)
                 {
                     room.Monsters.Add(GenerateMonster(room.Difficulty, rng));
                 }
+
+                // 2. On adapte la description en fonction du type de monstre généré.
+                // On regarde le premier monstre (car GenerateMonster crée le même type pour une difficulté donnée).
+                if (room.Monsters.Count > 0)
+                {
+                    string monsterType = room.Monsters[0].Name;
+
+                    if (monsterType == "Gobelin")
+                    {
+                        string[] gobDesc = {
+                            "Des petits rires sadiques résonnent... C'est une embuscade de Gobelins !",
+                            "Une odeur de crasse vous prend à la gorge. Vous êtes dans un nid de Gobelins.",
+                            "Vous trébuchez sur des restes de repas. Des Gobelins vous observent."
+                        };
+                        room.Description = gobDesc[rng.Next(gobDesc.Length)];
+                    }
+                    else if (monsterType == "Squelette")
+                    {
+                        string[] skelDesc = {
+                            "Le sol est jonché d'ossements qui commencent à s'assembler sous vos yeux !",
+                            "Un froid glacial envahit la pièce. Des Squelettes sortent de l'ombre.",
+                            "Des cliquetis d'armes rouillées résonnent. La garde Squelette est là."
+                        };
+                        room.Description = skelDesc[rng.Next(skelDesc.Length)];
+                    }
+                    else if (monsterType == "Ogre")
+                    {
+                        room.Description = "Une odeur de chair putréfiée est insupportable. Un Ogre massif garde cette salle !";
+                    }
+                    else if (monsterType == "Troll")
+                    {
+                        room.Description = "Des traces de griffes profondes marquent la pierre. Un Troll enragé vous fait face !";
+                    }
+                    else
+                    {
+                        // Cas par défaut (au cas où on ajoute de nouveaux monstres plus tard)
+                        room.Description = "Une menace hostile émerge de l'obscurité...";
+                    }
+                }
                 break;
+
+            //
+            //  Salle Loot 
+            //
                 
             case RoomType.Loot: 
-                string[] lootDesc = {
-                    "Quelque chose scintille sous la poussière dans un coin.",
-                    "Vous apercevez une vieille malle en bois renforcé.",
-                    "La pièce semble vide, mais un petit autel trône au fond.",
-                    "Des débris de meubles jonchent le sol, peut-être y a-t-il quelque chose ?"
-                };
-                room.Description = lootDesc[rng.Next(lootDesc.Length)];
-
+                // 1. On génère d'abord le butin pour savoir ce que la salle contient
                 int numLoot = rng.Next(1, 4);
                 for (int i = 0; i < numLoot; i++)
                 {
                     room.Loot.Add(GenerateLoot(room.Difficulty, rng));
                 }
+
+                // 2. On adapte la description en fonction du type d'objet le plus intéressant trouvé
+                // Ordre de priorité : Artefact > Arme > Potion > Or
+
+                if (room.Loot.Exists(i => i.Type == ItemType.Artifact))
+                {
+                    room.Description = "Une aura étrange émane d'un piédestal au centre de la pièce. Un objet rare s'y trouve !";
+                }
+                else if (room.Loot.Exists(i => i.Type == ItemType.Weapon))
+                {
+                    string[] weaponDesc = {
+                        "Un râtelier d'armes poussiéreux trône contre le mur.",
+                        "Vous entrez dans ce qui ressemble à une vieille salle de garde abandonnée.",
+                        "Une lame luit faiblement, posée sur une table brisée au milieu des débris."
+                    };
+                    room.Description = weaponDesc[rng.Next(weaponDesc.Length)];
+                }
+                else if (room.Loot.Exists(i => i.Type == ItemType.Potion))
+                {
+                    string[] potionDesc = {
+                        "Une odeur chimique flotte dans l'air. C'est un ancien laboratoire d'alchimiste.",
+                        "Des étagères remplies de fioles vides... sauf une qui semble intacte.",
+                        "Un petit cabinet de soins a été laissé à l'abandon ici."
+                    };
+                    room.Description = potionDesc[rng.Next(potionDesc.Length)];
+                }
+                else // S'il n'y a que de l'or ou autre chose
+                {
+                    string[] goldDesc = {
+                        "Un coffre entrouvert laisse échapper un éclat doré.",
+                        "Quelqu'un a perdu sa bourse ici. Des pièces roulent sur le sol.",
+                        "Une cache de voleur, dissimulée à la hâte sous des planches."
+                    };
+                    room.Description = goldDesc[rng.Next(goldDesc.Length)];
+                }
                 break;
+
+            //
+            //  Salle Piège
+            //
 
             case RoomType.Trap:
                 string[] trapDesc = {
@@ -126,7 +198,10 @@ public class DungeonGenerator
                 for(int k=0; k<3; k++) room.Loot.Add(GenerateItem(true, rng)); 
                 break;
 
-            // NOUVEAU : Salle de repos
+            //
+            //  Salle de repos (Sanctuaire)
+            //
+
             case RoomType.Sanctuary:
                 room.Description = "Une source d'eau cristalline coule d'une statue brisée. L'air est pur.";
                 // Parfois une potion gratuite
@@ -136,22 +211,48 @@ public class DungeonGenerator
                 }
                 break;
 
-            // NOUVEAU : Salle Mystère (Soit un monstre, soit un trésor)
+            //
+            //  Salle Mystère (Soit un monstre, soit un trésor)
+            //
+
             case RoomType.Mystery:
-                room.Description = "Une brume épaisse envahit la pièce. Vous ne voyez pas le bout de vos pieds.";
+                // 1. On détermine d'abord le contenu (Pile ou Face)
                 if (rng.Next(0, 2) == 0)
                 {
-                    // Malchance : Un monstre caché
-                    room.Monsters.Add(GenerateMonster(room.Difficulty, rng));
+                    // --- MALCHANCE : Un monstre caché ---
+                    var monster = GenerateMonster(room.Difficulty, rng);
+                    room.Monsters.Add(monster);
+
+                    // On génère une description qui suggère un DANGER (ambiance lourde, bruits, odeurs)
+                    string[] dangerHints = {
+                        "Une brume épaisse envahit la pièce. Vous entendez une respiration rauque tout près...",
+                        "L'obscurité est totale, mais une odeur fétide trahit une présence hostile.",
+                        "Des ombres menaçantes semblent danser dans le brouillard. Vous n'êtes pas seul.",
+                        $"Le silence est rompu par un grognement... Une silhouette de {monster.Name} se dessine !" 
+                    };
+                    room.Description = dangerHints[rng.Next(dangerHints.Length)];
                 }
                 else
                 {
-                    // Chance : Un objet
-                    room.Loot.Add(GenerateItem(false, rng));
+                    // --- CHANCE : Un objet ---
+                    var item = GenerateItem(false, rng);
+                    room.Loot.Add(item);
+
+                    // On génère une description qui suggère une RÉCOMPENSE (lueur, calme, forme d'objet)
+                    string[] lootHints = {
+                        "Une brume épaisse envahit la pièce, mais une lueur dorée perce l'obscurité.",
+                        "Le sol est couvert de brume. Vos pieds heurtent un objet métallique qui semble précieux.",
+                        "L'air semble plus léger ici. Une forme géométrique se dessine sur un piédestal.",
+                        "Tout est calme. Une aura de magie flotte autour d'un objet dissimulé."
+                    };
+                    room.Description = lootHints[rng.Next(lootHints.Length)];
                 }
                 break;
 
-            // NOUVEAU : Salle de Boss
+            //
+            //  Salle BOSS
+            //
+            
             case RoomType.Boss:
                 room.Description = "Une immense porte s'ouvre sur une salle du trône. Une créature gigantesque vous barre la route !";
                 var boss = GenerateMonster(room.Difficulty + 2, rng);
