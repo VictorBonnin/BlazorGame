@@ -42,7 +42,7 @@
     private async Task HandleLogin()
     {
         if (string.IsNullOrWhiteSpace(Username)) return;
-
+        
         IsLoading = true;
         ErrorMessage = "";
 
@@ -54,13 +54,12 @@
             if (response.IsSuccessStatusCode)
             {
                 var player = await response.Content.ReadFromJsonAsync<Player>();
-                
                 if (player != null)
                 {
-                    // 2. Enregistrement dans la session locale
-                    Session.Login(player.Id, player.UserName);
+                    // 2. Enregistrement dans la session locale (CORRECTION ICI : ajout de await)
+                    await Session.Login(player.Id, player.UserName);
 
-                    // 3. REDIRECTION VERS L'ACCUEIL (Le Dashboard)
+                    // 3. REDIRECTION VERS L'ACCUEIL
                     Navigation.NavigateTo("/");
                 }
             }

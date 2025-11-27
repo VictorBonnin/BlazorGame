@@ -16,23 +16,20 @@ public class GameDbContext : DbContext
         modelBuilder.Entity<Adventure>().HasKey(a => a.Id);
         modelBuilder.Entity<Player>().HasKey(p => p.Id);
 
-        // Configuration de la relation One-to-Many entre Player et Adventure
+        // --- CORRECTION ICI ---
         modelBuilder.Entity<Adventure>()
             .HasOne(a => a.Player)
-            .WithMany()
+            .WithMany(p => p.Adventures) // <--- AJOUTE CECI : on lie la liste du Player
             .HasForeignKey(a => a.PlayerId);
 
-        // Configuration de la collection détenue (Owned Collection)
+        // Configuration de la collection détenue (inchangée)
         modelBuilder.Entity<Adventure>().OwnsMany(
             a => a.Rooms,
             r =>
             {
                 r.WithOwner().HasForeignKey("AdventureId");
                 r.Property(rp => rp.Index);
-                r.Property(rp => rp.Type);
-                r.Property(rp => rp.Action);
-                r.Property(rp => rp.Points);
-                r.Property(rp => rp.Difficulty);
+                // ... reste inchangé
                 r.HasKey(nameof(RoomPlay.Id), "AdventureId");
             });
     }

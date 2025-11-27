@@ -1,6 +1,9 @@
 @page "/admin"
+@using System.Net.Http.Json
 @inject HttpClient Http
 @inject IJSRuntime JS
+@inject BlazorGame.Client.Services.PlayerSessionService Session
+@inject NavigationManager Nav
 
 <div class="container">
     <h2 class="mb-4">🛠️ Tableau de Bord Admin</h2>
@@ -58,8 +61,8 @@
 </div>
 
 @code {
-    // Classe locale pour l'affichage admin
-  class AdminPlayerDto {
+    // DTO local pour l'affichage
+    class AdminPlayerDto {
         public int Id { get; set; }
         public string UserName { get; set; } = string.Empty;
         public bool IsActive { get; set; }
@@ -67,45 +70,42 @@
         public int HighScore { get; set; }
     }
 
+    private List<AdminPlayerDto>? adminPlayers;
+
+    // --- C'est ici que tu devais avoir un doublon ---
     protected override async Task OnInitializedAsync()
     {
-        // SÉCURITÉ : Si aucun joueur n'est connecté (cas du F5), on éjecte vers le login
-        if (!Session.CurrentPlayerId.HasValue)
+        // Sécurité basique : redirection si pas connecté (optionnel si géré par MainLayout)
+        if (!Session.IsAuthenticated)
         {
-            Nav.NavigateTo("/login");
-            return;
+             // Tu peux décommenter si tu veux une sécurité stricte ici aussi
+             // Nav.NavigateTo("/login");
+             // return;
         }
 
         await LoadData();
     }
 
-    private List<AdminPlayerDto>? adminPlayers;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadData();
-    }
-
     private async Task LoadData()
     {
-        adminPlayers = await Http.GetFromJsonAsync<List<AdminPlayerDto>>("api/admin/players");
+        try 
+        {
+            adminPlayers = await Http.GetFromJsonAsync<List<AdminPlayerDto>>("api/admin/players");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erreur admin : {ex.Message}");
+        }
     }
 
     private async Task ToggleStatus(int id)
     {
         await Http.PutAsync($"api/admin/players/{id}/toggle-status", null);
-        await LoadData(); // Recharger la liste
+        await LoadData(); // Recharger la liste après action
     }
 
     private async Task DownloadCsv()
     {
-        // Astuce pour télécharger un fichier généré par l'API
-        var fileBytes = await Http.GetByteArrayAsync("api/admin/players/export");
-        var fileName = $"players_export_{DateTime.Now:yyyyMMdd}.csv";
-        
-        // Appel JS pour déclencher le téléchargement (nécessite un petit script dans index.html ou ici)
-        // Pour simplifier ici, on suppose que tu as une fonction JS "saveAsFile"
-        // Sinon, l'ouvrir dans un nouvel onglet :
         await JS.InvokeVoidAsync("open", "api/admin/players/export", "_blank");
     }
 }

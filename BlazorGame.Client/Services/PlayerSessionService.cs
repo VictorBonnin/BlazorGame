@@ -1,49 +1,102 @@
-using System.Net.Http.Json; // Nécessaire pour GetFromJsonAsync
-using System.Net.Http;      // Nécessaire pour IHttpClientFactory
-using SharedModels.Entities; // Pour l'objet Player
+using System.Net.Http.Json;
+using System.Net.Http;
+using SharedModels.Entities;
+using Blazored.LocalStorage;
 
 namespace BlazorGame.Client.Services;
 
 public class PlayerSessionService
 {
-    private readonly HttpClient _http;
+    private readonly HttpClient _authHttp; // Client dédié à l'authentification (Port 5200)
+    private readonly IHttpClientFactory _factory; // Pour générer le client Jeu (Port 5001)
+    private readonly ILocalStorageService _localStorage;
 
-    // On injecte la "Fabrique" (Factory) pour choisir la bonne adresse
-    public PlayerSessionService(IHttpClientFactory factory)
+    // On injecte la Factory et le LocalStorage
+    public PlayerSessionService(IHttpClientFactory factory, ILocalStorageService localStorage)
     {
-        // On choisit explicitement le canal vers le port 5200
-        _http = factory.CreateClient("AuthApi");
+        _factory = factory;
+        _authHttp = factory.CreateClient("AuthApi"); // Par défaut, on garde le lien vers Auth
+        _localStorage = localStorage;
     }
 
     public int? CurrentPlayerId { get; private set; }
     public string? CurrentPlayerName { get; private set; }
     public bool IsAuthenticated => CurrentPlayerId.HasValue;
+    
     public event Action? OnChange;
 
-    // Cette méthode appelle http://localhost:5200/api/auth/session
+    // [Modifié] Méthode robuste anti-mode "Zombie"
+    public async Task Initialize()
+    {
+        // 1. On lit la mémoire du navigateur
+        var savedId = await _localStorage.GetItemAsync<int?>("playerId");
+        var savedName = await _localStorage.GetItemAsync<string?>("playerName");
+
+        if (savedId.HasValue)
+        {
+            try 
+            {
+                // 2. VÉRIFICATION CRUCIALE : On demande au serveur de JEU (GameApi) si ce joueur existe encore.
+                // On utilise la factory pour créer un client qui pointe vers le bon port (5001)
+                var gameClient = _factory.CreateClient("GameApi");
+                
+                var response = await gameClient.GetAsync($"api/players/{savedId.Value}");
+                
+                if (response.IsSuccessStatusCode)
+                {
+                    // TOUT EST OK : Le serveur nous reconnaît
+                    CurrentPlayerId = savedId;
+                    CurrentPlayerName = savedName;
+                    NotifyStateChanged();
+                }
+                else
+                {
+                    // LE SERVEUR A OUBLIÉ (ex: redémarrage) : On nettoie tout
+                    await Logout(); 
+                }
+            }
+            catch
+            {
+                // Si le serveur est éteint ou injoignable, on déconnecte par sécurité
+                await Logout();
+            }
+        }
+    }
+
     public async Task<Player?> GetPlayerSession()
     {
         try 
         {
-            return await _http.GetFromJsonAsync<Player>("api/auth/session");
+            // Utilise le client Auth (5200)
+            return await _authHttp.GetFromJsonAsync<Player>("api/auth/session");
         }
         catch
         {
-            return null; // Si erreur, on considère que le joueur n'est pas connecté
+            return null;
         }
     }
 
-    public void Login(int playerId, string playerName)
+    public async Task Login(int playerId, string playerName)
     {
         CurrentPlayerId = playerId;
         CurrentPlayerName = playerName;
+
+        // Persistance
+        await _localStorage.SetItemAsync("playerId", playerId);
+        await _localStorage.SetItemAsync("playerName", playerName);
+
         NotifyStateChanged();
     }
 
-    public void Logout()
+    public async Task Logout()
     {
         CurrentPlayerId = null;
         CurrentPlayerName = null;
+
+        // Nettoyage
+        await _localStorage.RemoveItemAsync("playerId");
+        await _localStorage.RemoveItemAsync("playerName");
+
         NotifyStateChanged();
     }
 

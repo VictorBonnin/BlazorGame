@@ -52,6 +52,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTmV3QWR2ZW50dXJlLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/bonni/Documents/Ecole/Efrei/Inge/DotNet/Projet-Test-Prod3/Test_Prod/BlazorGame.Client/Pages/Profile.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJvZmlsZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/bonni/Documents/Ecole/Efrei/Inge/DotNet/Projet-Test-Prod3/Test_Prod/BlazorGame.Client/Pages/RoomComponent.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUm9vbUNvbXBvbmVudC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
@@ -62,6 +66,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/bonni/Documents/Ecole/Efrei/Inge/DotNet/Projet-Test-Prod3/Test_Prod/BlazorGame.Client/Shared/HintBox.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEhpbnRCb3gucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/bonni/Documents/Ecole/Efrei/Inge/DotNet/Projet-Test-Prod3/Test_Prod/BlazorGame.Client/Shared/RedirectToLogin.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFJlZGlyZWN0VG9Mb2dpbi5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/bonni/Documents/Ecole/Efrei/Inge/DotNet/Projet-Test-Prod3/Test_Prod/BlazorGame.Client/_Imports.razor]

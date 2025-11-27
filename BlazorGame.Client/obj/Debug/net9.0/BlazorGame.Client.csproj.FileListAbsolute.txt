@@ -2226,8 +2226,9 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-prod_2\BlazorGame\BlazorG
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Reset-prod_2\BlazorGame\BlazorGame.Client\obj\Debug\net9.0\ref\BlazorGame.Client.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\blazor.boot.json
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\blazor.webassembly.js
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\BlazorGame.Client.dw3jwcxln7.pdb
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\BlazorGame.Client.4146w0q4oo.wasm
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\Blazored.LocalStorage.12n6dz54qr.wasm
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\BlazorGame.Client.d34vrx43gv.pdb
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\BlazorGame.Client.n9dw3ljhio.wasm
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\dotnet.js
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\dotnet.js.map
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\dotnet.native.9ih887ebfz.js
@@ -2270,8 +2271,8 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\Bla
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\Microsoft.Win32.Registry.nbxzikm6ra.wasm
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\mscorlib.xd6mv31d55.wasm
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\netstandard.kaml52uspo.wasm
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\SharedModels.ymsume63w7.pdb
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\SharedModels.4rew77paty.wasm
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\SharedModels.qv2s0xjrvt.pdb
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\SharedModels.2yiqpfk3ss.wasm
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.AppContext.s2mli7k045.wasm
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Buffers.d8ayacj23s.wasm
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Collections.Concurrent.feo024siyp.wasm
@@ -2453,11 +2454,11 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\Bla
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Reflection.Metadata.mk9ue4xfjz.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Collections.Specialized.y21ri2wtjp.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.IO.FileSystem.278u1momgg.wasm.gz
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\BlazorGame.Client.4146w0q4oo.wasm.gz
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\BlazorGame.Client.n9dw3ljhio.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.ServiceModel.Web.jxbpi5wlg5.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Runtime.Handles.e3jwcwvkfi.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\dotnet.native.9ih887ebfz.js.gz
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\SharedModels.4rew77paty.wasm.gz
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\SharedModels.2yiqpfk3ss.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Linq.b6i9jn5866.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Numerics.b89n5cbieg.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\Microsoft.Extensions.DependencyInjection.cjor3emdhz.wasm.gz
@@ -2482,7 +2483,7 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\Bla
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Net.HttpListener.pjiup6uulr.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Net.WebHeaderCollection.3mwc447ji4.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Net.Http.t88101cxuh.wasm.gz
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\SharedModels.ymsume63w7.pdb.gz
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\SharedModels.qv2s0xjrvt.pdb.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Private.Xml.xkmk1pg9kr.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Text.Encodings.Web.f1xjgsf1dl.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\Microsoft.Extensions.Configuration.Json.7a8qwg1fzw.wasm.gz
@@ -2549,7 +2550,7 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\Bla
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Data.jc9hvsoz9b.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Web.ivo3eskvng.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\Microsoft.AspNetCore.Metadata.v02r25yurk.wasm.gz
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\BlazorGame.Client.dw3jwcxln7.pdb.gz
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\BlazorGame.Client.d34vrx43gv.pdb.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Net.Sockets.dijc2jj6vh.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Runtime.hexcao080t.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\WindowsBase.vy2l5u79y6.wasm.gz
@@ -2575,6 +2576,7 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\Bla
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.IO.FileSystem.Primitives.0ejcvk17nr.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Resources.Reader.qab1hgqeqx.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Security.Cryptography.X509Certificates.4694slsze8.wasm.gz
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\Blazored.LocalStorage.12n6dz54qr.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Runtime.Serialization.Formatters.u5rt67plgv.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.IO.Compression.Brotli.v5j03f7yzu.wasm.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\wwwroot\_framework\System.Runtime.Extensions.te5ibe9mop.wasm.gz
@@ -2648,6 +2650,7 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\Bla
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\BlazorGame.Client.staticwebassets.endpoints.json
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\BlazorGame.Client.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\BlazorGame.Client.pdb
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\Blazored.LocalStorage.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\Microsoft.AspNetCore.Authorization.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\Microsoft.AspNetCore.Components.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\bin\Debug\net9.0\Microsoft.AspNetCore.Components.Forms.dll
@@ -2862,6 +2865,7 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\Bla
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\BlazorGame.Client.csproj.CoreCompileInputs.cache
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\BlazorGame.Client.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\BlazorGame.Client.sourcelink.json
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\webcil\Blazored.LocalStorage.wasm
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\webcil\Microsoft.AspNetCore.Authorization.wasm
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\webcil\Microsoft.AspNetCore.Components.wasm
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\webcil\Microsoft.AspNetCore.Components.Forms.wasm
@@ -3119,6 +3123,7 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\Bla
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\compressed\sfrjacja1x-md9yvkcqlf.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\compressed\jfv3btyasa-8dgica97k4.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\compressed\m1nini9xmm-8dgica97k4.gz
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\compressed\p5akx9xrzy-12n6dz54qr.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\compressed\58rwk790oi-z6jo10m0rd.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\compressed\jrdmi1avso-65wbz7t8mt.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\compressed\xjujsamibi-ysqd97eroy.gz
@@ -3323,11 +3328,11 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\Bla
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\compressed\b2u99a3xb3-tjcz0u77k5.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\compressed\iqxld3k7x2-tptq2av103.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\compressed\w9a4rrd8uo-lfu7j35m59.gz
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\compressed\4g85fzs2dp-4rew77paty.gz
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\compressed\85j3kajxx2-ymsume63w7.gz
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\compressed\3xge7xgleq-4146w0q4oo.gz
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\compressed\l6szname3n-dw3jwcxln7.gz
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\compressed\wvjiyygni7-tpbo8wuhar.gz
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\compressed\4g85fzs2dp-2yiqpfk3ss.gz
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\compressed\85j3kajxx2-qv2s0xjrvt.gz
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\compressed\3xge7xgleq-n9dw3ljhio.gz
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\compressed\l6szname3n-d34vrx43gv.gz
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\compressed\wvjiyygni7-wlsxeb3wfw.gz
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\staticwebassets.build.json
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\staticwebassets.build.json.cache
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Client\obj\Debug\net9.0\staticwebassets.development.json

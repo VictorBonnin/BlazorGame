@@ -1,9 +1,8 @@
 ﻿@inherits LayoutComponentBase
 @inject BlazorGame.Client.Services.PlayerSessionService Session
-@inject NavigationManager Navigation
 
 <div class="page">
-    @* AFFICHER LA NAVBAR UNIQUEMENT SI CONNECTÉ *@
+    @* Le menu ne s'affiche que si on est connecté *@
     @if (Session.IsAuthenticated)
     {
         <NavMenu />
@@ -15,20 +14,3 @@
         </div>
     </main>
 </div>
-
-@code {
-    protected override void OnParametersSet()
-    {
-        // Récupère l'URL relative actuelle (ex: "login", "new-adventure")
-        var relativePath = Navigation.ToBaseRelativePath(Navigation.Uri).ToLower();
-
-        // Liste des pages autorisées SANS connexion
-        bool isPublicPage = relativePath.StartsWith("login") || relativePath.StartsWith("admin");
-
-        // SÉCURITÉ : Si pas connecté et page protégée -> Hop, au login !
-        if (!Session.IsAuthenticated && !isPublicPage)
-        {
-            Navigation.NavigateTo("login");
-        }
-    }
-}

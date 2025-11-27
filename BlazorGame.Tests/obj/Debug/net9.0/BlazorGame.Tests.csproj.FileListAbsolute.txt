@@ -443,6 +443,7 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\Bla
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Tests\bin\Debug\net9.0\AngleSharp.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Tests\bin\Debug\net9.0\AngleSharp.Css.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Tests\bin\Debug\net9.0\AngleSharp.Diffing.dll
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Tests\bin\Debug\net9.0\Blazored.LocalStorage.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Tests\bin\Debug\net9.0\Bunit.Core.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Tests\bin\Debug\net9.0\Bunit.Web.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\Projet-Test-Prod3\Test_Prod\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.AspNetCore.Authorization.dll
