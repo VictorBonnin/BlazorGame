@@ -1,0 +1,9 @@
+@inject NavigationManager Navigation
+
+@code {
+    protected override void OnInitialized()
+    {
+        // Hop, on redirige immédiatement
+        Navigation.NavigateTo("login");
+    }
+}

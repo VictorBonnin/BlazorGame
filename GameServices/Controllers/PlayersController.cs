@@ -25,7 +25,11 @@ public class PlayersController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<Player>> GetPlayer(int id)
     {
-        var p = await _db.Players.Include(x => x.Adventures).FirstOrDefaultAsync(x => x.Id == id);
+        var p = await _db.Players
+            .Include(x => x.Adventures)
+                .ThenInclude(a => a.Rooms)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
         if (p == null) return NotFound();
         return Ok(p);
     }

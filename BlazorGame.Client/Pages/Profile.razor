@@ -1,0 +1,141 @@
+@page "/profile"
+@using SharedModels.Entities
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject BlazorGame.Client.Services.PlayerSessionService Session
+
+<PageTitle>Mon Profil</PageTitle>
+
+<div class="container mt-4">
+    @* En-tête Profil *@
+    <div class="d-flex justify-content-between align-items-center mb-4 p-4 rounded shadow-sm" 
+         style="background-color: #212529; color: white; border: 1px solid #444;">
+        <div>
+            <h2 class="m-0">👤 Profil de <span style="color: #0dcaf0;">@(Session.CurrentPlayerName ?? "...")</span></h2>
+            <small class="text-muted">ID Joueur : @Session.CurrentPlayerId</small>
+        </div>
+        <button class="btn btn-danger" @onclick="Logout">
+            🚪 Se déconnecter
+        </button>
+    </div>
+
+    @if (isLoading)
+    {
+        <div class="text-center py-5">
+            <div class="spinner-border text-info" role="status"></div>
+            <p class="mt-2 text-white">Chargement...</p>
+        </div>
+    }
+    else if (player == null)
+    {
+        <div class="alert alert-warning">Impossible de charger les données du profil.</div>
+    }
+    else
+    {
+        @* Stats *@
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="p-3 rounded text-center mb-3" style="background-color: #1a1e21; color: white; border: 1px solid #0d6efd;">
+                    <div class="text-uppercase small mb-2" style="color: #0d6efd; font-weight: bold;">Parties Jouées</div>
+                    <h3 class="display-4 fw-bold m-0">@player.Adventures.Count</h3>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-3 rounded text-center mb-3" style="background-color: #1a1e21; color: white; border: 1px solid #198754;">
+                    <div class="text-uppercase small mb-2" style="color: #198754; font-weight: bold;">Meilleur Score</div>
+                    <h3 class="display-4 fw-bold m-0">
+                        @(player.Adventures.Any() ? player.Adventures.Max(a => a.Score) : 0)
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        @* Historique - VERSION SANS TABLEAU (Pour éviter les bugs CSS) *@
+        <h3 class="mb-3 text-white">📜 Historique des Aventures</h3>
+        
+        @if (!player.Adventures.Any())
+        {
+            <div class="alert alert-info">Vous n'avez pas encore joué.</div>
+        }
+        else
+        {
+            <div class="rounded overflow-hidden shadow-sm" style="border: 1px solid #444;">
+                @* Entête *@
+                <div class="d-flex p-3 fw-bold" style="background-color: #000; color: #aaa;">
+                    <div style="flex: 2;">📅 Date</div>
+                    <div style="flex: 1;">🏆 Score</div>
+                    <div style="flex: 1;">🚪 Salles</div>
+                    <div style="flex: 1;">Etat</div>
+                </div>
+
+                @* Liste *@
+                <div style="max-height: 500px; overflow-y: auto;">
+                    @foreach (var adv in player.Adventures.OrderByDescending(a => a.CreatedAt))
+                    {
+                        <div class="d-flex p-3 align-items-center border-top border-secondary" 
+                             style="background-color: #212529; color: white;">
+                            
+                            @* Date *@
+                            <div style="flex: 2;">
+                                @adv.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                            </div>
+                            
+                            @* Score *@
+                            <div style="flex: 1; color: #0dcaf0; font-weight: bold; font-size: 1.1em;">
+                                @adv.Score
+                            </div>
+
+                            @* Salles *@
+                            <div style="flex: 1;">
+                                @adv.Rooms.Count
+                            </div>
+
+                            @* Statut *@
+                            <div style="flex: 1;">
+                                @if (adv.FinishedAt.HasValue)
+                                {
+                                    <span class="badge bg-success">Terminée</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">En cours</span>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    private Player? player;
+    private bool isLoading = true;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        isLoading = true;
+        await Task.Delay(200); 
+
+        if (Session.CurrentPlayerId.HasValue)
+        {
+            try
+            {
+                var cacheBuster = DateTime.UtcNow.Ticks;
+                player = await Http.GetFromJsonAsync<Player>($"api/players/{Session.CurrentPlayerId}?t={cacheBuster}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur : {ex.Message}");
+            }
+        }
+        isLoading = false;
+    }
+
+    private async Task Logout()
+    {
+        await Session.Logout();
+        Nav.NavigateTo("login");
+    }
+}

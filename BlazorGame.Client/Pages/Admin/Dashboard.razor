@@ -1,0 +1,111 @@
+@page "/admin"
+@using System.Net.Http.Json
+@inject HttpClient Http
+@inject IJSRuntime JS
+@inject BlazorGame.Client.Services.PlayerSessionService Session
+@inject NavigationManager Nav
+
+<div class="container">
+    <h2 class="mb-4">🛠️ Tableau de Bord Admin</h2>
+
+    <div class="row mb-4">
+        <div class="col">
+            <button class="btn btn-success" @onclick="DownloadCsv">📂 Exporter les Joueurs (CSV)</button>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">Gestion des Joueurs</div>
+        <div class="card-body">
+            @if (adminPlayers == null)
+            {
+                <div class="spinner-border" role="status"></div>
+            }
+            else
+            {
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Parties</th>
+                            <th>Meilleur Score</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in adminPlayers)
+                        {
+                            <tr class="@(p.IsActive ? "" : "table-danger")">
+                                <td>@p.Id</td>
+                                <td>@p.UserName</td>
+                                <td>@p.GamesPlayed</td>
+                                <td>@p.HighScore</td>
+                                <td>
+                                    @if (p.IsActive) { <span class="badge bg-success">Actif</span> }
+                                    else { <span class="badge bg-danger">Inactif</span> }
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-warning" @onclick="() => ToggleStatus(p.Id)">
+                                        @(p.IsActive ? "Désactiver" : "Réactiver")
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    // DTO local pour l'affichage
+    class AdminPlayerDto {
+        public int Id { get; set; }
+        public string UserName { get; set; } = string.Empty;
+        public bool IsActive { get; set; }
+        public int GamesPlayed { get; set; }
+        public int HighScore { get; set; }
+    }
+
+    private List<AdminPlayerDto>? adminPlayers;
+
+    // --- C'est ici que tu devais avoir un doublon ---
+    protected override async Task OnInitializedAsync()
+    {
+        // Sécurité basique : redirection si pas connecté (optionnel si géré par MainLayout)
+        if (!Session.IsAuthenticated)
+        {
+             // Tu peux décommenter si tu veux une sécurité stricte ici aussi
+             // Nav.NavigateTo("/login");
+             // return;
+        }
+
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        try 
+        {
+            adminPlayers = await Http.GetFromJsonAsync<List<AdminPlayerDto>>("api/admin/players");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erreur admin : {ex.Message}");
+        }
+    }
+
+    private async Task ToggleStatus(int id)
+    {
+        await Http.PutAsync($"api/admin/players/{id}/toggle-status", null);
+        await LoadData(); // Recharger la liste après action
+    }
+
+    private async Task DownloadCsv()
+    {
+        await JS.InvokeVoidAsync("open", "api/admin/players/export", "_blank");
+    }
+}

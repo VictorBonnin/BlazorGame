@@ -97,11 +97,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\bonni\\Documents\\Ecole\\Efrei\\Inge\\DotNet\\Reset-prod_2\\BlazorGame\\AuthenticationServices\\AuthenticationServices.csproj",
+      "projectUniqueName": "C:\\Users\\bonni\\Documents\\Ecole\\Efrei\\Inge\\DotNet\\Projet-Test-Prod3\\Test_Prod\\AuthenticationServices\\AuthenticationServices.csproj",
       "projectName": "AuthenticationServices",
-      "projectPath": "C:\\Users\\bonni\\Documents\\Ecole\\Efrei\\Inge\\DotNet\\Reset-prod_2\\BlazorGame\\AuthenticationServices\\AuthenticationServices.csproj",
+      "projectPath": "C:\\Users\\bonni\\Documents\\Ecole\\Efrei\\Inge\\DotNet\\Projet-Test-Prod3\\Test_Prod\\AuthenticationServices\\AuthenticationServices.csproj",
       "packagesPath": "C:\\Users\\bonni\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\bonni\\Documents\\Ecole\\Efrei\\Inge\\DotNet\\Reset-prod_2\\BlazorGame\\AuthenticationServices\\obj\\",
+      "outputPath": "C:\\Users\\bonni\\Documents\\Ecole\\Efrei\\Inge\\DotNet\\Projet-Test-Prod3\\Test_Prod\\AuthenticationServices\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -122,8 +122,8 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "C:\\Users\\bonni\\Documents\\Ecole\\Efrei\\Inge\\DotNet\\Reset-prod_2\\BlazorGame\\SharedModels\\SharedModels.csproj": {
-              "projectPath": "C:\\Users\\bonni\\Documents\\Ecole\\Efrei\\Inge\\DotNet\\Reset-prod_2\\BlazorGame\\SharedModels\\SharedModels.csproj"
+            "C:\\Users\\bonni\\Documents\\Ecole\\Efrei\\Inge\\DotNet\\Projet-Test-Prod3\\Test_Prod\\SharedModels\\SharedModels.csproj": {
+              "projectPath": "C:\\Users\\bonni\\Documents\\Ecole\\Efrei\\Inge\\DotNet\\Projet-Test-Prod3\\Test_Prod\\SharedModels\\SharedModels.csproj"
             }
           }
         }

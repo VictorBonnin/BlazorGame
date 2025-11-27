@@ -1,12 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "irIM3/T5U/I=",
+  "dgSpecHash": "K9DFs83M6Lk=",
   "success": true,
-  "projectFilePath": "C:\\Users\\bonni\\Documents\\Ecole\\Efrei\\Inge\\DotNet\\Reset-prod_2\\BlazorGame\\BlazorGame.Tests\\BlazorGame.Tests.csproj",
+  "projectFilePath": "C:\\Users\\bonni\\Documents\\Ecole\\Efrei\\Inge\\DotNet\\Projet-Test-Prod3\\Test_Prod\\BlazorGame.Tests\\BlazorGame.Tests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\bonni\\.nuget\\packages\\anglesharp\\1.1.2\\anglesharp.1.1.2.nupkg.sha512",
     "C:\\Users\\bonni\\.nuget\\packages\\anglesharp.css\\1.0.0-beta.144\\anglesharp.css.1.0.0-beta.144.nupkg.sha512",
     "C:\\Users\\bonni\\.nuget\\packages\\anglesharp.diffing\\1.0.0\\anglesharp.diffing.1.0.0.nupkg.sha512",
+    "C:\\Users\\bonni\\.nuget\\packages\\blazored.localstorage\\4.5.0\\blazored.localstorage.4.5.0.nupkg.sha512",
     "C:\\Users\\bonni\\.nuget\\packages\\bunit\\1.36.0\\bunit.1.36.0.nupkg.sha512",
     "C:\\Users\\bonni\\.nuget\\packages\\bunit.core\\1.36.0\\bunit.core.1.36.0.nupkg.sha512",
     "C:\\Users\\bonni\\.nuget\\packages\\bunit.web\\1.36.0\\bunit.web.1.36.0.nupkg.sha512",

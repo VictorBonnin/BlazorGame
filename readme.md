@@ -59,6 +59,12 @@ dotnet run --project AuthenticationServices
 ```
 
 #### Utilisation de Swagger
+
+Lien vers l'API :
+```bash 
+http://localhost:5001/swagger/index.html
+```
+
 ```
 Exemple de "POST" sur /api/player
 { "userName": "Victor" }
