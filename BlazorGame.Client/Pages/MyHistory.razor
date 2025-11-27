@@ -1,0 +1,62 @@
+@page "/my-history"
+@using SharedModels.Entities
+@inject HttpClient Http
+@inject BlazorGame.Client.Services.PlayerSessionService Session
+
+<h3>📜 Mon Historique d'Aventure</h3>
+
+@if (adventures == null)
+{
+    <p>Chargement...</p>
+}
+else if (!adventures.Any())
+{
+    <p>Aucune aventure jouée pour le moment.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Score</th>
+                <th>Salles jouées</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var adv in adventures)
+            {
+                <tr>
+                    <td>@adv.CreatedAt.ToLocalTime().ToString("g")</td>
+                    <td class="fw-bold text-primary">@adv.Score</td>
+                    <td>@adv.Rooms.Count</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Adventure>? adventures;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // CORRECTION : On utilise CurrentPlayerId au lieu de PlayerId
+        // On vérifie s'il a une valeur
+        if (!Session.CurrentPlayerId.HasValue) return;
+
+        try 
+        {
+            // On utilise .Value pour récupérer l'entier
+            var player = await Http.GetFromJsonAsync<Player>($"api/players/{Session.CurrentPlayerId.Value}");
+            if (player != null)
+            {
+                adventures = player.Adventures.OrderByDescending(a => a.CreatedAt).ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erreur chargement historique: {ex.Message}");
+        }
+    }
+}

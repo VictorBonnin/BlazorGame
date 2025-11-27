@@ -1,0 +1,111 @@
+@page "/admin"
+@inject HttpClient Http
+@inject IJSRuntime JS
+
+<div class="container">
+    <h2 class="mb-4">🛠️ Tableau de Bord Admin</h2>
+
+    <div class="row mb-4">
+        <div class="col">
+            <button class="btn btn-success" @onclick="DownloadCsv">📂 Exporter les Joueurs (CSV)</button>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">Gestion des Joueurs</div>
+        <div class="card-body">
+            @if (adminPlayers == null)
+            {
+                <div class="spinner-border" role="status"></div>
+            }
+            else
+            {
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Parties</th>
+                            <th>Meilleur Score</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in adminPlayers)
+                        {
+                            <tr class="@(p.IsActive ? "" : "table-danger")">
+                                <td>@p.Id</td>
+                                <td>@p.UserName</td>
+                                <td>@p.GamesPlayed</td>
+                                <td>@p.HighScore</td>
+                                <td>
+                                    @if (p.IsActive) { <span class="badge bg-success">Actif</span> }
+                                    else { <span class="badge bg-danger">Inactif</span> }
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-warning" @onclick="() => ToggleStatus(p.Id)">
+                                        @(p.IsActive ? "Désactiver" : "Réactiver")
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    // Classe locale pour l'affichage admin
+  class AdminPlayerDto {
+        public int Id { get; set; }
+        public string UserName { get; set; } = string.Empty;
+        public bool IsActive { get; set; }
+        public int GamesPlayed { get; set; }
+        public int HighScore { get; set; }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // SÉCURITÉ : Si aucun joueur n'est connecté (cas du F5), on éjecte vers le login
+        if (!Session.CurrentPlayerId.HasValue)
+        {
+            Nav.NavigateTo("/login");
+            return;
+        }
+
+        await LoadData();
+    }
+
+    private List<AdminPlayerDto>? adminPlayers;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        adminPlayers = await Http.GetFromJsonAsync<List<AdminPlayerDto>>("api/admin/players");
+    }
+
+    private async Task ToggleStatus(int id)
+    {
+        await Http.PutAsync($"api/admin/players/{id}/toggle-status", null);
+        await LoadData(); // Recharger la liste
+    }
+
+    private async Task DownloadCsv()
+    {
+        // Astuce pour télécharger un fichier généré par l'API
+        var fileBytes = await Http.GetByteArrayAsync("api/admin/players/export");
+        var fileName = $"players_export_{DateTime.Now:yyyyMMdd}.csv";
+        
+        // Appel JS pour déclencher le téléchargement (nécessite un petit script dans index.html ou ici)
+        // Pour simplifier ici, on suppose que tu as une fonction JS "saveAsFile"
+        // Sinon, l'ouvrir dans un nouvel onglet :
+        await JS.InvokeVoidAsync("open", "api/admin/players/export", "_blank");
+    }
+}
