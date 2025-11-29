@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.1
+    container_name: blazorgame-keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command: 
+      - start-dev 
+      - --import-realm
+    volumes:
+      - ./Keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+    ports:
+      - "8080:8080"

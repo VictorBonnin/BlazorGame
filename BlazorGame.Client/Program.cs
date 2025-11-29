@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using BlazorGame.Client;
@@ -29,5 +31,16 @@ builder.Services.AddHttpClient("AuthApi", client =>
 builder.Services.AddScoped<PlayerSessionService>(); 
 builder.Services.AddSingleton<HintService>();
 builder.Services.AddScoped<RoomHandlerFactory>(); 
+
+builder.Services.AddOidcAuthentication(options =>
+{
+    builder.Configuration.Bind("Keycloak", options.ProviderOptions);
+    options.ProviderOptions.ResponseType = "code";
+    // Ces scopes permettent de récupérer les infos de l'utilisateur
+    options.ProviderOptions.DefaultScopes.Add("openid");
+    options.ProviderOptions.DefaultScopes.Add("profile");
+    options.ProviderOptions.DefaultScopes.Add("email");
+    options.ProviderOptions.DefaultScopes.Add("roles");
+});
 
 await builder.Build().RunAsync();
