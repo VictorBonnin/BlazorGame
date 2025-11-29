@@ -1,4 +1,6 @@
-@page "/"
+@page "/dashboard"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 @inject BlazorGame.Client.Services.PlayerSessionService Session
 
 <PageTitle>Tableau de Bord</PageTitle>

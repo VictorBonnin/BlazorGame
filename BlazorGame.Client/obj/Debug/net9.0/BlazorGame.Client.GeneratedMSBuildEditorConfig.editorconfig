@@ -40,6 +40,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/bonni/Documents/Ecole/Efrei/Inge/DotNet/xProjet-part-5/BlazorGame/BlazorGame.Client/Pages/Landing.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTGFuZGluZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/bonni/Documents/Ecole/Efrei/Inge/DotNet/xProjet-part-5/BlazorGame/BlazorGame.Client/Pages/Leaderboard.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTGVhZGVyYm9hcmQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
