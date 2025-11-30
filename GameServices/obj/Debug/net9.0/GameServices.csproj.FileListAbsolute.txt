@@ -555,6 +555,7 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameS
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\GameServices.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\GameServices.pdb
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\Humanizer.dll
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\Microsoft.AspNetCore.OpenApi.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\Microsoft.Build.Locator.dll
@@ -579,6 +580,12 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameS
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\Microsoft.Extensions.Logging.Abstractions.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\Microsoft.Extensions.Options.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\Microsoft.Extensions.Primitives.dll
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\Microsoft.OpenApi.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\Mono.TextTemplating.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\Npgsql.dll
@@ -592,6 +599,7 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameS
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\System.Composition.Hosting.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\System.Composition.Runtime.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\System.Composition.TypedParts.dll
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\System.Text.Json.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\cs\Microsoft.CodeAnalysis.resources.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\GameServices\bin\Debug\net9.0\de\Microsoft.CodeAnalysis.resources.dll

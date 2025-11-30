@@ -608,6 +608,7 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\Blazo
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Blazored.LocalStorage.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Bunit.Core.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Bunit.Web.dll
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.AspNetCore.Components.WebAssembly.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.AspNetCore.Components.WebAssembly.Authentication.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.AspNetCore.OpenApi.dll
@@ -625,6 +626,12 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\Blazo
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.Extensions.Logging.Abstractions.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.Extensions.Options.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.Extensions.Primitives.dll
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.JSInterop.WebAssembly.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.OpenApi.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.TestPlatform.CoreUtilities.dll
@@ -640,6 +647,7 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\Blazo
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\xunit.abstractions.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\xunit.assert.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\xunit.core.dll

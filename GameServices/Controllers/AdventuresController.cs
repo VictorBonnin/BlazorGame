@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SharedModels;
 using SharedModels.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GameServices.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Policy = "Player")]
 public class AdventuresController : ControllerBase
 {
     private readonly GameDbContext _db;
@@ -21,6 +23,7 @@ public class AdventuresController : ControllerBase
     [HttpPost("start")]
     public async Task<ActionResult<StartPayload>> StartAdventure(StartAdventureDto dto)
     {
+        
         var player = await _db.Players.FindAsync(dto.PlayerId);
         if (player is null) return BadRequest("Player not found");
 
@@ -28,7 +31,6 @@ public class AdventuresController : ControllerBase
         _db.Adventures.Add(adv);
         await _db.SaveChangesAsync();
 
-        // Appel à ta logique métier existante
         var rooms = DungeonGenerator.GenerateDungeon(dto.MinRooms ?? 3, dto.MaxRooms ?? 5);
         
         return Created($"/api/adventures/{adv.Id}", new StartPayload(adv, rooms));
@@ -63,7 +65,7 @@ public class AdventuresController : ControllerBase
         return Ok(adv);
     }
     
-    [HttpGet("/api/leaderboard")] // On peut forcer une route spécifique si besoin
+    [HttpGet("/api/leaderboard")]
     public async Task<ActionResult<List<Adventure>>> GetLeaderboard([FromQuery] int top = 10)
     {
         var data = await _db.Adventures
@@ -77,7 +79,6 @@ public class AdventuresController : ControllerBase
     }
 }
 
-// DTOs nécessaires (à mettre idéalement dans SharedModels ou un dossier DTOs)
 public record StartAdventureDto(int PlayerId, int? MinRooms, int? MaxRooms);
 public record StartPayload(Adventure Adventure, IReadOnlyList<Room> Rooms);
 public record FinishAdventureDto(int Score, List<RoomPlayDto>? Rooms);

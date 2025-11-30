@@ -1,48 +1,52 @@
-using GameServices.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using GameServices.Data;
 using SharedModels.Entities;
+using Microsoft.AspNetCore.Authorization;
 
-namespace GameServices.Controllers;
-
-[ApiController]
-[Route("api/[controller]")] // L'URL sera automatique : /api/players
-public class PlayersController : ControllerBase
+namespace GameServices.Controllers
 {
-    private readonly GameDbContext _db;
-
-    public PlayersController(GameDbContext db)
+    [Route("api/[controller]")]
+    [ApiController]
+    [Authorize(Policy = "Player")]
+    public class PlayersController : ControllerBase
     {
-        _db = db;
-    }
+        private readonly GameDbContext _context;
 
-    [HttpGet]
-    public async Task<ActionResult<List<Player>>> GetPlayers()
-    {
-        return Ok(await _db.Players.OrderBy(p => p.Id).ToListAsync());
-    }
+        public PlayersController(GameDbContext context)
+        {
+            _context = context;
+        }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<Player>> GetPlayer(int id)
-    {
-        var p = await _db.Players
-            .Include(x => x.Adventures)
-                .ThenInclude(a => a.Rooms)
-            .FirstOrDefaultAsync(x => x.Id == id);
+        // GET: api/Players
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Player>>> GetPlayers()
+        {
+            return await _context.Players.ToListAsync();
+        }
 
-        if (p == null) return NotFound();
-        return Ok(p);
-    }
+        // GET: api/Players/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Player>> GetPlayer(string id)
+        {
+            var player = await _context.Players.FindAsync(id);
 
-    [HttpPost]
-    public async Task<ActionResult<Player>> CreatePlayer(PlayerCreateDto dto)
-    {
-        var p = new Player { UserName = dto.UserName.Trim() };
-        _db.Players.Add(p);
-        await _db.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetPlayer), new { id = p.Id }, p);
+            if (player == null)
+            {
+                return NotFound();
+            }
+
+            return player;
+        }
+
+        // POST: api/Players
+        [HttpPost]
+        public async Task<ActionResult<Player>> PostPlayer(Player player)
+        {
+            _context.Players.Add(player);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetPlayer", new { id = player.Id }, player);
+        }
     }
 }
-
-// Tu peux déplacer tes DTOs (Data Transfer Objects) dans un fichier à part ou en bas du contrôleur
-public record PlayerCreateDto(string UserName);

@@ -3,6 +3,8 @@
 @using SharedModels.Entities
 @using SharedModels
 @using System.Linq 
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "player")] 
 
 <PageTitle>Aventure</PageTitle>
 
