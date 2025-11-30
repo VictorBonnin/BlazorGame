@@ -20,12 +20,13 @@ builder.Services.AddHttpClient("GameApi", client =>
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("GameApi"));
 
 // --- 2. CONFIGURATION KEYCLOAK (OIDC) ---
+// 👇 C'EST ICI LA MODIFICATION IMPORTANTE
 builder.Services.AddOidcAuthentication(options =>
 {
     builder.Configuration.Bind("Local", options.ProviderOptions);
     options.ProviderOptions.DefaultScopes.Add("roles");
 })
-.AddAccountClaimsPrincipalFactory<CustomUserFactory>(); // 👈 C'EST CETTE LIGNE QUI FAIT TOUTE LA DIFFÉRENCE
+.AddAccountClaimsPrincipalFactory<CustomUserFactory>();
 
 // --- 3. SERVICES ---
 builder.Services.AddBlazoredLocalStorage(); 
