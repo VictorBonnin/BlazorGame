@@ -108,3 +108,23 @@
         margin-bottom: 0.25rem;
     }
 }
+
+.btn-logout {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.5);
+    cursor: pointer;
+    color: white;
+    margin-left: 10px;
+}
+
+.btn-logout:hover {
+    background-color: rgba(255, 0, 0, 0.2);
+    border-color: red;
+}
+
+.nav-text {
+    color: #ffd700; /* Couleur or pour le nom du joueur */
+    margin-left: 15px;
+    font-weight: bold;
+    align-self: center;
+}

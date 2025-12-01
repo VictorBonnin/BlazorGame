@@ -1,27 +1,53 @@
 ﻿@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inject NavigationManager Navigation
+@inject SignOutSessionStateManager SignOutManager
 
 <nav class="topnav">
-  <div class="topnav-inner">
-    <div class="brand">
-      <NavLink href="/" class="brand-link">Blazor Game Quest</NavLink>
-    </div>
+    <div class="topnav-inner">
+        <div class="brand">
+            <NavLink href="/" class="brand-link">Blazor Game Quest</NavLink>
+        </div>
 
-    <button class="hamburger" @onclick="Toggle" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
+        <button class="hamburger" @onclick="Toggle" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
 
-    <div class="links @(open ? "open" : null)">
-      <NavLink href="/"            class="navlink" Match="NavLinkMatch.All">Accueil</NavLink>
-      <NavLink href="/rules" class="navlink"> Règles </NavLink>
-      <NavLink href="/new-adventure" class="navlink">Nouvelle aventure</NavLink>
-      <NavLink href="/leaderboard"  class="navlink">Classement</NavLink>
-      <NavLink href="/profile"        class="navlink">Profil</NavLink>
-      <NavLink href="/admin"        class="navlink">Admin</NavLink>
+        <div class="links @(open ? "open" : null)">
+            <NavLink href="/" class="navlink" Match="NavLinkMatch.All">Accueil</NavLink>
+            <NavLink href="/rules" class="navlink">Règles</NavLink>
+            <NavLink href="/new-adventure" class="navlink">Nouvelle aventure</NavLink>
+            <NavLink href="/leaderboard" class="navlink">Classement</NavLink>
+            <NavLink href="/profile" class="navlink">Profil</NavLink>
+
+            @* 🔒 Le lien Admin ne s'affiche que si on a le rôle 'admin' *@
+            <AuthorizeView Roles="admin">
+                <Authorized>
+                    <NavLink href="/admin" class="navlink">Admin</NavLink>
+                </Authorized>
+            </AuthorizeView>
+
+            @* 👤 Section Utilisateur / Déconnexion *@
+            <AuthorizeView>
+                <Authorized>
+                    <span class="nav-text">👋 @context.User.Identity?.Name</span>
+                    <button class="navlink btn-logout" @onclick="BeginLogOut">Se déconnecter</button>
+                </Authorized>
+            </AuthorizeView>
+        </div>
     </div>
-  </div>
 </nav>
 
 @code {
-  bool open = false;
-  void Toggle() => open = !open;
+    bool open = false;
+
+    void Toggle() => open = !open;
+
+    // Fonction pour gérer la déconnexion avec le state manager de Blazor WASM
+    private async Task BeginLogOut(MouseEventArgs args)
+    {
+        await SignOutManager.SetSignOutState();
+        Navigation.NavigateTo("authentication/logout");
+    }
 }

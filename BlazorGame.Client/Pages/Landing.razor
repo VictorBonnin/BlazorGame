@@ -1,23 +1,36 @@
-@page "/landing" 
+@page "/"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@attribute [AllowAnonymous]
 @inject NavigationManager Navigation
 
-<!-- Le reste de ton design reste identique -->
 <div class="container text-center mt-5">
     <h1 class="display-3">Bienvenue Aventurier !</h1>
     <p class="lead">Prêt à affronter le donjon ?</p>
     
     <div class="mt-4">
-        <!-- Bouton qui redirige vers le login OIDC -->
-        <button class="btn btn-lg btn-primary" @onclick="NavigateToLogin">
-            Se connecter avec Keycloak
-        </button>
+        <AuthorizeView>
+            <Authorized>
+                <p class="mb-3 text-success">
+                    Heureux de vous revoir, <strong>@context.User.Identity?.Name</strong> !
+                </p>
+                <a href="new-adventure" class="btn btn-lg btn-success">
+                    ⚔️ Continuer l'aventure
+                </a>
+            </Authorized>
+            <NotAuthorized>
+                <button class="btn btn-lg btn-primary" @onclick="NavigateToLogin">
+                    Se connecter avec Keycloak
+                </button>
+            </NotAuthorized>
+        </AuthorizeView>
     </div>
 </div>
 
 @code {
     private void NavigateToLogin()
     {
-        // On redirige vers la page de login qui gère l'OIDC
+        // Redirection vers le flux de connexion OIDC (géré par Authentication.razor)
         Navigation.NavigateTo("authentication/login");
     }
 }
