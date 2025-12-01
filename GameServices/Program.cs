@@ -2,8 +2,9 @@ using GameServices.Data;
 using GameServices.Logic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.Security.Claims; // 👈 NÉCESSAIRE
-using System.Text.Json;       // 👈 NÉCESSAIRE
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,19 +14,25 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.Authority = "http://localhost:8080/realms/blazorgame-realm";
+        // 🚨 MODIFICATION DOCKER 🚨
+        // L'API utilise le réseau interne Docker pour parler à Keycloak ("keycloak" est le nom du service dans docker-compose)
+        options.MetadataAddress = "http://keycloak:8080/realms/blazorgame-realm/.well-known/openid-configuration";
+        
+        // On désactive HTTPS pour le dev local
         options.RequireHttpsMetadata = false; 
         
-        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidateAudience = false,
+            // 🚨 CRUCIAL : On dit à l'API d'accepter l'émetteur "localhost" (celui vu par le navigateur)
+            ValidIssuer = "http://localhost:8080/realms/blazorgame-realm",
+            
+            ValidateAudience = false, 
             NameClaimType = "preferred_username",
-            // 👇 Important : on dit à .NET que les rôles s'appellent "role" en interne
-            RoleClaimType = ClaimTypes.Role 
+            RoleClaimType = ClaimTypes.Role
         };
 
-        // 👇 C'EST ICI LA MAGIE : On intercepte le token validé pour extraire les rôles Keycloak
+        // 👇 REMISE EN PLACE DE LA LOGIQUE DES RÔLES (Indispensable pour l'Admin)
         options.Events = new JwtBearerEvents
         {
             OnTokenValidated = context =>
@@ -44,12 +51,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                             {
                                 foreach (var role in roles.EnumerateArray())
                                 {
-                                    // Correction ici : on sécurise la récupération de la valeur
                                     var roleValue = role.GetString();
-                                    
                                     if (!string.IsNullOrEmpty(roleValue))
                                     {
-                                        // On ajoute le rôle seulement s'il est valide
                                         identity.AddClaim(new Claim(ClaimTypes.Role, roleValue));
                                     }
                                 }
@@ -57,7 +61,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                         }
                         catch 
                         {
-                            // En cas de JSON malformé, on ignore
+                            // Ignorer JSON malformé
                         }
                     }
                 }
@@ -69,10 +73,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // 3. Configuration de l'Autorisation
 builder.Services.AddAuthorization(options =>
 {
-    // Politique pour les admins
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("admin"));
-    
-    // Politique pour les joueurs
     options.AddPolicy("Player", policy => policy.RequireAuthenticatedUser());
 });
 
