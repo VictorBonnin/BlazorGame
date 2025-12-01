@@ -1,12 +1,14 @@
 ﻿@inherits LayoutComponentBase
 @inject BlazorGame.Client.Services.PlayerSessionService Session
+@using Microsoft.AspNetCore.Components.Authorization
 
 <div class="page">
-    @* Le menu ne s'affiche que si on est connecté *@
-    @if (Session.IsAuthenticated)
-    {
-        <NavMenu />
-    }
+    @* Utilisation de AuthorizeView pour vérifier l'état Keycloak *@
+    <AuthorizeView>
+        <Authorized>
+            <NavMenu />
+        </Authorized>
+    </AuthorizeView>
 
     <main>
         <div class="content px-4">

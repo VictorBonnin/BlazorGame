@@ -1,7 +1,9 @@
 using GameServices.Data;
-using GameServices.Logic; // Nécessaire si tu utilises DungeonGenerator ici, sinon à retirer
+using GameServices.Logic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Security.Claims; // 👈 NÉCESSAIRE
+using System.Text.Json;       // 👈 NÉCESSAIRE
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,45 +13,78 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        // L'adresse de ton instance Keycloak (le Realm)
         options.Authority = "http://localhost:8080/realms/blazorgame-realm";
-        
-        // En développement (Docker/Http), on désactive la vérification HTTPS stricte
         options.RequireHttpsMetadata = false; 
         
         options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
         {
-            // On valide que le token vient bien de notre Keycloak
             ValidateIssuer = true,
-            // On valide l'audience (le client ID) - parfois "false" aide au debug si Keycloak n'envoie pas l'audience standard
-            ValidateAudience = false, // Mettre à 'true' et définir ValidAudience = "blazorgame-client" pour plus de sécu
-            // Permet de mapper le nom de l'utilisateur sur le champ 'preferred_username' du token
-            NameClaimType = "preferred_username" 
+            ValidateAudience = false,
+            NameClaimType = "preferred_username",
+            // 👇 Important : on dit à .NET que les rôles s'appellent "role" en interne
+            RoleClaimType = ClaimTypes.Role 
+        };
+
+        // 👇 C'EST ICI LA MAGIE : On intercepte le token validé pour extraire les rôles Keycloak
+        options.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = context =>
+            {
+                var principal = context.Principal;
+                if (principal?.Identity is ClaimsIdentity identity)
+                {
+                    // Keycloak met les rôles dans "realm_access": { "roles": ["admin", ...] }
+                    var realmAccess = identity.FindFirst("realm_access")?.Value;
+                    if (!string.IsNullOrEmpty(realmAccess))
+                    {
+                        try 
+                        {
+                            using var doc = JsonDocument.Parse(realmAccess);
+                            if (doc.RootElement.TryGetProperty("roles", out var roles))
+                            {
+                                foreach (var role in roles.EnumerateArray())
+                                {
+                                    // Correction ici : on sécurise la récupération de la valeur
+                                    var roleValue = role.GetString();
+                                    
+                                    if (!string.IsNullOrEmpty(roleValue))
+                                    {
+                                        // On ajoute le rôle seulement s'il est valide
+                                        identity.AddClaim(new Claim(ClaimTypes.Role, roleValue));
+                                    }
+                                }
+                            }
+                        }
+                        catch 
+                        {
+                            // En cas de JSON malformé, on ignore
+                        }
+                    }
+                }
+                return Task.CompletedTask;
+            }
         };
     });
 
-// 3. Configuration de l'Autorisation (Rôles & Policies)
+// 3. Configuration de l'Autorisation
 builder.Services.AddAuthorization(options =>
 {
     // Politique pour les admins
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("admin"));
     
-    // Politique pour les joueurs (il suffit d'être authentifié pour être considéré comme joueur ici, ou avoir le rôle 'player')
+    // Politique pour les joueurs
     options.AddPolicy("Player", policy => policy.RequireAuthenticatedUser());
 });
 
-// 4. Ajouter les services pour les Contrôleurs
+// 4. Services Contrôleurs
 builder.Services.AddControllers()
     .AddJsonOptions(options => 
     {
-        // Gestion des références circulaires
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-// Ajout de tes services métiers (DungeonGenerator semblait manquant dans ton snippet mais utile pour le jeu)
 builder.Services.AddScoped<DungeonGenerator>();
 
 // 5. CORS
@@ -61,7 +96,7 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader());
 });
 
-// 6. Base de données
+// 6. DB
 builder.Services.AddDbContext<GameDbContext>(opt =>
     opt.UseInMemoryDatabase("blazor-game-db"));
 
@@ -77,9 +112,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors();
 
-// 7. Activation de la sécurité (Dans cet ordre précis !)
-app.UseAuthentication(); // Vérifie qui est l'utilisateur (décode le Token)
-app.UseAuthorization();  // Vérifie ce qu'il a le droit de faire (Rôles/Policies)
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers(); 
 
