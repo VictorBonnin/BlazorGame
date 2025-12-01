@@ -14,7 +14,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 // --- 1. CONFIGURATION API ---
 builder.Services.AddScoped<GameApiAuthorizationMessageHandler>();
 builder.Services.AddHttpClient("GameApi", client => 
-    client.BaseAddress = new Uri("http://localhost:5001/")) 
+    client.BaseAddress = new Uri("http://localhost:5010/")) 
     .AddHttpMessageHandler<GameApiAuthorizationMessageHandler>();
 
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("GameApi"));

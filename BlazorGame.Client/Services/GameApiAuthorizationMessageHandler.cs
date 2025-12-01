@@ -10,8 +10,8 @@ namespace BlazorGame.Client.Services
             : base(provider, navigation)
         {
             ConfigureHandler(
-                authorizedUrls: new[] { "http://localhost:5001" }, // On autorise explicitement le port 5001
-                scopes: new[] { "roles" }); // Les scopes requis
+                authorizedUrls: new[] { "http://localhost:5010" },
+                scopes: new[] { "roles" });
         }
     }
 }

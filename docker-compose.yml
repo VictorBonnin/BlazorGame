@@ -1,5 +1,5 @@
 services:
-  # --- 1. KEYCLOAK (Authentification) ---
+  # --- 1. KEYCLOAK ---
   keycloak:
     image: quay.io/keycloak/keycloak:23.0.0
     container_name: blazorgame-keycloak
@@ -12,14 +12,28 @@ services:
     volumes:
       - ./Keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
 
-  # --- 2. API (GameServices) - Port 5001 ---
+  # --- 2. GATEWAY (Nouveau Point d'Entrée Unique) ---
+  api-gateway:
+    image: mcr.microsoft.com/dotnet/sdk:9.0
+    container_name: blazorgame-gateway
+    working_dir: /app/ApiGateway
+    command: dotnet watch run --urls=http://0.0.0.0:5010
+    ports:
+      - "5010:5010"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+    volumes:
+      - ./:/app
+    depends_on:
+      - game-api
+
+  # --- 3. API JEU (cachée derrière la Gateway) ---
   game-api:
     image: mcr.microsoft.com/dotnet/sdk:9.0
     container_name: blazorgame-api
     working_dir: /app/GameServices
     command: dotnet watch run --urls=http://0.0.0.0:5001
-    ports:
-      - "5001:5001"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - DOTNET_USE_POLLING_FILE_WATCHER=1
@@ -28,7 +42,7 @@ services:
     depends_on:
       - keycloak
 
-  # --- 3. BLAZOR CLIENT - Port 5000 ---
+  # --- 4. CLIENT BLAZOR ---
   blazor-client:
     image: mcr.microsoft.com/dotnet/sdk:9.0
     container_name: blazorgame-client
@@ -42,4 +56,4 @@ services:
     volumes:
       - ./:/app
     depends_on:
-      - game-api
+      - api-gateway
