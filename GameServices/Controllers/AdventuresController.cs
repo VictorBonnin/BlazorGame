@@ -23,14 +23,33 @@ public class AdventuresController : ControllerBase
     [HttpPost("start")]
     public async Task<ActionResult<StartPayload>> StartAdventure(StartAdventureDto dto)
     {
-        
+        // 1. On cherche le joueur
         var player = await _db.Players.FindAsync(dto.PlayerId);
-        if (player is null) return BadRequest("Player not found");
 
-        var adv = new Adventure { PlayerId = dto.PlayerId, CreatedAt = DateTime.UtcNow };
+        // 2. Si le joueur n'existe pas, on le crée (Compatible avec ta classe Player actuelle)
+        if (player is null)
+        {
+            string playerName = User.Identity?.Name ?? "Aventurier Inconnu";
+
+            player = new Player
+            {
+                Id = dto.PlayerId,
+                UserName = playerName, // CORRECTION : 'Name' devient 'UserName'
+                CreatedAt = DateTime.UtcNow,
+                IsActive = true
+                // SUPPRESSION : Level, Experience et Gold n'existent pas dans ton modèle Player
+            };
+
+            _db.Players.Add(player);
+            await _db.SaveChangesAsync();
+        }
+
+        // 3. Création de l'aventure
+        var adv = new Adventure { PlayerId = player.Id, CreatedAt = DateTime.UtcNow };
         _db.Adventures.Add(adv);
         await _db.SaveChangesAsync();
 
+        // 4. Génération du donjon
         var rooms = DungeonGenerator.GenerateDungeon(dto.MinRooms ?? 3, dto.MaxRooms ?? 5);
         
         return Created($"/api/adventures/{adv.Id}", new StartPayload(adv, rooms));
