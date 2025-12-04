@@ -619,7 +619,6 @@ C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\Blazo
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.EntityFrameworkCore.Relational.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.Extensions.Caching.Abstractions.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.Extensions.Caching.Memory.dll
-C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.Extensions.Configuration.Abstractions.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.Extensions.DependencyInjection.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 C:\Users\bonni\Documents\Ecole\Efrei\Inge\DotNet\xProjet-part-5\BlazorGame\BlazorGame.Tests\bin\Debug\net9.0\Microsoft.Extensions.Logging.dll
