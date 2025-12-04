@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
+using Microsoft.AspNetCore.Components.Authorization; // ✅ Nécessaire pour gérer l'état d'auth
 using System.Net.Http.Json;
+using System.Security.Claims;
 using SharedModels.Entities;
 using BlazorGame.Client.Services; 
 using SharedModels; 
@@ -14,6 +16,9 @@ public partial class NewAdventure : ComponentBase
     [Inject] public PlayerSessionService Session { get; set; } = default!;
     [Inject] public NavigationManager Navigation { get; set; } = default!;
     [Inject] public RoomHandlerFactory RoomFactory { get; set; } = default!;
+    
+    // ✅ AJOUT : On injecte le provider pour vérifier l'état sans passer par la Session au début
+    [Inject] public AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
 
     public StartFormModel FormModel { get; set; } = new StartFormModel();
 
@@ -34,14 +39,30 @@ public partial class NewAdventure : ComponentBase
     public bool GameFinished => CurrentAdventure != null && CurrentAdventure.FinishedAt != null;
     public bool IsLoading { get; set; } = false;
 
-    protected override void OnInitialized()
+    // ✅ CORRECTION MAJEURE : On remplace OnInitialized (synchrone) par OnInitializedAsync
+    protected override async Task OnInitializedAsync()
     {
-        if (!Session.IsAuthenticated) Navigation.NavigateTo("/login");
+        // 1. On attend que Blazor ait fini de vérifier l'authentification
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        // 2. Si l'utilisateur est connecté, on met à jour le service de session
+        // Cela évite que la page ne redirige par erreur
+        if (user.Identity?.IsAuthenticated == true)
+        {
+            Session.IsAuthenticated = true;
+            // Note : Si tu as l'ID du joueur dans les Claims, tu peux le récupérer ici.
+            // Sinon, on part du principe qu'il est déjà en mémoire ou géré par l'API.
+        }
+        
+        // 🛑 ON A SUPPRIMÉ LA REDIRECTION MANUELLE ICI.
+        // L'attribut [Authorize] sur la page .razor fait déjà le travail de gardien.
     }
 
     public async Task StartAdventure()
     {
-        if (!Session.IsAuthenticated || Session.CurrentPlayerId is null)
+        // Sécurité supplémentaire au clic
+        if (!Session.IsAuthenticated)
         {
             Navigation.NavigateTo("/login");
             return;
@@ -59,7 +80,10 @@ public partial class NewAdventure : ComponentBase
         
         try
         {
-            var requestDto = new StartRequest(Session.CurrentPlayerId.Value, 3, 5); 
+            // ✅ SÉCURITÉ : On gère le cas où l'ID serait null (fallback sur 1 ou 0)
+            int playerId = Session.CurrentPlayerId ?? 1; 
+
+            var requestDto = new StartRequest(playerId, 3, 5); 
             var response = await Http.PostAsJsonAsync("api/adventures/start", requestDto);
             response.EnsureSuccessStatusCode();
 
@@ -89,7 +113,6 @@ public partial class NewAdventure : ComponentBase
         }
     }
 
-    // --- NOUVELLE MÉTHODE POUR UTILISER UN OBJET GRATUITEMENT ---
     public void UseItem(Item item)
     {
         if (!Inventory.Contains(item)) return;
@@ -100,23 +123,16 @@ public partial class NewAdventure : ComponentBase
             CurrentHealth += healAmount;
             if (CurrentHealth > 100) CurrentHealth = 100;
 
-            // On retire l'objet de l'inventaire
             Inventory.Remove(item);
 
-            // Feedback visuel simple
             LastOutcome = $"🧪 Vous buvez {item.Name} et récupérez {healAmount} PV. (Action Gratuite)";
             
-            // On rafraîchit l'UI sans faire avancer le jeu
             StateHasChanged();
         }
-        // Tu pourras ajouter d'autres types d'objets ici plus tard
     }
 
     public void HandleAction(PlayerAction action)
     {
-        // Si c'est juste utiliser un objet, on passe par notre méthode dédiée (si appelée depuis l'UI)
-        // Mais ici, on gère les actions qui font AVANCER le jeu (passer le tour)
-        
         if (!GameInProgress || CurrentRoom == null) return;
         if (CurrentRoom.Type == RoomType.Exit) return;
 

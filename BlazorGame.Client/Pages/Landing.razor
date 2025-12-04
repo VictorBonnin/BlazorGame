@@ -1,0 +1,36 @@
+@page "/"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@attribute [AllowAnonymous]
+@inject NavigationManager Navigation
+
+<div class="container text-center mt-5">
+    <h1 class="display-3">Bienvenue Aventurier !</h1>
+    <p class="lead">Prêt à affronter le donjon ?</p>
+    
+    <div class="mt-4">
+        <AuthorizeView>
+            <Authorized>
+                <p class="mb-3 text-success">
+                    Heureux de vous revoir, <strong>@context.User.Identity?.Name</strong> !
+                </p>
+                <a href="new-adventure" class="btn btn-lg btn-success">
+                    ⚔️ Continuer l'aventure
+                </a>
+            </Authorized>
+            <NotAuthorized>
+                <button class="btn btn-lg btn-primary" @onclick="NavigateToLogin">
+                    Se connecter avec Keycloak
+                </button>
+            </NotAuthorized>
+        </AuthorizeView>
+    </div>
+</div>
+
+@code {
+    private void NavigateToLogin()
+    {
+        // Redirection vers le flux de connexion OIDC (géré par Authentication.razor)
+        Navigation.NavigateTo("authentication/login");
+    }
+}

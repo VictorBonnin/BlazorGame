@@ -7,14 +7,9 @@
     <title>BlazorGame.Client</title>
     <base href="/" />
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
-
+    <link rel="stylesheet" href="css/app.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <link href="BlazorGame.Client.styles.css" rel="stylesheet" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Jura:wght@500;700&family=Michroma&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Orbitron:wght@400;700&family=Oxanium:wght@300;400;700&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="css/app.css" />
 </head>
 
 <body>
@@ -23,15 +18,19 @@
             <circle r="40%" cx="50%" cy="50%" />
             <circle r="40%" cx="50%" cy="50%" />
         </svg>
-        <div class="loading-progress-text"></div>
+        <div class="loading-progress-text">Loading...</div>
     </div>
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.
-        <a href="." class="reload">Reload</a>
-        <span class="dismiss">🗙</span>
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
     </div>
+
+    <!-- Script Blazor standard -->
     <script src="_framework/blazor.webassembly.js"></script>
+    
+    <script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
 </body>
 
 </html>

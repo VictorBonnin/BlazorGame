@@ -27,8 +27,35 @@ Le projet suit une architecture orientée services (SOA) / Microservices :
 2.  **`GameServices`** : API REST (ASP.NET Core) gérant la logique métier du jeu (génération de donjon, calcul des combats, gestion des items).
 3.  **`AuthenticationServices`** : API REST dédiée à la gestion des utilisateurs et à la sécurité (Login/Register).
 4.  **`SharedModels`** : Bibliothèque de classes partagée contenant les entités communes (DTOs, Modèles) pour assurer la cohérence entre le front et le back.
+5.  **`ApiGateway`** : Point d'entrée unique pour les clients, redirigeant les requêtes vers les services appropriés.
+6.  **`Keycloak`** : Serveur de gestion d'identité et d'accès (IAM) pour l'authentification des joueurs et admins (Port 8080).
+
+## Comptes de Connexion
+
+Pour tester l'application, voici les comptes préconfigurés :
+
+### 👤 Compte Joueur
+* **Utilisateur :** `victor`
+* **Mot de passe :** `password`
+
+### 🛡️ Compte Administrateur
+* **Utilisateur :** `admin`
+* **Mot de passe :** `admin`
 
 ## Installation et Lancement
+
+### Méthode recommandée : Docker Compose
+Cette méthode lance tous les services (Keycloak, APIs, Base de données, Client) simultanément.
+
+1.  À la racine du projet :
+    ```bash
+    docker-compose up -d
+    ```
+2.  Accédez au jeu via votre navigateur :
+    * **http://localhost:5000**
+
+### Méthode manuelle (Développement)
+Si vous souhaitez lancer les projets individuellement pour le développement :
 
 Puisque le projet est divisé en plusieurs services, il est nécessaire de lancer les composants dans un ordre précis.
 

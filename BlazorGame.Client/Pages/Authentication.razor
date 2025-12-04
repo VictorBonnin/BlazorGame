@@ -1,0 +1,75 @@
+@page "/authentication/{action}"
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Authorization
+@using System.Security.Claims
+@attribute [AllowAnonymous]
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager Navigation
+
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3>Authentification Keycloak (Action: @Action)</h3>
+        </div>
+        <div class="card-body">
+            
+            <!-- Composant OIDC natif qui gère tout le travail -->
+            <RemoteAuthenticatorView Action="@Action">
+                <LogInFailed>
+                    <div class="alert alert-danger">
+                        <h4>🛑 Échec de connexion</h4>
+                        <p>Erreur : @context</p>
+                        <a href="/" class="btn btn-outline-danger">Retour Accueil</a>
+                    </div>
+                </LogInFailed>
+
+                <CompletingLoggingIn>
+                    <div class="alert alert-info">
+                        <div class="spinner-border spinner-border-sm" role="status"></div>
+                        <span> Validation du token en cours... (Ne fermez pas)</span>
+                    </div>
+                </CompletingLoggingIn>
+
+                <LoggingIn>
+                    <div class="alert alert-warning">
+                        <span>Redirection vers Keycloak...</span>
+                    </div>
+                </LoggingIn>
+
+                <LogOutSucceeded>
+                    <div class="alert alert-success">Vous êtes déconnecté.</div>
+                    <a href="/" class="btn btn-primary">Retour Accueil</a>
+                </LogOutSucceeded>
+            </RemoteAuthenticatorView>
+
+            <!-- État en temps réel -->
+            <div class="mt-4 p-3 border rounded bg-light">
+                <h5>État détecté sur cette page :</h5>
+                @if (user?.Identity?.IsAuthenticated == true)
+                {
+                    <div class="text-success">
+                        <strong>✅ Connecté : @user.Identity.Name</strong>
+                        <br/>
+                        <small>La redirection vers l'accueil va se faire automatiquement...</small>
+                    </div>
+                }
+                else
+                {
+                    <span class="text-muted">En attente de connexion...</span>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code{
+    [Parameter] public string? Action { get; set; }
+    private ClaimsPrincipal? user;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var state = await AuthStateProvider.GetAuthenticationStateAsync();
+        user = state.User;
+    }
+}

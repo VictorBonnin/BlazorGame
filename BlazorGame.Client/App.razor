@@ -1,59 +1,28 @@
-﻿@inject BlazorGame.Client.Services.PlayerSessionService Session
-@using BlazorGame.Client.Pages
+﻿@using Microsoft.AspNetCore.Components.Authorization
 @using BlazorGame.Client.Shared
-@using Microsoft.AspNetCore.Components.Routing
 
-@if (!_isInitialized)
-{
-    @* 1. Ecran de chargement GLOBAL (avant même que le routeur ne démarre) *@
-    <div class="d-flex justify-content-center align-items-center vh-100" style="height:100vh; width:100vw;">
-        <div class="d-flex flex-column align-items-center">
-            <div class="spinner-border text-primary mb-3" role="status"></div>
-            <h3>Chargement du jeu...</h3>
-        </div>
-    </div>
-}
-else
-{
-    @* 2. Une fois la session chargée, on lance le routeur *@
+<CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
-            @{
-                // LOGIQUE DE SÉCURITÉ
-                // Est-ce la page de login ?
-                var isLoginPage = routeData.PageType == typeof(Login);
-                
-                // Si connecté OU si c'est la page login -> On affiche
-                if (Session.IsAuthenticated || isLoginPage)
-                {
-                    <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-                    <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-                }
-                else
-                {
-                    // Sinon -> Redirection immédiate
-                    <RedirectToLogin />
-                }
-            }
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    @if (context.User.Identity?.IsAuthenticated != true)
+                    {
+                        <RedirectToLogin />
+                    }
+                    else
+                    {
+                        <p role="alert">Vous n'êtes pas autorisé à accéder à cette page.</p>
+                    }
+                </NotAuthorized>
+            </AuthorizeRouteView>
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
         </Found>
         <NotFound>
-            <PageTitle>Introuvable</PageTitle>
+            <PageTitle>Not found</PageTitle>
             <LayoutView Layout="@typeof(MainLayout)">
-                <div class="container mt-5">
-                    <p class="alert alert-warning">Désolé, cette page n'existe pas.</p>
-                </div>
+                <p role="alert">Désolé, rien à cette adresse.</p>
             </LayoutView>
         </NotFound>
     </Router>
-}
-
-@code {
-    private bool _isInitialized = false;
-
-    protected override async Task OnInitializedAsync()
-    {
-        // On attend la réponse du LocalStorage AVANT d'afficher quoi que ce soit
-        await Session.Initialize();
-        _isInitialized = true;
-    }
-}
+</CascadingAuthenticationState>

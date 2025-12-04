@@ -1,80 +1,19 @@
 @page "/login"
-@inject BlazorGame.Client.Services.PlayerSessionService Session
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @inject NavigationManager Navigation
-@inject HttpClient Http
-@using SharedModels.Entities
 
-<PageTitle>Connexion</PageTitle>
+<h3>Connexion</h3>
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-10">
-            <div class="card shadow-lg border-0">
-                <div class="card-body p-5 text-center">
-                    <h2 class="mb-4 fw-bold text-primary">Identifiez-vous</h2>
-                    
-                    @if (!string.IsNullOrEmpty(ErrorMessage))
-                    {
-                        <div class="alert alert-danger">@ErrorMessage</div>
-                    }
+<p>Vous devez être connecté pour accéder à cette aventure.</p>
 
-                    <EditForm Model="this" OnValidSubmit="HandleLogin">
-                        <div class="mb-3 text-start">
-                            <label class="form-label">Nom d'utilisateur</label>
-                            <InputText @bind-Value="Username" class="form-control form-control-lg" placeholder="Ex: Victor" />
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary w-100 btn-lg mt-3">
-                            @(IsLoading ? "Chargement..." : "Entrer dans le jeu")
-                        </button>
-                    </EditForm>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<button class="btn btn-primary" @onclick="RedirectToLogin">
+    Se connecter avec Keycloak
+</button>
 
 @code {
-    public string Username { get; set; } = "";
-    public string ErrorMessage { get; set; } = "";
-    public bool IsLoading { get; set; } = false;
-
-    private async Task HandleLogin()
+    private void RedirectToLogin()
     {
-        if (string.IsNullOrWhiteSpace(Username)) return;
-        
-        IsLoading = true;
-        ErrorMessage = "";
-
-        try
-        {
-            // 1. Création ou récupération du joueur via l'API
-            var response = await Http.PostAsJsonAsync("api/players", new { UserName = Username });
-            
-            if (response.IsSuccessStatusCode)
-            {
-                var player = await response.Content.ReadFromJsonAsync<Player>();
-                if (player != null)
-                {
-                    // 2. Enregistrement dans la session locale (CORRECTION ICI : ajout de await)
-                    await Session.Login(player.Id, player.UserName);
-
-                    // 3. REDIRECTION VERS L'ACCUEIL
-                    Navigation.NavigateTo("/");
-                }
-            }
-            else
-            {
-                ErrorMessage = "Erreur de connexion au serveur.";
-            }
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = $"Erreur technique : {ex.Message}";
-        }
-        finally
-        {
-            IsLoading = false;
-        }
+        // Déclenche le flux d'authentification OIDC
+        Navigation.NavigateTo("authentication/login");
     }
 }

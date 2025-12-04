@@ -1,0 +1,59 @@
+services:
+  # --- 1. KEYCLOAK ---
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.0
+    container_name: blazorgame-keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command: start-dev --import-realm
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./Keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+
+  # --- 2. GATEWAY (Nouveau Point d'Entrée Unique) ---
+  api-gateway:
+    image: mcr.microsoft.com/dotnet/sdk:9.0
+    container_name: blazorgame-gateway
+    working_dir: /app/ApiGateway
+    command: dotnet watch run --urls=http://0.0.0.0:5010
+    ports:
+      - "5010:5010"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+    volumes:
+      - ./:/app
+    depends_on:
+      - game-api
+
+  # --- 3. API JEU (cachée derrière la Gateway) ---
+  game-api:
+    image: mcr.microsoft.com/dotnet/sdk:9.0
+    container_name: blazorgame-api
+    working_dir: /app/GameServices
+    command: dotnet watch run --urls=http://0.0.0.0:5001
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+    volumes:
+      - ./:/app 
+    depends_on:
+      - keycloak
+
+  # --- 4. CLIENT BLAZOR ---
+  blazor-client:
+    image: mcr.microsoft.com/dotnet/sdk:9.0
+    container_name: blazorgame-client
+    working_dir: /app/BlazorGame.Client
+    command: dotnet watch run --urls=http://0.0.0.0:5000
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+    volumes:
+      - ./:/app
+    depends_on:
+      - api-gateway

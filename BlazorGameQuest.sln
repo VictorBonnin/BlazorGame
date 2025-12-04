@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorGame.Tests", "BlazorG
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServices", "GameServices\GameServices.csproj", "{79A15AA6-1E8E-46E8-BFA7-F9DA00E4F972}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway", "ApiGateway\ApiGateway.csproj", "{6AC321B9-FB33-49F8-A7D4-8E05E233760E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{79A15AA6-1E8E-46E8-BFA7-F9DA00E4F972}.Release|x64.Build.0 = Release|Any CPU
 		{79A15AA6-1E8E-46E8-BFA7-F9DA00E4F972}.Release|x86.ActiveCfg = Release|Any CPU
 		{79A15AA6-1E8E-46E8-BFA7-F9DA00E4F972}.Release|x86.Build.0 = Release|Any CPU
+		{6AC321B9-FB33-49F8-A7D4-8E05E233760E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AC321B9-FB33-49F8-A7D4-8E05E233760E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AC321B9-FB33-49F8-A7D4-8E05E233760E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6AC321B9-FB33-49F8-A7D4-8E05E233760E}.Debug|x64.Build.0 = Debug|Any CPU
+		{6AC321B9-FB33-49F8-A7D4-8E05E233760E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6AC321B9-FB33-49F8-A7D4-8E05E233760E}.Debug|x86.Build.0 = Debug|Any CPU
+		{6AC321B9-FB33-49F8-A7D4-8E05E233760E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AC321B9-FB33-49F8-A7D4-8E05E233760E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AC321B9-FB33-49F8-A7D4-8E05E233760E}.Release|x64.ActiveCfg = Release|Any CPU
+		{6AC321B9-FB33-49F8-A7D4-8E05E233760E}.Release|x64.Build.0 = Release|Any CPU
+		{6AC321B9-FB33-49F8-A7D4-8E05E233760E}.Release|x86.ActiveCfg = Release|Any CPU
+		{6AC321B9-FB33-49F8-A7D4-8E05E233760E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,33 +1,45 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+using Blazored.LocalStorage;
 using BlazorGame.Client;
 using BlazorGame.Client.Services;
 using BlazorGame.Client.Logic;
-using Blazored.LocalStorage;
+using BlazorGame.Client.Logic.Rooms;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
-
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddBlazoredLocalStorage();
-
-// 1. L'API de JEU est sur le port 5001
+// --- 1. CONFIGURATION API ---
+builder.Services.AddScoped<GameApiAuthorizationMessageHandler>();
 builder.Services.AddHttpClient("GameApi", client => 
-    client.BaseAddress = new Uri("http://localhost:5001"));
+    client.BaseAddress = new Uri("http://localhost:5010/")) 
+    .AddHttpMessageHandler<GameApiAuthorizationMessageHandler>();
 
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("GameApi"));
 
-// 2. L'API d'AUTHENTIFICATION est sur le port 5200
-builder.Services.AddHttpClient("AuthApi", client => 
-    client.BaseAddress = new Uri("http://localhost:5200"));
+// --- 2. CONFIGURATION KEYCLOAK (OIDC) ---
+// 👇 C'EST ICI LA MODIFICATION IMPORTANTE
+builder.Services.AddOidcAuthentication(options =>
+{
+    builder.Configuration.Bind("Local", options.ProviderOptions);
+    options.ProviderOptions.DefaultScopes.Add("roles");
+})
+.AddAccountClaimsPrincipalFactory<CustomUserFactory>();
 
-// ---------------------------------------------
+// --- 3. SERVICES ---
+builder.Services.AddBlazoredLocalStorage(); 
+builder.Services.AddScoped<HintService>();
+builder.Services.AddScoped<PlayerSessionService>();
 
-// Enregistrement des services
-
-builder.Services.AddScoped<PlayerSessionService>(); 
-builder.Services.AddSingleton<HintService>();
-builder.Services.AddScoped<RoomHandlerFactory>(); 
+// --- 4. LOGIQUE JEU ---
+builder.Services.AddScoped<RoomHandlerFactory>();
+builder.Services.AddScoped<IRoomHandler, CombatRoomHandler>();
+builder.Services.AddScoped<IRoomHandler, LootRoomHandler>();
+builder.Services.AddScoped<IRoomHandler, MysteryRoomHandler>();
+builder.Services.AddScoped<IRoomHandler, SanctuaryRoomHandler>();
+builder.Services.AddScoped<IRoomHandler, ShopRoomHandler>();
+builder.Services.AddScoped<IRoomHandler, TrapRoomHandler>();
 
 await builder.Build().RunAsync();

@@ -108,3 +108,48 @@
         margin-bottom: 0.25rem;
     }
 }
+
+.btn-logout {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.5);
+    cursor: pointer;
+    color: white;
+    margin-left: 10px;
+}
+
+.btn-logout:hover {
+    background-color: rgba(255, 0, 0, 0.2);
+    border-color: red;
+}
+
+.nav-text {
+    color: #ffd700; /* Couleur or pour le nom du joueur */
+    margin-left: 15px;
+    font-weight: bold;
+    align-self: center;
+}
+
+.nav-item form .nav-link {
+    background-color: transparent;
+    border: none;
+    color: #d7d7d7; /* Ou la couleur de tes liens non actifs */
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    font-family: 'Neotriad', sans-serif; /* S'assure que la police du jeu est utilisée */
+    padding-left: 1rem; /* Ajustement pour aligner avec les autres liens si nécessaire */
+    display: flex;
+    align-items: center;
+}
+
+/* Effet au survol (Hover) identique aux autres liens */
+.nav-item form .nav-link:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Gestion de l'icône dans le bouton */
+.nav-item form .nav-link span.bi {
+    margin-right: 0.75rem; /* Espacement entre l'icône et le texte */
+    font-size: 1.1rem;      /* Ajuste la taille de l'icône pour correspondre aux autres */
+}

@@ -1,48 +1,77 @@
-using GameServices.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using GameServices.Data;
 using SharedModels.Entities;
+using Microsoft.AspNetCore.Authorization;
 
-namespace GameServices.Controllers;
-
-[ApiController]
-[Route("api/[controller]")] // L'URL sera automatique : /api/players
-public class PlayersController : ControllerBase
+namespace GameServices.Controllers
 {
-    private readonly GameDbContext _db;
-
-    public PlayersController(GameDbContext db)
+    [Route("api/[controller]")]
+    [ApiController]
+    [Authorize(Policy = "Player")]
+    public class PlayersController : ControllerBase
     {
-        _db = db;
-    }
+        private readonly GameDbContext _context;
 
-    [HttpGet]
-    public async Task<ActionResult<List<Player>>> GetPlayers()
-    {
-        return Ok(await _db.Players.OrderBy(p => p.Id).ToListAsync());
-    }
+        public PlayersController(GameDbContext context)
+        {
+            _context = context;
+        }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<Player>> GetPlayer(int id)
-    {
-        var p = await _db.Players
-            .Include(x => x.Adventures)
-                .ThenInclude(a => a.Rooms)
-            .FirstOrDefaultAsync(x => x.Id == id);
+        // 👇 NOUVELLE ROUTE : Récupère le profil via le Token Keycloak
+        [HttpGet("me")]
+        public async Task<ActionResult<Player>> GetMyProfile()
+        {
+            // Le pseudo est extrait automatiquement du Token (grâce à ta config dans Program.cs)
+            var username = User.Identity?.Name;
+            
+            if (string.IsNullOrEmpty(username)) 
+                return Unauthorized();
 
-        if (p == null) return NotFound();
-        return Ok(p);
-    }
+            var player = await _context.Players
+                .Include(p => p.Adventures) // On inclut les aventures pour les stats
+                .ThenInclude(a => a.Rooms)  // On inclut les salles pour le détail
+                .FirstOrDefaultAsync(p => p.UserName == username);
 
-    [HttpPost]
-    public async Task<ActionResult<Player>> CreatePlayer(PlayerCreateDto dto)
-    {
-        var p = new Player { UserName = dto.UserName.Trim() };
-        _db.Players.Add(p);
-        await _db.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetPlayer), new { id = p.Id }, p);
+            if (player == null)
+            {
+                // Optionnel : Créer le joueur à la volée s'il n'existe pas encore
+                player = new Player { UserName = username };
+                _context.Players.Add(player);
+                await _context.SaveChangesAsync();
+            }
+
+            return player;
+        }
+
+        // GET: api/Players
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Player>>> GetPlayers()
+        {
+            return await _context.Players.ToListAsync();
+        }
+
+        // GET: api/Players/5 (Correction du type string -> int)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<Player>> GetPlayer(int id)
+        {
+            var player = await _context.Players
+                .Include(p => p.Adventures)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (player == null) return NotFound();
+
+            return player;
+        }
+
+        // POST: api/Players
+        [HttpPost]
+        public async Task<ActionResult<Player>> PostPlayer(Player player)
+        {
+            _context.Players.Add(player);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetPlayer", new { id = player.Id }, player);
+        }
     }
 }
-
-// Tu peux déplacer tes DTOs (Data Transfer Objects) dans un fichier à part ou en bas du contrôleur
-public record PlayerCreateDto(string UserName);
